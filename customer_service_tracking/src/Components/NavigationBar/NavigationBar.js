@@ -12,6 +12,8 @@ import {
   DropdownItem,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 import './NavigationBar.scss';
 
@@ -33,8 +35,7 @@ class NavigationBar extends React.Component {
 
   logMeOut = (e) => {
     e.preventDefault();
-    console.error('logged out');
-    // firebase.auth().signOut();
+    firebase.auth().signOut();
   };
 
   render() {
