@@ -7,12 +7,15 @@ import 'firebase/auth';
 
 import './App.scss';
 
-import NavigationBar from '../Components/NavigationBar/NavigationBar';
-import LandingPage from '../Components/LandingPage/LandingPage';
 import HomePage from '../Components/HomePage/HomePage';
+import LandingPage from '../Components/LandingPage/LandingPage';
+import NavigationBar from '../Components/NavigationBar/NavigationBar';
+import NewAccountPage from '../Components/NewAccountPage/NewAccountPage';
+
+import UserRequests from '../Helpers/Data/UserRequests';
 
 import fbConnect from '../Helpers/Data/fbConnection';
-import NewAccountPage from '../Components/NewAccountPage/NewAccountPage';
+
 
 fbConnect();
 
@@ -32,6 +35,7 @@ const PrivateRoute = ({ component: Component, authorized, ...rest }) => {
 class App extends React.Component {
   state = {
     authorized: false,
+    userObj: {},
   }
 
   componentDidMount() {
@@ -52,11 +56,15 @@ class App extends React.Component {
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then((cred) => cred.user.getIdToken())
       .then((token) => sessionStorage.setItem('token', token))
+      .then(() => UserRequests.getUserByFirebaseUid(firebase.auth().currentUser.uid))
+      .then((userObj) => {
+        this.setState({ userObj });
+      })
       .catch((err) => this.setState({ error: err.message }));
   };
 
   render() {
-    const { authorized } = this.state;
+    const { authorized, userObj } = this.state;
     return (
       <div className="App">
         <Router>
@@ -64,7 +72,7 @@ class App extends React.Component {
           <Switch>
             <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn}/>
             <PublicRoute path='/new-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
-            <PrivateRoute path='/home' component={HomePage} authorized={authorized}/>
+            <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
         </Router>

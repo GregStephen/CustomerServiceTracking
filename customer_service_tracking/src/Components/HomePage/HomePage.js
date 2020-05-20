@@ -4,9 +4,10 @@ import './HomePage.scss';
 
 class HomePage extends React.Component {
   render() {
+    const { userObj } = this.props;
     return (
       <div className="HomePage">
-        <h1>WELCOME IN BITCHES</h1>
+        <h1>WELCOME IN {userObj.firstName}</h1>
       </div>
     );
   }
