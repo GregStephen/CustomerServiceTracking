@@ -7,7 +7,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'User')
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[FirstName] NVARCHAR(255) not null,
 		[LastName] NVARCHAR(255) not null,
-		[Admin] BINARY not null,
+		[Admin] BIT not null,
 		[FirebaseUid] NVARCHAR (255) not null
 	)
 	END
@@ -67,7 +67,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'CustomerSystem')
 		[Nozzles] INT not null,
 		[SprayDuration] INT not null,
 		[SprayCycles] INT not null,
-		[Sold] BINARY not null,
+		[Sold] BIT not null,
 		[CustomerId] UNIQUEIDENTIFIER not null,
 		[SerialNumber] NVARCHAR(255) not null
 	)
