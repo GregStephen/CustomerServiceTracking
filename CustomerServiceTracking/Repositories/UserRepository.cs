@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using Dapper;
+using CustomerServiceTracking.DTOS;
 
 namespace CustomerServiceTracking.Repositories
 {
@@ -28,6 +29,27 @@ namespace CustomerServiceTracking.Repositories
                 var parameters = new { firebaseId };
                 var userFromDb = db.QueryFirstOrDefault<User>(sql, parameters);
                 return userFromDb;
+            }
+        }
+        public bool AddNewUserToDatabase(NewUserDTO newUser)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [User]
+                            (
+                             [FirstName],
+                             [LastName],
+                             [FirebaseUid],
+                             [Admin]
+                            )
+                            VALUES
+                            (
+                            @firstName,
+                            @lastName,
+                            @firebaseUid,
+                            @admin
+                            )";
+                return (db.Execute(sql, newUser) == 1);
             }
         }
     }

@@ -4,10 +4,13 @@ import 'firebase/auth';
 
 import './NewAccountPage.scss';
 
+import UserRequests from '../../Helpers/Data/UserRequests';
+
 const defaultUser = {
   businessName: '',
   firstName: '',
   lastName: '',
+  admin: true,
 };
 
 class NewAccountPage extends React.Component {
@@ -46,8 +49,9 @@ class NewAccountPage extends React.Component {
           .then((token) => sessionStorage.setItem('token', token));
         const saveMe = { ...this.state.newUser };
         saveMe.firebaseUid = firebase.auth().currentUser.uid;
-        console.error(saveMe);
-        logIn(email, password);
+        UserRequests.addNewUser(saveMe)
+          .then(() => logIn(email, password))
+          .catch((err) => console.error(err));
       })
       .catch((err) => this.setState({ error: err.message }));
   }

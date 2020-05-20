@@ -1,4 +1,5 @@
 ﻿using CustomerServiceTracking.DataModels;
+using CustomerServiceTracking.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace CustomerServiceTracking.Repositories
     public interface IUserRepository
     {
         User GetUserByFirebaseId(string firebaseId);
+        bool AddNewUserToDatabase(NewUserDTO newUser);
     }
 }
