@@ -5,13 +5,9 @@ using System.Threading.Tasks;
 
 namespace CustomerServiceTracking.DataModels
 {
-    public class User
+    public class Business
     {
         public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public bool Admin { get; set; }
         public string BusinessName { get; set; }
-        public Guid BusinessId { get; set; }
     }
 }

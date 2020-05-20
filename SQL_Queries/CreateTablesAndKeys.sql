@@ -56,9 +56,9 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Report')
 ELSE
 	PRINT 'Report table already exists'
 
-IF not exists (SELECT * FROM sys.tables WHERE [name] = 'CustomerSystem')
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'System')
 	BEGIN
-	CREATE TABLE [CustomerSystem]
+	CREATE TABLE [System]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[ForeverWarrantyId] UNIQUEIDENTIFIER not null,
@@ -73,7 +73,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'CustomerSystem')
 	)
 	END
 ELSE
-	PRINT 'CustomerSystem table already exists'
+	PRINT 'System table already exists'
 
 IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Customer')
 	BEGIN
@@ -129,8 +129,36 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'SystemType')
 ELSE
 	PRINT 'SystemType table already exists'
 
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Job')
+	BEGIN
+	CREATE TABLE [Job]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[CustomerId] UNIQUEIDENTIFIER not null,
+		[TechnicianId] UNIQUEIDENTIFIER not null,
+		[DateAssigned] DATETIME not null,
+	)
 
 
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_Customer')
+	BEGIN
+	ALTER TABLE [Job]
+	ADD CONSTRAINT FK_Job_Customer
+		FOREIGN KEY (CustomerId) 
+		REFERENCES [Customer] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_Job_Customer already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_User')
+	BEGIN
+	ALTER TABLE [Job]
+	ADD CONSTRAINT FK_Job_User
+		FOREIGN KEY (TechnicianId) 
+		REFERENCES [User] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_Job_User already exists'
 
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Customer_Address')
 	BEGIN
@@ -142,35 +170,35 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Customer_Addres
 ELSE
 	PRINT 'Foreign key FK_Customer_Address already exists'
 
-IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_ForeverWarranty')
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_System_ForeverWarranty')
 	BEGIN
-	ALTER TABLE [CustomerSystem]
-	ADD CONSTRAINT FK_CustomerSystem_ForeverWarranty
+	ALTER TABLE [System]
+	ADD CONSTRAINT FK_System_ForeverWarranty
 		FOREIGN KEY (ForeverWarrantyId) 
 		REFERENCES [ForeverWarranty] (Id)
 	END
 ELSE
-	PRINT 'Foreign key FK_CustomerSystem_ForeverWarranty already exists'
+	PRINT 'Foreign key FK_System_ForeverWarranty already exists'
 
-IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_SystemType')
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_System_SystemType')
 	BEGIN
-	ALTER TABLE [CustomerSystem]
-	ADD CONSTRAINT FK_CustomerSystem_SystemType
+	ALTER TABLE [System]
+	ADD CONSTRAINT FK_System_SystemType
 		FOREIGN KEY (SystemTypeId)
 		REFERENCES [SystemType] (Id)
 	END
 ELSE
-	PRINT 'Foreign key FK_CustomerSystem_ForeverWarranty already exists'
+	PRINT 'Foreign key FK_System_ForeverWarranty already exists'
 
-IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_Customer')
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_System_Customer')
 	BEGIN
-	ALTER TABLE [CustomerSystem]
-	ADD CONSTRAINT FK_CustomerSystem_Customer
+	ALTER TABLE [System]
+	ADD CONSTRAINT FK_System_Customer
 		FOREIGN KEY (CustomerId) 
 		REFERENCES [Customer] (Id)
 	END
 ELSE
-	PRINT 'Foreign key FK_CustomerSystem_Customer already exists'
+	PRINT 'Foreign key FK_System_Customer already exists'
 
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_Customer')
 	BEGIN
@@ -192,15 +220,15 @@ ELSE
 ELSE
 	PRINT 'Foreign key FK_Report_User already exists'
 
-IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_CustomerSystem')
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_System')
 	BEGIN
 	ALTER TABLE [Report]
-	ADD CONSTRAINT FK_Report_CustomerSystem
+	ADD CONSTRAINT FK_Report_System
 		FOREIGN KEY (SystemId) 
-		REFERENCES [CustomerSystem] (Id)
+		REFERENCES [System] (Id)
 	END
 ELSE
-	PRINT 'Foreign key FK_Report_CustomerSystem already exists'
+	PRINT 'Foreign key FK_Report_System already exists'
 
 	
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UserBusiness_User')

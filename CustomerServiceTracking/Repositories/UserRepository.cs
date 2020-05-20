@@ -13,10 +13,12 @@ namespace CustomerServiceTracking.Repositories
     public class UserRepository : IUserRepository
     {
         string _connectionString;
+        private IBusinessRepository _businessRepo;
 
-        public UserRepository(IConfiguration configuration)
+        public UserRepository(IConfiguration configuration, IBusinessRepository businessRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
+            _businessRepo = businessRepo;
         }
 
         public User GetUserByFirebaseId(string firebaseId)
@@ -28,9 +30,11 @@ namespace CustomerServiceTracking.Repositories
                             WHERE [FirebaseUid] = @firebaseId";
                 var parameters = new { firebaseId };
                 var userFromDb = db.QueryFirstOrDefault<User>(sql, parameters);
+                var businessInfo = _businessRepo.GetUsersBusiness(userFromDb.Id);
                 return userFromDb;
             }
         }
+
         public bool AddNewUserToDatabase(NewUserDTO newUser)
         {
             using (var db = new SqlConnection(_connectionString))
@@ -42,6 +46,7 @@ namespace CustomerServiceTracking.Repositories
                              [FirebaseUid],
                              [Admin]
                             )
+                            OUTPUT INSERTED.Id
                             VALUES
                             (
                             @firstName,
@@ -49,7 +54,14 @@ namespace CustomerServiceTracking.Repositories
                             @firebaseUid,
                             @admin
                             )";
-                return (db.Execute(sql, newUser) == 1);
+                var userId = db.QueryFirst<Guid>(sql, newUser);
+                if (newUser.Admin)
+                {
+                    var businessId = _businessRepo.AddNewBusinessToDatabase(newUser.BusinessName);
+                    return (_businessRepo.AddUserToBusiness(userId, businessId));
+                }
+
+                return (_businessRepo.AddUserToBusiness(userId, newUser.BusinessId));
             }
         }
     }
