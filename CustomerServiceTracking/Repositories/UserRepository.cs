@@ -31,6 +31,8 @@ namespace CustomerServiceTracking.Repositories
                 var parameters = new { firebaseId };
                 var userFromDb = db.QueryFirstOrDefault<User>(sql, parameters);
                 var businessInfo = _businessRepo.GetUsersBusiness(userFromDb.Id);
+                userFromDb.BusinessId = businessInfo.Id;
+                userFromDb.BusinessName = businessInfo.BusinessName;
                 return userFromDb;
             }
         }

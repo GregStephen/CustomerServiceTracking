@@ -22,16 +22,18 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [User]
+                var sql = @"INSERT INTO [Business]
                             (
-                             [BusinessName],
+                             [BusinessName]
                             )
                             OUTPUT INSERTED.Id
                             VALUES
                             (
                             @businessName
                             )";
-                var businessId = db.QueryFirst<Guid>(sql, businessName);
+                var parameters = new { businessName };
+
+                var businessId = db.QueryFirst<Guid>(sql, parameters);
                 return businessId;
             }
         }
