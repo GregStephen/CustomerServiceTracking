@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import './LandingPage.scss';
 
 class LandingPage extends React.Component {
+  static propTypes = {
+    authorized: PropTypes.bool.isRequired,
+    logIn: PropTypes.func.isRequired,
+  }
+
   state = {
     email: '',
     password: '',

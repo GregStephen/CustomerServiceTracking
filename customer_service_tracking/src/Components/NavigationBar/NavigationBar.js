@@ -18,6 +18,11 @@ import 'firebase/auth';
 import './NavigationBar.scss';
 
 class NavigationBar extends React.Component {
+  static propTypes = {
+    userObj: PropTypes.object.isRequired,
+    authorized: PropTypes.bool.isRequired,
+  }
+
   state = {
     isOpen: false,
   }

@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import PropTypes from 'prop-types';
 
 import './NewAccountPage.scss';
 
@@ -14,6 +15,11 @@ const defaultUser = {
 };
 
 class NewAccountPage extends React.Component {
+  static propTypes = {
+    authorized: PropTypes.bool.isRequired,
+    logIn: PropTypes.func.isRequired,
+  }
+
   state = {
     newUser: defaultUser,
     email: '',

@@ -11,5 +11,7 @@ namespace CustomerServiceTracking.DTOS
         public string LastName { get; set; }
         public string FirebaseUid { get; set; }
         public bool Admin { get; set; }
+        public string BusinessName { get; set; }
+        public Guid BusinessId { get; set; }
     }
 }

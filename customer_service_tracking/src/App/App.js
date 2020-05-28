@@ -68,7 +68,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <Router>
-          <NavigationBar authorized={authorized}/>
+          <NavigationBar authorized={authorized} userObj={userObj}/>
           <Switch>
             <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn}/>
             <PublicRoute path='/new-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
