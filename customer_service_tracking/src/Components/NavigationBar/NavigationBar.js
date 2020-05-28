@@ -6,6 +6,8 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
+  NavLink,
+  NavItem,
   UncontrolledDropdown,
   DropdownMenu,
   DropdownToggle,
@@ -44,9 +46,14 @@ class NavigationBar extends React.Component {
   };
 
   render() {
-    // const { authorized, userObj } = this.props;
-    const buildNavbar = () => (
-      <Nav className="ml-auto" navbar>
+    const { authorized, userObj } = this.props;
+    const buildNavbar = () => {
+      if (authorized) {
+        return (
+        <Nav className="ml-auto" navbar>
+            <NavItem tag={RRNavLink} to='/systems'>
+              <NavLink>Systems</NavLink>
+            </NavItem>
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret className="navbar-user-button">
           </DropdownToggle>
@@ -60,7 +67,9 @@ class NavigationBar extends React.Component {
           </DropdownMenu>
         </UncontrolledDropdown>
       </Nav>
-    );
+        );
+      } return ('');
+    };
 
 
     return (
