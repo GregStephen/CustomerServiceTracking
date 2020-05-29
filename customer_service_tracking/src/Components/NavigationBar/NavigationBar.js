@@ -51,9 +51,11 @@ class NavigationBar extends React.Component {
       if (authorized) {
         return (
         <Nav className="ml-auto" navbar>
-            <NavItem tag={RRNavLink} to='/systems'>
-              <NavLink>Systems</NavLink>
-            </NavItem>
+          {userObj.admin
+            ? <NavItem>
+                <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
+              </NavItem>
+            : '' }
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret className="navbar-user-button">
           </DropdownToggle>

@@ -32,6 +32,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Business')
 	CREATE TABLE [Business]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[AddressId] UNIQUEIDENTIFIER not null,
 		[BusinessName] NVARCHAR(255) not null
 	)
 	END
@@ -80,31 +81,67 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Customer')
 	CREATE TABLE [Customer]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-		[AddressLine1] NVARCHAR(255) not null,
-		[AddressLine2] NVARCHAR(255) null,
-		[City] NVARCHAR(255) not null,
 		[FirstName] NVARCHAR(255) not null,
 		[HomePhone] NVARCHAR(10) null,
 		[LastName] NVARCHAR(255) not null,
 		[OfficePhone] NVARCHAR(10) null,
-		[State] NVARCHAR(2) not null,
-		[ZipCode] NVARCHAR(255) not null,
+		[AddressId] UNIQUEIDENTIFIER not null,
 	)
 	END
 ELSE
 	PRINT 'Customer table already exists'
 
-
-IF not exists (SELECT * FROM sys.tables WHERE [name] = 'ForeverWarranty')
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Address')
 	BEGIN
-	CREATE TABLE [ForeverWarranty]
+	CREATE TABLE [Address]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-		[Type] NVARCHAR(255) not null,
+		[City] NVARCHAR(255) not null,
+		[State] NVARCHAR(10) not null,
+		[AddressLine1] NVARCHAR(255) not null,
+		[AddressLine2] NVARCHAR(255) null,
+		[ZipCode] NVARCHAR(255) not null,
 	)
 	END
 ELSE
-	PRINT 'ForeverWarranty table already exists'
+	PRINT 'Address table already exists'
+
+
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'WidgetParent')
+	BEGIN
+	CREATE TABLE [WidgetParent]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[Type] NVARCHAR(255) not null,
+		[BusinessId] UNIQUEIDENTIFIER not null
+	)
+	END
+ELSE
+	PRINT 'WidgetParent table already exists'
+
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'WidgetChild')
+	BEGIN
+	CREATE TABLE [WidgetChild]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[Name] NVARCHAR(255) not null,
+		[WidgetParentId] UNIQUEIDENTIFIER not null
+	)
+	END
+ELSE
+	PRINT 'WidgetChild table already exists'
+
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'CustomerSystemWidget')
+	BEGIN
+	CREATE TABLE [CustomerSystemWidget]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[CustomerSystemId] UNIQUEIDENTIFIER not null,
+		[WidgetChildId] UNIQUEIDENTIFIER not null
+	)
+	END
+ELSE
+	PRINT 'CustomerSystemWidget table already exists'
 
 IF not exists (SELECT * FROM sys.tables WHERE [name] = 'System')
 	BEGIN
@@ -126,7 +163,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Job')
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[CustomerId] UNIQUEIDENTIFIER not null,
 		[DateAssigned] DATETIME not null,
-		[TechnicianId] UNIQUEIDENTIFIER not null
+		[TechnicianId] UNIQUEIDENTIFIER not null,
+		[Repair] BIT not null
 	)
 	END
 ELSE
@@ -155,6 +193,40 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'BusinessSystem')
 	END
 ELSE
 	PRINT 'BusinessSystem table already exists'
+
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'UnregisteredEmployee')
+	BEGIN
+	CREATE TABLE [UnregisteredEmployee]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[BusinessId] UNIQUEIDENTIFIER not null,
+		[Email] NVARCHAR(255) not null,
+		[FirstName] NVARCHAR(255) not null,
+		[LastName] NVARCHAR(255) not null
+	)
+	END
+ELSE
+	PRINT 'UnregisteredEmployee table already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Customer_Address')
+	BEGIN
+	ALTER TABLE [Customer]
+	ADD CONSTRAINT FK_Customer_Address
+		FOREIGN KEY (AddressId) 
+		REFERENCES [Address] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_Customer_Address already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Business_Address')
+	BEGIN
+	ALTER TABLE [Business]
+	ADD CONSTRAINT FK_Business_Address
+		FOREIGN KEY (AddressId) 
+		REFERENCES [Address] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_Business_Address already exists'
 
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_Customer')
 	BEGIN
@@ -217,29 +289,49 @@ ELSE
 	PRINT 'Foreign key FK_BusinessCustomer_Business already exists'
 
 
-IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_ForeverWarranty')
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystemWidget_CustomerSystem')
 	BEGIN
-	ALTER TABLE [CustomerSystem]
-	ADD CONSTRAINT FK_CustomerSystem_ForeverWarranty
-		FOREIGN KEY (ForeverWarrantyId) 
-		REFERENCES [ForeverWarranty] (Id)
+	ALTER TABLE [CustomerSystemWidget]
+	ADD CONSTRAINT FK_CustomerSystemWidget_CustomerSystem
+		FOREIGN KEY (CustomerSystemId) 
+		REFERENCES [CustomerSystem] (Id)
 	END
 ELSE
-	PRINT 'Foreign key FK_CustomerSystem_ForeverWarranty already exists'
+	PRINT 'Foreign key FK_CustomerSystemWidget_CustomerSystem already exists'
 
-IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_System')
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystemWidget_WidgetChild')
 	BEGIN
-	ALTER TABLE [CustomerSystem]
-	ADD CONSTRAINT FK_CustomerSystem_System
-		FOREIGN KEY (SystemId)
-		REFERENCES [System] (Id)
+	ALTER TABLE [CustomerSystemWidget]
+	ADD CONSTRAINT FK_CustomerSystemWidget_WidgetChild
+		FOREIGN KEY (WidgetChildId) 
+		REFERENCES [WidgetChild] (Id)
 	END
 ELSE
-	PRINT 'Foreign key FK_CustomerSystem_System already exists'
+	PRINT 'Foreign key FK_CustomerSystemWidget_WidgetChild already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_WidgetChild_WidgetParent')
+	BEGIN
+	ALTER TABLE [WidgetChild]
+	ADD CONSTRAINT FK_WidgetChild_WidgetParent
+		FOREIGN KEY (WidgetParentId)
+		REFERENCES [WidgetParent] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_WidgetChild_WidgetParent already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_WidgetParent_Business')
+	BEGIN
+	ALTER TABLE [WidgetParent]
+	ADD CONSTRAINT FK_WidgetParent_Business
+		FOREIGN KEY (BusinessId)
+		REFERENCES [Business] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_WidgetParent_Business already exists'
 
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_Customer')
 	BEGIN
-	ALTER TABLE [CUstomerSystem]
+	ALTER TABLE [CustomerSystem]
 	ADD CONSTRAINT FK_CustomerSystem_Customer
 		FOREIGN KEY (CustomerId) 
 		REFERENCES [Customer] (Id)
@@ -297,3 +389,13 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UserBusiness_Bu
 	END
 ELSE
 	PRINT 'Foreign key FK_UserBusiness_Business already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UnregisteredEmployee_Business')
+	BEGIN
+	ALTER TABLE [UnregisteredEmployee]
+	ADD CONSTRAINT FK_UnregisteredEmployee_Business
+		FOREIGN KEY (BusinessId) 
+		REFERENCES [Business] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_UnregisteredEmployee_Business already exists'
