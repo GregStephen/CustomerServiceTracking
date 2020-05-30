@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import System from '../System/System';
+
 import SystemsRequests from '../../Helpers/Data/SystemRequests';
 
 import './SystemsPage.scss';
@@ -13,7 +15,7 @@ class SystemsPage extends React.Component {
   }
 
   state = {
-    systems: {},
+    systems: [],
   }
 
   componentDidMount() {
@@ -26,10 +28,21 @@ class SystemsPage extends React.Component {
   }
 
   render() {
+    const { systems } = this.state;
+    const showSystems = systems.map((system) => (
+      <System
+        system={system}
+        key={system.id}
+      />
+    ));
     return (
-      <div className="SystemsPage">
+      <div className="SystemsPage container">
         <h1>Systems</h1>
         <Link className="btn btn-info col-8" to={'/new-system'}>Create a New System</Link>
+        <div className="row justify-content-around">
+          {systems.length > 0 ? showSystems
+            : <p className="no-systems">You have no systems to show! Try adding some first</p>}
+        </div>
       </div>
     );
   }
