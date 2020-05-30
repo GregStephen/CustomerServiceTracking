@@ -30,7 +30,7 @@ namespace CustomerServiceTracking.Repositories
                             OUTPUT INSERTED.Id
                             VALUES
                             (
-                            @businessName
+                            @businessName,
                             @addressId
                             )";
                 var parameters = new { businessName, addressId };

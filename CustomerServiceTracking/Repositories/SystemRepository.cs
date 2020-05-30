@@ -1,0 +1,76 @@
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Dapper;
+using CustomerServiceTracking.DataModels;
+using Microsoft.Data.SqlClient;
+using CustomerServiceTracking.DTOS;
+
+namespace CustomerServiceTracking.Repositories
+{
+    public class SystemRepository : ISystemRepository
+    {
+        string _connectionString;
+
+        public SystemRepository(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetValue<string>("ConnectionString");
+        }
+
+        public IEnumerable<BusinessSystem> GetSystemsByBusinessId(Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT s.*
+                            FROM [BusinessSystem] bs
+                            JOIN [System] s
+                            ON bs.[SystemId] = s.[Id]
+                            WHERE bs.[BusinessId] = @businessId";
+                var parameters = new { businessId };
+               return db.Query<BusinessSystem>(sql, parameters);
+            }
+        }
+
+        private bool ConnectSystemToBusiness(Guid systemId, Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [BusinessSystem]
+                            (
+                            [SystemId],
+                            [BusinessId]
+                            )
+                            VALUES
+                            (
+                            @systemId,
+                            @businessId
+                            )";
+                var parameters = new { systemId, businessId };
+                return (db.Execute(sql, parameters) == 1);
+            }
+        }
+        public bool AddNewSystemToBusiness(NewSystemDTO newSystemDTO)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [System]
+                            (
+                             [Type],
+                             [Gallons],
+                             [Inches]
+                            )
+                            OUTPUT INSERTED.Id
+                            VALUES
+                            (
+                            @type,
+                            @gallons,
+                            @inches
+                            )";
+                var systemId = db.QueryFirstOrDefault<Guid>(sql, newSystemDTO);
+                return ConnectSystemToBusiness(systemId, newSystemDTO.BusinessId);
+            }
+        }
+    }
+}

@@ -33,9 +33,12 @@ namespace CustomerServiceTracking
             var connectionString = Configuration.GetValue<string>("ConnectionString");
 
             services.AddControllers();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBusinessRepository, BusinessRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<ISystemRepository, SystemRepository>();
+
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()

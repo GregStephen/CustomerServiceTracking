@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import SystemsRequests from '../../Helpers/Data/SystemRequests';
 
@@ -28,7 +29,7 @@ class SystemsPage extends React.Component {
     return (
       <div className="SystemsPage">
         <h1>Systems</h1>
-        <button onClick={this.addNewSystem}>Add New System</button>
+        <Link className="btn btn-info col-8" to={'/new-system'}>Create a New System</Link>
       </div>
     );
   }

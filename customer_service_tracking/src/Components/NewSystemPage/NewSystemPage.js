@@ -30,7 +30,13 @@ class NewSystemPage extends React.Component {
   createNewSystem = (e) => {
     e.preventDefault();
     const { newSystem } = this.state;
-    console.error(newSystem);
+    const { userObj } = this.props;
+    newSystem.businessId = userObj.businessId;
+    newSystem.gallons = parseInt(newSystem.gallons, 10);
+    newSystem.inches = parseInt(newSystem.inches, 10);
+    SystemsRequests.addNewSystem(newSystem)
+      .then(() => this.props.history.push('/systems'))
+      .catch((err) => console.error(err));
   }
 
   render() {
@@ -57,6 +63,7 @@ class NewSystemPage extends React.Component {
                   type="number"
                   className="form-control"
                   id="gallons"
+                  min="0"
                   value={newSystem.gallons}
                   onChange={this.formFieldStringState}
                   required
@@ -67,6 +74,7 @@ class NewSystemPage extends React.Component {
                     type="number"
                     className="form-control"
                     id="inches"
+                    min="0"
                     value={newSystem.inches}
                     onChange={this.formFieldStringState}
                     required
