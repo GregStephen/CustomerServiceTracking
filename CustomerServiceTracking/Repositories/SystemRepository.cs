@@ -98,5 +98,19 @@ namespace CustomerServiceTracking.Repositories
                  return (db.Execute(sql, parameters) == 1);
             }
         }
+
+        public bool UpdateSystem(BusinessSystem updatedSystem)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [System]
+                            SET 
+                                [Type] = @type,
+                                [Gallons] = @gallons,
+                                [Inches] = @inches
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedSystem) == 1);
+            }
+        }
     }
 }

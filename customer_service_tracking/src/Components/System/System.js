@@ -13,6 +13,7 @@ class System extends React.Component {
   static propTypes = {
     system: PropTypes.object.isRequired,
     deleteTheSystem: PropTypes.func.isRequired,
+    editTheSystem: PropTypes.func.isRequired,
   }
 
   state = {
@@ -25,8 +26,9 @@ class System extends React.Component {
     }));
   };
 
-  systemEdited = () => {
-
+  systemEdited = (updatedSystem) => {
+    const { editTheSystem } = this.props;
+    editTheSystem(updatedSystem);
   };
 
   systemDeleted = (systemId) => {
@@ -47,7 +49,7 @@ class System extends React.Component {
         <EditSystemModal
         toggleModalOpen={ this.toggleModalOpen }
         system={ system }
-        systemEdited={ this.systemEdited }
+        editSystem={ this.systemEdited }
         deleteSystem={ this.systemDeleted }
         />
       </Modal>
