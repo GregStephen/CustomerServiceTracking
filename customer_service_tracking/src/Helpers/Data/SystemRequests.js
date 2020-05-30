@@ -30,8 +30,17 @@ const deleteSystemById = (systemId) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
+// PUTS
+
+const editSystem = (updatedSystem) => new Promise((resolve, reject) => {
+  axios.put(`${baseUrl}/updateSystem`, updatedSystem)
+    .then((result) => resolve(result.data))
+    .catch((err) => reject(err));
+});
+
 export default {
   getSystemsForBusiness,
   addNewSystem,
   deleteSystemById,
+  editSystem,
 };

@@ -31,8 +31,13 @@ class SystemsPage extends React.Component {
       .catch();
   }
 
+  editTheSystem = (updatedSystem) => {
+    SystemsRequests.editSystem(updatedSystem)
+      .then(() => this.getAllSystems())
+      .catch((err) => console.error(err));
+  }
+
   deleteTheSystem = (systemId) => {
-    console.error(systemId);
     SystemsRequests.deleteSystemById(systemId)
       .then(() => this.getAllSystems())
       .catch((err) => console.error(err));
@@ -45,6 +50,7 @@ class SystemsPage extends React.Component {
         system={system}
         key={system.id}
         deleteTheSystem={this.deleteTheSystem}
+        editTheSystem={this.editTheSystem}
       />
     ));
     return (

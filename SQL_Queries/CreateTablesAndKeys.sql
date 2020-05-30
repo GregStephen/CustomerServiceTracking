@@ -362,7 +362,7 @@ ELSE
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_CustomerSystem')
 	BEGIN
 	ALTER TABLE [Report]
-	ADD CONSTRAINT FK_Report_System
+	ADD CONSTRAINT FK_Report_CustomerSystem
 		FOREIGN KEY (SystemId) 
 		REFERENCES [CustomerSystem] (Id)
 	END

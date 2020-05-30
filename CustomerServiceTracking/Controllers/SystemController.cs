@@ -55,5 +55,18 @@ namespace CustomerServiceTracking.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPut("updateSystem")]
+        public IActionResult UpdateSystem(BusinessSystem updateSystemDTO)
+        {
+            if (_repo.UpdateSystem(updateSystemDTO))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

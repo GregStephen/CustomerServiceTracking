@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 
 const defaultSystem = {
+  id: 0,
   type: '',
   gallons: 0,
   inches: 0,
@@ -14,7 +15,7 @@ class EditSystemModal extends React.Component {
   static propTypes = {
     system: PropTypes.object.isRequired,
     toggleModalOpen: PropTypes.func.isRequired,
-    systemEdited: PropTypes.func.isRequired,
+    editSystem: PropTypes.func.isRequired,
     deleteSystem: PropTypes.func.isRequired,
   }
 
@@ -35,8 +36,10 @@ class EditSystemModal extends React.Component {
   formSubmit = (e) => {
     e.preventDefault();
     const { updatedSystem } = this.state;
-    const { systemEdited } = this.props;
-    systemEdited(updatedSystem);
+    const { editSystem } = this.props;
+    updatedSystem.inches = parseInt(updatedSystem.inches, 10);
+    updatedSystem.gallons = parseInt(updatedSystem.gallons, 10);
+    editSystem(updatedSystem);
     this.toggleModal();
   };
 

@@ -12,6 +12,7 @@ namespace CustomerServiceTracking.Repositories
         IEnumerable<BusinessSystem> GetSystemsByBusinessId(Guid businessId);
         bool AddNewSystemToBusiness(NewSystemDTO newSystemDTO);
         bool DeleteSystemFromDatabase(Guid systemId);
+        bool UpdateSystem(BusinessSystem updatedSystem);
 
     }
 }
