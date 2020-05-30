@@ -42,5 +42,18 @@ namespace CustomerServiceTracking.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpDelete("{systemId}")]
+        public IActionResult DeleteSystemFromDatabase(Guid systemId)
+        {
+            if (_repo.DeleteSystemFromDatabase(systemId))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

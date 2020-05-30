@@ -45,7 +45,7 @@ class NewSystemPage extends React.Component {
       <div className="NewSystemPage">
         <h1>Systems</h1>
         <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewSystem}>
-              <h3 className="sign-in-header">New System</h3>
+              <h3>New System</h3>
               <div className="form-group">
                 <label htmlFor="type">Type</label>
                 <input
