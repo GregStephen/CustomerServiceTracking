@@ -19,6 +19,10 @@ class SystemsPage extends React.Component {
   }
 
   componentDidMount() {
+    this.getAllSystems();
+  }
+
+  getAllSystems = () => {
     const { userObj } = this.props;
     SystemsRequests.getSystemsForBusiness(userObj.businessId)
       .then((systems) => {
@@ -27,12 +31,20 @@ class SystemsPage extends React.Component {
       .catch();
   }
 
+  deleteTheSystem = (systemId) => {
+    console.error(systemId);
+    SystemsRequests.deleteSystemById(systemId)
+      .then(() => this.getAllSystems())
+      .catch((err) => console.error(err));
+  }
+
   render() {
     const { systems } = this.state;
     const showSystems = systems.map((system) => (
       <System
         system={system}
         key={system.id}
+        deleteTheSystem={this.deleteTheSystem}
       />
     ));
     return (

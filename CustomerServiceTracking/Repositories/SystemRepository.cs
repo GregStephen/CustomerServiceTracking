@@ -72,5 +72,31 @@ namespace CustomerServiceTracking.Repositories
                 return ConnectSystemToBusiness(systemId, newSystemDTO.BusinessId);
             }
         }
+
+        private bool DeleteSystemBusinessConnection(Guid systemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"DELETE
+                            FROM [BusinessSystem]
+                            WHERE [SystemId] = @systemId";
+                var parameters = new { systemId };
+
+                return (db.Execute(sql, parameters) == 1);
+            }
+        }
+        public bool DeleteSystemFromDatabase(Guid systemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                DeleteSystemBusinessConnection(systemId);
+                var sql = @"DELETE
+                            FROM [System]
+                            WHERE [Id] = @systemId";
+                var parameters = new { systemId };
+                
+                 return (db.Execute(sql, parameters) == 1);
+            }
+        }
     }
 }

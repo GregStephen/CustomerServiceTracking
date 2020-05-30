@@ -21,7 +21,17 @@ const addNewSystem = (systemObj) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
+
+// DELETES
+
+const deleteSystemById = (systemId) => new Promise((resolve, reject) => {
+  axios.delete(`${baseUrl}/${systemId}`)
+    .then((results) => resolve(results))
+    .catch((err) => reject(err));
+});
+
 export default {
   getSystemsForBusiness,
   addNewSystem,
+  deleteSystemById,
 };
