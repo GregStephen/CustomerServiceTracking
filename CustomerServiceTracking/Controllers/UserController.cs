@@ -38,9 +38,9 @@ namespace CustomerServiceTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddNewUserToDatabase(NewUserDTO newUser)
+        public IActionResult AddNewAdminUserToDatabase(NewAdminUserDTO newUser)
         {
-            if (_repo.AddNewUserToDatabase(newUser))
+            if (_repo.AddNewAdminUserToDatabase(newUser))
             {
                 return Created($"user/{newUser.FirstName}", newUser);
             }

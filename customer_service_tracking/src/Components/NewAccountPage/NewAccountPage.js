@@ -14,6 +14,14 @@ const defaultUser = {
   admin: true,
 };
 
+const defaultBusinessAddress = {
+  city: '',
+  state: '',
+  zipCode: '',
+  addressLine1: '',
+  addressLine2: '',
+};
+
 class NewAccountPage extends React.Component {
   static propTypes = {
     authorized: PropTypes.bool.isRequired,
@@ -22,6 +30,7 @@ class NewAccountPage extends React.Component {
 
   state = {
     newUser: defaultUser,
+    businessAddress: defaultBusinessAddress,
     email: '',
     password: '',
     confirmPassword: '',
@@ -34,6 +43,12 @@ class NewAccountPage extends React.Component {
     this.setState({ newUser: tempUser });
   };
 
+  businessAddressFormFieldStringState = (e) => {
+    const tempBusinessAddress = { ...this.state.businessAddress };
+    tempBusinessAddress[e.target.id] = e.target.value;
+    this.setState({ businessAddress: tempBusinessAddress });
+  };
+
   // sets state for firebase info
   handleChange = (e) => {
     this.setState({
@@ -43,7 +58,9 @@ class NewAccountPage extends React.Component {
 
   createAccount = (e) => {
     e.preventDefault();
-    const { email, password, confirmPassword } = this.state;
+    const {
+      email, password, confirmPassword, businessAddress,
+    } = this.state;
     const { logIn } = this.props;
     if (password !== confirmPassword) {
       this.setState({ error: 'Passwords must match' });
@@ -55,6 +72,7 @@ class NewAccountPage extends React.Component {
           .then((token) => sessionStorage.setItem('token', token));
         const saveMe = { ...this.state.newUser };
         saveMe.firebaseUid = firebase.auth().currentUser.uid;
+        saveMe.businessAddress = businessAddress;
         UserRequests.addNewUser(saveMe)
           .then(() => logIn(email, password))
           .catch((err) => console.error(err));
@@ -64,7 +82,7 @@ class NewAccountPage extends React.Component {
 
   render() {
     const {
-      email, password, confirmPassword, businessName, firstName, lastName, error,
+      email, password, confirmPassword, businessName, firstName, lastName, error, businessAddress,
     } = this.state;
 
     return (
@@ -72,6 +90,28 @@ class NewAccountPage extends React.Component {
         <h1>Create an account for your business</h1>
         <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createAccount}>
               <h3 className="sign-in-header">Log In</h3>
+              <div className="form-group">
+                <label htmlFor="firstName">First Name</label>
+                <input
+                  type="input"
+                  className="form-control"
+                  id="firstName"
+                  value={firstName}
+                  onChange={this.formFieldStringState}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="input"
+                  className="form-control"
+                  id="lastName"
+                  value={lastName}
+                  onChange={this.formFieldStringState}
+                  required
+                />
+              </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input
@@ -117,25 +157,58 @@ class NewAccountPage extends React.Component {
                   required
                 />
               </div>
+              <h2>Business Address</h2>
               <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
+                <label htmlFor="addressLine1">Address Line 1</label>
                 <input
                   type="input"
                   className="form-control"
-                  id="firstName"
-                  value={firstName}
-                  onChange={this.formFieldStringState}
+                  id="addressLine1"
+                  value={businessAddress.addressLine1}
+                  onChange={this.businessAddressFormFieldStringState}
                   required
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
+                <label htmlFor="addressLine2">Address Line 2</label>
                 <input
                   type="input"
                   className="form-control"
-                  id="lastName"
-                  value={lastName}
-                  onChange={this.formFieldStringState}
+                  id="addressLine2"
+                  value={businessAddress.addressLine2}
+                  onChange={this.businessAddressFormFieldStringState}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="city">City</label>
+                <input
+                  type="input"
+                  className="form-control"
+                  id="city"
+                  value={businessAddress.city}
+                  onChange={this.businessAddressFormFieldStringState}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="state">State</label>
+                <input
+                  type="input"
+                  className="form-control"
+                  id="state"
+                  value={businessAddress.state}
+                  onChange={this.businessAddressFormFieldStringState}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="zipCode">Zip Code</label>
+                <input
+                  type="input"
+                  className="form-control"
+                  id="zipCode"
+                  value={businessAddress.zipCode}
+                  onChange={this.businessAddressFormFieldStringState}
                   required
                 />
               </div>

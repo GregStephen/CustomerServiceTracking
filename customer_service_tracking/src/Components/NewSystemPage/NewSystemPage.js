@@ -5,6 +5,12 @@ import SystemsRequests from '../../Helpers/Data/SystemRequests';
 
 import './NewSystemPage.scss';
 
+const defaultSystem = {
+  type: '',
+  gallons: 0,
+  inches: 0,
+};
+
 class NewSystemPage extends React.Component {
   static propTypes = {
     userObj: PropTypes.object.isRequired,
@@ -12,83 +18,61 @@ class NewSystemPage extends React.Component {
   }
 
   state = {
-    newSystem: {},
+    newSystem: defaultSystem,
+  }
+
+  formFieldStringState = (e) => {
+    const tempSystem = { ...this.state.newSystem };
+    tempSystem[e.target.id] = e.target.value;
+    this.setState({ newSystem: tempSystem });
+  };
+
+  createNewSystem = (e) => {
+    e.preventDefault();
+    const { newSystem } = this.state;
+    console.error(newSystem);
   }
 
   render() {
+    const { newSystem } = this.state;
     return (
-      <div className="SystemsPage">
+      <div className="NewSystemPage">
         <h1>Systems</h1>
-        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createAccount}>
-              <h3 className="sign-in-header">Log In</h3>
+        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewSystem}>
+              <h3 className="sign-in-header">New System</h3>
               <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  value={email}
-                  onChange={this.handleChange}
-                  placeholder="Tom@ExampleEmail.com"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  value={password}
-                  onChange={this.handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={this.handleChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="businessName">Business Name</label>
+                <label htmlFor="type">Type</label>
                 <input
                   type="input"
                   className="form-control"
-                  id="businessName"
-                  value={businessName}
+                  id="type"
+                  value={newSystem.type}
                   onChange={this.formFieldStringState}
                   required
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
+                <label htmlFor="gallons">Gallons</label>
                 <input
-                  type="input"
+                  type="number"
                   className="form-control"
-                  id="firstName"
-                  value={firstName}
+                  id="gallons"
+                  value={newSystem.gallons}
                   onChange={this.formFieldStringState}
                   required
                 />
+                <div className="form-group">
+                  <label htmlFor="inches">Inches</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="inches"
+                    value={newSystem.inches}
+                    onChange={this.formFieldStringState}
+                    required
+                  />
+                  </div>
               </div>
-              <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                  type="input"
-                  className="form-control"
-                  id="lastName"
-                  value={lastName}
-                  onChange={this.formFieldStringState}
-                  required
-                />
-              </div>
-              <h2 className="error col-12">{error}</h2>
               <button type="submit" className="btn btn-success">Add New System</button>
             </form>
       </div>

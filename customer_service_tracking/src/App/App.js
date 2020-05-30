@@ -72,7 +72,7 @@ class App extends React.Component {
           <NavigationBar authorized={authorized} userObj={userObj}/>
           <Switch>
             <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn}/>
-            <PublicRoute path='/new-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
+            <PublicRoute path='/new-business-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
             <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />

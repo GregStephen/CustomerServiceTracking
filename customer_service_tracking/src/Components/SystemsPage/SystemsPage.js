@@ -28,6 +28,7 @@ class SystemsPage extends React.Component {
     return (
       <div className="SystemsPage">
         <h1>Systems</h1>
+        <button onClick={this.addNewSystem}>Add New System</button>
       </div>
     );
   }
