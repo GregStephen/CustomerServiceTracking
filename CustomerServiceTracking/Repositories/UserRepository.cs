@@ -14,11 +14,13 @@ namespace CustomerServiceTracking.Repositories
     {
         string _connectionString;
         private IBusinessRepository _businessRepo;
+        private IAddressRepository _addressRepo;
 
-        public UserRepository(IConfiguration configuration, IBusinessRepository businessRepo)
+        public UserRepository(IConfiguration configuration, IBusinessRepository businessRepo, IAddressRepository addressRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _businessRepo = businessRepo;
+            _addressRepo = addressRepo;
         }
 
         public User GetUserByFirebaseId(string firebaseId)
@@ -36,8 +38,7 @@ namespace CustomerServiceTracking.Repositories
                 return userFromDb;
             }
         }
-
-        public bool AddNewUserToDatabase(NewUserDTO newUser)
+        public bool AddNewAdminUserToDatabase(NewAdminUserDTO newUser)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -57,13 +58,9 @@ namespace CustomerServiceTracking.Repositories
                             @admin
                             )";
                 var userId = db.QueryFirst<Guid>(sql, newUser);
-                if (newUser.Admin)
-                {
-                    var businessId = _businessRepo.AddNewBusinessToDatabase(newUser.BusinessName);
-                    return (_businessRepo.AddUserToBusiness(userId, businessId));
-                }
-
-                return (_businessRepo.AddUserToBusiness(userId, newUser.BusinessId));
+                var addressId = _addressRepo.AddNewAddressToDatabase(newUser.BusinessAddress);
+                var businessId = _businessRepo.AddNewBusinessToDatabase(newUser.BusinessName, addressId);
+                return (_businessRepo.AddUserToBusiness(userId, businessId));
             }
         }
     }

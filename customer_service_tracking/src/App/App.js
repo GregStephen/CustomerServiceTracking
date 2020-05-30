@@ -11,6 +11,8 @@ import HomePage from '../Components/HomePage/HomePage';
 import LandingPage from '../Components/LandingPage/LandingPage';
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
 import NewAccountPage from '../Components/NewAccountPage/NewAccountPage';
+import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
+import SystemsPage from '../Components/SystemsPage/SystemsPage';
 
 import UserRequests from '../Helpers/Data/UserRequests';
 
@@ -71,8 +73,10 @@ class App extends React.Component {
           <NavigationBar authorized={authorized} userObj={userObj}/>
           <Switch>
             <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn}/>
-            <PublicRoute path='/new-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
+            <PublicRoute path='/new-business-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
             <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj}/>
+            <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj}/>
+            <PrivateRoute path='/new-system' component={NewSystemPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
         </Router>

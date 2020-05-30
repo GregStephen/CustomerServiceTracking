@@ -61,7 +61,8 @@ logInFromLandingPage = (e) => {
               </div>
               <button type="submit" className="btn btn-success">Log In</button>
             </form>
-            <Link className="btn btn-info col-8" to={'/new-account'}>Create an Account!</Link>
+            <Link className="btn btn-info col-8" to={'/new-business-account'}>Create a Business Account!</Link>
+            <Link className="btn btn-info col-8" to={'/new-personal-account'}>Create a Personal Account!</Link>
       </div>
     );
   }

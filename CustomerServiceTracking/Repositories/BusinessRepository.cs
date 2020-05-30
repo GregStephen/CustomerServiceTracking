@@ -18,21 +18,22 @@ namespace CustomerServiceTracking.Repositories
             _connectionString = configuration.GetValue<string>("ConnectionString");
         }
 
-        public Guid AddNewBusinessToDatabase(string businessName)
+        public Guid AddNewBusinessToDatabase(string businessName, Guid addressId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"INSERT INTO [Business]
                             (
-                             [BusinessName]
+                             [BusinessName],
+                             [AddressId]
                             )
                             OUTPUT INSERTED.Id
                             VALUES
                             (
-                            @businessName
+                            @businessName,
+                            @addressId
                             )";
-                var parameters = new { businessName };
-
+                var parameters = new { businessName, addressId };
                 var businessId = db.QueryFirst<Guid>(sql, parameters);
                 return businessId;
             }

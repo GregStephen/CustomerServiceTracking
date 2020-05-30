@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace CustomerServiceTracking.Repositories
 {
-    public interface IUserRepository
+    public interface ISystemRepository
     {
-        User GetUserByFirebaseId(string firebaseId);
-        bool AddNewAdminUserToDatabase(NewAdminUserDTO newUser);
+        IEnumerable<BusinessSystem> GetSystemsByBusinessId(Guid businessId);
+        bool AddNewSystemToBusiness(NewSystemDTO newSystemDTO);
+
     }
 }
