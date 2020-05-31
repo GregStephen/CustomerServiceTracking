@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import { NavLink as RRNavLink, Link } from 'react-router-dom';
 import {
@@ -47,15 +48,14 @@ class NavigationBar extends React.Component {
 
   render() {
     const { authorized, userObj } = this.props;
-    const buildNavbar = () => {
-      if (authorized) {
-        return (
+    const buildAdminNavbar = () => (
         <Nav className="ml-auto" navbar>
-          {userObj.admin
-            ? <NavItem>
+            <NavItem>
                 <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
-              </NavItem>
-            : '' }
+            </NavItem>
+            <NavItem>
+              <NavLink tag={RRNavLink} to='/customers'>Customers</NavLink>
+            </NavItem>
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret className="navbar-user-button">
           </DropdownToggle>
@@ -69,10 +69,24 @@ class NavigationBar extends React.Component {
           </DropdownMenu>
         </UncontrolledDropdown>
       </Nav>
-        );
-      } return ('');
-    };
+    );
 
+    const buildRegularNavbar = () => (
+      <Nav className="ml-auto" navbar>
+      <UncontrolledDropdown nav inNavbar>
+        <DropdownToggle nav caret className="navbar-user-button">
+        </DropdownToggle>
+        <DropdownMenu right>
+          <DropdownItem tag={Link} to='/profile'>
+            User Profile
+          </DropdownItem>
+          <DropdownItem onClick={this.logMeOut}>
+              Log Out
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    </Nav>
+    );
 
     return (
       <div className="NavigationBar">
@@ -80,7 +94,9 @@ class NavigationBar extends React.Component {
             <NavbarBrand className="navbar-brand" tag={RRNavLink} to='/home'>Home</NavbarBrand>
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
-              {buildNavbar()}
+              {authorized && userObj.admin ? buildAdminNavbar()
+                : authorized && !userObj.admin ? buildRegularNavbar()
+                  : ''}
             </Collapse>
           </Navbar>
       </div>
