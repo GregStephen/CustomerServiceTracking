@@ -7,6 +7,7 @@ import 'firebase/auth';
 
 import './App.scss';
 
+import CustomersPage from '../Components/CustomersPage/CustomersPage';
 import HomePage from '../Components/HomePage/HomePage';
 import LandingPage from '../Components/LandingPage/LandingPage';
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
@@ -37,14 +38,14 @@ const PrivateRoute = ({ component: Component, authorized, ...rest }) => {
 class App extends React.Component {
   state = {
     authorized: false,
-    userObj: {},
+    userObj: {
+      id: 'loggedOut',
+    },
   }
 
   componentDidMount() {
     this.removeListener = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ authorized: true });
-      } else {
+      if (!user) {
         this.setState({ authorized: false });
       }
     });
@@ -60,7 +61,7 @@ class App extends React.Component {
       .then((token) => sessionStorage.setItem('token', token))
       .then(() => UserRequests.getUserByFirebaseUid(firebase.auth().currentUser.uid))
       .then((userObj) => {
-        this.setState({ userObj });
+        this.setState({ userObj }, () => this.setState({ authorized: true }));
       })
       .catch((err) => this.setState({ error: err.message }));
   };
@@ -77,6 +78,7 @@ class App extends React.Component {
             <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/new-system' component={NewSystemPage} authorized={authorized} userObj={userObj}/>
+            <PrivateRoute path='/customers' component={CustomersPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
         </Router>
