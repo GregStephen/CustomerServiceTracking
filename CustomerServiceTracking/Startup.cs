@@ -38,6 +38,7 @@ namespace CustomerServiceTracking
             services.AddScoped<IBusinessRepository, BusinessRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<ISystemRepository, SystemRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
