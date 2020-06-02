@@ -12,6 +12,7 @@ import HomePage from '../Components/HomePage/HomePage';
 import LandingPage from '../Components/LandingPage/LandingPage';
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
 import NewAccountPage from '../Components/NewAccountPage/NewAccountPage';
+import NewCustomerPage from '../Components/NewCustomerPage/NewCustomerPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
 
@@ -33,7 +34,6 @@ const PrivateRoute = ({ component: Component, authorized, ...rest }) => {
   const routeChecker = (props) => (authorized === true ? <Component authorized={authorized} {...props} {...rest} /> : <Redirect to={{ pathname: '/landing-page', state: { from: props.location } }} />);
   return <Route {...rest} render={(props) => routeChecker(props)} />;
 };
-
 
 class App extends React.Component {
   state = {
@@ -79,6 +79,7 @@ class App extends React.Component {
             <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/new-system' component={NewSystemPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/customers' component={CustomersPage} authorized={authorized} userObj={userObj}/>
+            <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
         </Router>

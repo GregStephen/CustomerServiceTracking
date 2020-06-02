@@ -17,6 +17,7 @@ class LandingPage extends React.Component {
 
 logInFromLandingPage = (e) => {
   e.preventDefault();
+  console.error('logging in');
   const { logIn } = this.props;
   const { email, password } = this.state;
   logIn(email, password);
