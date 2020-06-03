@@ -29,6 +29,20 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetCustomersByBusinessId(businessId));
         }
 
+        [HttpGet("customerId/{customerId}")]
+        public IActionResult GetCustomerByCustomerId(Guid customerId)
+        {
+            var customer = _repo.GetCustomerByCustomerId(customerId);
+            if (customer != null)
+            {
+                return Ok(customer);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         public IActionResult AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO)
         {

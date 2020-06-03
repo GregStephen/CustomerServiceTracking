@@ -18,6 +18,17 @@ namespace CustomerServiceTracking.Repositories
             _connectionString = configuration.GetValue<string>("ConnectionString");
         }
 
+        public Address GetAddressByAddressId(Guid addressId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [Address]
+                            WHERE [Id] = @addressId";
+                var parameters = new { addressId };
+                return db.QueryFirst<Address>(sql, parameters);
+            }    
+        }
         public Guid AddNewAddressToDatabase(Address newAddress)
         {
             using (var db = new SqlConnection(_connectionString))
