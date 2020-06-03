@@ -10,6 +10,7 @@ namespace CustomerServiceTracking.Repositories
     public interface ICustomerRepository
     {
         IEnumerable<Customer> GetCustomersByBusinessId(Guid businessId);
+        Customer GetCustomerByCustomerId(Guid customerId);
         bool AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO);
     }
 }

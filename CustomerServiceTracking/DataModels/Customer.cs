@@ -13,5 +13,6 @@ namespace CustomerServiceTracking.DataModels
         public string OfficePhone { get; set; }
         public string HomePhone { get; set; }
         public Guid AddressId { get; set; }
+        public Address Address { get; set; }
     }
 }

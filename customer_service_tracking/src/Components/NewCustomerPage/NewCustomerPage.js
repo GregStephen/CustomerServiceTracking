@@ -50,10 +50,7 @@ class NewCustomerPage extends React.Component {
     newCustomer.businessId = userObj.businessId;
     newCustomer.newCustomerAddress = newCustomerAddress;
     CustomerRequests.addNewCustomer(newCustomer)
-      .then(() => {
-        console.error('done');
-        this.props.history.push('/customers');
-      })
+      .then(() => this.props.history.push('/customers'))
       .catch((err) => console.error(err));
   }
 

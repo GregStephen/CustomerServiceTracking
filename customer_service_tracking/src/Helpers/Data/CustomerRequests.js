@@ -11,11 +11,16 @@ const getCustomersForBusiness = (businessId) => new Promise((resolve, reject) =>
     .catch((err) => reject(err));
 });
 
+const getCustomerFromCustomerId = (customerId) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/customerId/${customerId}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 const addNewCustomer = (newCustomerObj) => new Promise((resolve, reject) => {
-  console.error(newCustomerObj);
   axios.post(`${baseUrl}`, newCustomerObj)
     .then((results) => resolve(results.data))
     .catch((err) => reject(err));
 });
 
-export default { getCustomersForBusiness, addNewCustomer };
+export default { getCustomersForBusiness, getCustomerFromCustomerId, addNewCustomer };

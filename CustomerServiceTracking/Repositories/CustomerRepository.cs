@@ -31,10 +31,29 @@ namespace CustomerServiceTracking.Repositories
                             ON bc.[CustomerId] = c.[Id]
                             WHERE bc.[BusinessId] = @businessId";
                 var parameters = new { businessId };
-                return db.Query<Customer>(sql, parameters);
+                var customers =  db.Query<Customer>(sql, parameters);
+                foreach (var customer in customers)
+                {
+                    customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
+                }
+                return customers;
             }
         }
         
+        public Customer GetCustomerByCustomerId(Guid customerId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [Customer]
+                            WHERE [Id] = @customerId";
+                var parameters = new { customerId };
+                var customer = db.QueryFirstOrDefault<Customer>(sql, parameters);
+                customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
+                return customer;
+            }
+        }
+
         private bool AddCustomerToBusiness(Guid customerId, Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))

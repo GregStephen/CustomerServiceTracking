@@ -8,6 +8,7 @@ namespace CustomerServiceTracking.Repositories
 {
     public interface IAddressRepository
     {
+        public Address GetAddressByAddressId(Guid addressId);
         Guid AddNewAddressToDatabase(Address newAddress);
     }
 }
