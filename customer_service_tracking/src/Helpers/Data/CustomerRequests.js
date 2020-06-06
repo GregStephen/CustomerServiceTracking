@@ -23,4 +23,12 @@ const addNewCustomer = (newCustomerObj) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
-export default { getCustomersForBusiness, getCustomerFromCustomerId, addNewCustomer };
+const updateCustomer = (updatedCustomer) => new Promise((resolve, reject) => {
+  axios.put(`${baseUrl}/updateCustomer`, updatedCustomer)
+    .then((result) => resolve(result.data))
+    .catch((err) => reject(err));
+});
+
+export default {
+  getCustomersForBusiness, getCustomerFromCustomerId, addNewCustomer, updateCustomer,
+};

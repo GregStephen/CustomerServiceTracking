@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CustomerServiceTracking.DataModels;
 using CustomerServiceTracking.DTOS;
 using CustomerServiceTracking.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -49,6 +50,18 @@ namespace CustomerServiceTracking.Controllers
             if (_repo.AddNewCustomerToDatabase(newCustomerDTO))
             {
                 return Created($"customer/{newCustomerDTO.FirstName}", newCustomerDTO);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpPut("updateCustomer")]
+        public IActionResult UpdateCustomer(Customer updateCustomer)
+        {
+            if (_repo.UpdateCustomer(updateCustomer))
+            {
+                return Ok();
             }
             else
             {

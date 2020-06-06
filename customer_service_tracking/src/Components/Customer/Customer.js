@@ -16,6 +16,7 @@ class Customer extends React.Component {
       <div className="Customer">
         <h1>Customer</h1>
         <Link to={{ pathname: customerLink }}>{customer.firstName} {customer.lastName}</Link>
+    <p>{customer.address.addressLine1}</p>
       </div>
     );
   }

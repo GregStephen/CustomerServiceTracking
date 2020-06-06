@@ -12,5 +12,6 @@ namespace CustomerServiceTracking.Repositories
         IEnumerable<Customer> GetCustomersByBusinessId(Guid businessId);
         Customer GetCustomerByCustomerId(Guid customerId);
         bool AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO);
+        bool UpdateCustomer(Customer updatedCustomer);
     }
 }

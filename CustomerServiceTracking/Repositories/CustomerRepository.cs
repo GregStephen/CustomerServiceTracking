@@ -99,5 +99,20 @@ namespace CustomerServiceTracking.Repositories
                 return AddCustomerToBusiness(customerId, newCustomerDTO.BusinessId);
             }
         }
+
+        public bool UpdateCustomer(Customer updatedCustomer)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Customer]
+                            SET 
+                                [FirstName] = @firstName,
+                                [LastName] = @lastName,
+                                [HomePhone] = @homePhone,
+                                [OfficePhone] = @officePhone
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedCustomer) == 1);
+            }
+        }
     }
 }
