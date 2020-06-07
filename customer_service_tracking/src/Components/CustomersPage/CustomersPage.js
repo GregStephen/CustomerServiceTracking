@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import Customer from '../Customer/Customer';
 
@@ -8,6 +9,11 @@ import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import './CustomersPage.scss';
 
 class CustomersPage extends React.Component {
+  static propTypes = {
+    userObj: PropTypes.object.isRequired,
+    authorized: PropTypes.bool.isRequired,
+  }
+
   state = {
     customers: [],
   }
