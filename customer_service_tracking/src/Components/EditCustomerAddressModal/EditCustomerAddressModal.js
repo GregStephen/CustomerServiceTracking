@@ -58,7 +58,7 @@ class EditCustomerAddressModal extends React.Component {
   render() {
     const { updatedCustomerAddress } = this.state;
     return (
-      <div className="EditCustomerModal">
+      <div className="EditCustomerAddressModal">
         <Form onSubmit={this.formSubmit}>
           <ModalBody>
           <div className="form-group">

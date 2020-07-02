@@ -118,5 +118,36 @@ namespace CustomerServiceTracking.Repositories
         {
             return (_addressRepo.UpdateCustomerAddress(updatedCustomerAddress));
         }
+
+        public bool DeleteFromBusinessCustomer(Guid customerId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"DELETE [BusinessCustomer]
+                            WHERE CustomerId = @customerId";
+                var parameters = new { customerId };
+                return db.Execute(sql, parameters) == 1;
+            }
+        }
+
+        public bool DeleteCustomer(Guid customerId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                Customer customerToDelete = GetCustomerByCustomerId(customerId);
+                if (DeleteFromBusinessCustomer(customerId))
+                    {
+                    var sql = @"DELETE [Customer]
+                            WHERE Id = @customerId";
+                    var parameters = new { customerId };
+                    if (db.Execute(sql, parameters) == 1)
+                    {
+                        return _addressRepo.DeleteCustomerAddress(customerToDelete.AddressId);
+                    }
+                    return false;
+                }
+                return false;
+            }
+        }
     }
 }

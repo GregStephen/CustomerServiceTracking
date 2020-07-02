@@ -1,9 +1,10 @@
 import React from 'react';
 import {
-  Form, Button, ModalBody, ModalFooter,
+  Modal, ModalHeader, Form, Button, ModalBody, ModalFooter,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+import DeleteCustomerModal from '../DeleteCustomerModal/DeleteCustomerModal';
 
 const defaultCustomer = {
   id: '',
@@ -25,10 +26,12 @@ class EditCustomerModal extends React.Component {
     customer: PropTypes.object.isRequired,
     toggleModalOpen: PropTypes.func.isRequired,
     updateCustomer: PropTypes.func.isRequired,
+    customerDeleted: PropTypes.func.isRequired,
   }
 
   state = {
     updatedCustomer: defaultCustomer,
+    deleteCustomerModalIsOpen: false,
   }
 
   componentDidMount() {
@@ -40,6 +43,12 @@ class EditCustomerModal extends React.Component {
     const { toggleModalOpen } = this.props;
     toggleModalOpen(e);
   };
+
+  toggleDeleteCustomerModal = (e) => {
+    this.setState((prevState) => ({
+      deleteCustomerModalIsOpen: !prevState.deleteCustomerModalIsOpen,
+    }));
+  }
 
   formSubmit = (e) => {
     e.preventDefault();
@@ -55,8 +64,14 @@ class EditCustomerModal extends React.Component {
     this.setState({ updatedCustomer: tempCustomer });
   };
 
+  deleteCustomer = () => {
+    const { customerDeleted } = this.props;
+    customerDeleted();
+  }
+
   render() {
     const { updatedCustomer } = this.state;
+    const { customer } = this.props;
     return (
       <div className="EditCustomerModal">
         <Form onSubmit={this.formSubmit}>
@@ -107,8 +122,17 @@ class EditCustomerModal extends React.Component {
           <ModalFooter>
             <Button type="submit" color="primary">Edit Customer</Button>{' '}
             <Button color="secondary" value="info" onClick={this.toggleModal}>Cancel</Button>
+            <Button color="danger" value="info" onClick={this.toggleDeleteCustomerModal}>DELETE</Button>
           </ModalFooter>
         </Form>
+        <Modal isOpen={this.state.deleteCustomerModalIsOpen} toggle={this.toggleDeleteCustomerModal}>
+          <ModalHeader toggle={this.deleteCustomerModalIsOpen}>Delete Customer?</ModalHeader>
+          <DeleteCustomerModal
+              toggleModalOpen={this.toggleDeleteCustomerModal}
+              customer={customer}
+              deleteCustomer={this.deleteCustomer}
+            />
+        </Modal>
       </div>
     );
   }

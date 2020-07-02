@@ -79,5 +79,15 @@ namespace CustomerServiceTracking.Repositories
                 return (db.Execute(sql, parameters) == 1);
             }
         }
+        public bool DeleteCustomerAddress(Guid addressIdToDelete)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"DELETE [Address]
+                            WHERE Id = @addressIdToDelete";
+                var parameters = new { addressIdToDelete };
+                return (db.Execute(sql, parameters) == 1);
+            }
+        }
     }
 }
