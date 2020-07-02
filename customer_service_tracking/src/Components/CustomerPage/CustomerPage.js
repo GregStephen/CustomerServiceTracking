@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -6,6 +7,7 @@ import {
 } from 'reactstrap';
 
 import EditCustomerModal from '../EditCustomerModal/EditCustomerModal';
+import EditCustomerAddressModal from '../EditCustomerAddressModal/EditCustomerAddressModal';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 
@@ -34,12 +36,14 @@ class CustomerPage extends React.Component {
 
   state = {
     customer: defaultCustomer,
-    editCustomerModalIsOpen: false,
+    modalOpen: '',
+    modalIsOpen: false,
   }
 
-  toggleModalOpen = () => {
+  toggleModalOpen = (modalName) => {
+    this.setState({ modalOpen: modalName });
     this.setState((prevState) => ({
-      editCustomerModalIsOpen: !prevState.editCustomerModalIsOpen,
+      modalIsOpen: !prevState.modalIsOpen,
     }));
   }
 
@@ -56,12 +60,18 @@ class CustomerPage extends React.Component {
       .catch((err) => console.error(err));
   }
 
+  customerAddressUpdated = (updatedCustomerAddress) => {
+    CustomerRequests.updateCustomerAddress(updatedCustomerAddress)
+      .then(() => this.loadPage())
+      .catch((err) => console.error(err));
+  }
+
   componentDidMount() {
     this.loadPage();
   }
 
   render() {
-    const { customer } = this.state;
+    const { customer, modalOpen } = this.state;
     return (
       <div className="CustomerPage">
         <h1>Customer {customer.firstName} {customer.lastName}</h1>
@@ -73,15 +83,28 @@ class CustomerPage extends React.Component {
         <p>{customer.address.city}</p>
         <p>{customer.address.state}</p>
         <p>{customer.address.zipCode}</p>
-        <button className="btn btn-info" onClick={this.toggleModalOpen}>Edit</button>
-        <Modal isOpen={this.state.editCustomerModalIsOpen} toggle={this.toggleModalOpen}>
-        <ModalHeader toggle={this.editCustomerModalIsOpen}>Edit Customer</ModalHeader>
-        <EditCustomerModal
-        toggleModalOpen={ this.toggleModalOpen }
-        customer={ customer }
-        updateCustomer={ this.customerUpdated }
-        />
-      </Modal>
+        <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
+        <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
+        <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
+          <ModalHeader toggle={this.modalIsOpen}>
+            {modalOpen === 'editCustomer' ? 'Edit Customer'
+              : modalOpen === 'editAddress' ? 'Edit Address' : ''}
+          </ModalHeader>
+          {modalOpen === 'editCustomer'
+            ? <EditCustomerModal
+              toggleModalOpen={this.toggleModalOpen}
+              customer={customer}
+              updateCustomer={this.customerUpdated}
+            />
+            : modalOpen === 'editAddress'
+              ? <EditCustomerAddressModal
+                toggleModalOpen={this.toggleModalOpen}
+                customer={customer}
+                updateCustomerAddress={this.customerAddressUpdated}
+              />
+              : ''
+          }
+        </Modal>
       </div>
     );
   }

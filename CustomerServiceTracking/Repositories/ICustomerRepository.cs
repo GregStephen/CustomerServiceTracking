@@ -13,5 +13,6 @@ namespace CustomerServiceTracking.Repositories
         Customer GetCustomerByCustomerId(Guid customerId);
         bool AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO);
         bool UpdateCustomer(Customer updatedCustomer);
+        bool UpdateCustomerAddress(Customer updatedCustomerAddress);
     }
 }

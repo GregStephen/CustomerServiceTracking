@@ -68,5 +68,18 @@ namespace CustomerServiceTracking.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPut("updateCustomerAddress")]
+        public IActionResult UpdateCustomerAddress(Customer updateCustomerAddress)
+        {
+            if (_repo.UpdateCustomerAddress(updateCustomerAddress))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }

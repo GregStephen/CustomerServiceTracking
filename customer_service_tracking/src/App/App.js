@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrowserRouter as Router, Route, Redirect, Switch,
+  BrowserRouter, Route, Redirect, Switch,
 } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -71,7 +71,7 @@ class App extends React.Component {
     const { authorized, userObj } = this.state;
     return (
       <div className="App">
-        <Router>
+        <BrowserRouter>
           <NavigationBar authorized={authorized} userObj={userObj}/>
           <Switch>
             <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn}/>
@@ -84,7 +84,7 @@ class App extends React.Component {
             <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
-        </Router>
+        </BrowserRouter>
       </div>
     );
   }
