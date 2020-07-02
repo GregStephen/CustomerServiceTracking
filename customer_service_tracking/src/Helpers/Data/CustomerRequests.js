@@ -35,6 +35,17 @@ const updateCustomerAddress = (updatedCustomerAddress) => new Promise((resolve, 
     .catch((err) => reject(err));
 });
 
+const deleteCustomer = (customerToDeleteId) => new Promise((resolve, reject) => {
+  axios.delete(`${baseUrl}/${customerToDeleteId}`)
+    .then((result) => resolve(result.data))
+    .catch((err) => reject(err));
+});
+
 export default {
-  getCustomersForBusiness, getCustomerFromCustomerId, addNewCustomer, updateCustomer, updateCustomerAddress,
+  getCustomersForBusiness,
+  getCustomerFromCustomerId,
+  addNewCustomer,
+  updateCustomer,
+  updateCustomerAddress,
+  deleteCustomer,
 };

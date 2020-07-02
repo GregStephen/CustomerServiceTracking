@@ -66,6 +66,13 @@ class CustomerPage extends React.Component {
       .catch((err) => console.error(err));
   }
 
+  customerDeleted = () => {
+    const { customer } = this.state;
+    CustomerRequests.deleteCustomer(customer.id)
+      .then(() => this.props.history.push('/customers'))
+      .catch((err) => console.error(err));
+  }
+
   componentDidMount() {
     this.loadPage();
   }
@@ -95,6 +102,7 @@ class CustomerPage extends React.Component {
               toggleModalOpen={this.toggleModalOpen}
               customer={customer}
               updateCustomer={this.customerUpdated}
+              customerDeleted={this.customerDeleted}
             />
             : modalOpen === 'editAddress'
               ? <EditCustomerAddressModal

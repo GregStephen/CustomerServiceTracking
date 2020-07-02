@@ -11,5 +11,6 @@ namespace CustomerServiceTracking.Repositories
         public Address GetAddressByAddressId(Guid addressId);
         Guid AddNewAddressToDatabase(Address newAddress);
         bool UpdateCustomerAddress(Customer updatedCustomerAddress);
+        bool DeleteCustomerAddress(Guid addressIdToDelete);
     }
 }
