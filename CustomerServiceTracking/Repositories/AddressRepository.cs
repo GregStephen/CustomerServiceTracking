@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dapper;
 using CustomerServiceTracking.DataModels;
 using Microsoft.Data.SqlClient;
+using CustomerServiceTracking.DTOS;
 
 namespace CustomerServiceTracking.Repositories
 {
@@ -51,6 +52,31 @@ namespace CustomerServiceTracking.Repositories
                             @zipcode
                             )";
                 return db.QueryFirst<Guid>(sql, newAddress);
+            }
+        }
+
+        public bool UpdateCustomerAddress(Customer updatedCustomerAddress)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var parameters = new
+                {
+                    addressLine1 = updatedCustomerAddress.Address.AddressLine1,
+                    addressLine2 = updatedCustomerAddress.Address.AddressLine2,
+                    city = updatedCustomerAddress.Address.City,
+                    state = updatedCustomerAddress.Address.State,
+                    zipCode = updatedCustomerAddress.Address.ZipCode,
+                    addressId = updatedCustomerAddress.AddressId
+                };
+                var sql = @"UPDATE [Address]
+                            SET 
+                                [AddressLine1] = @addressLine1,
+                                [AddressLine2] = @addressLine2,
+                                [City] = @city,
+                                [State] = @state,
+                                [ZipCode] = @zipcode
+                            WHERE [Id] = @addressId";
+                return (db.Execute(sql, parameters) == 1);
             }
         }
     }

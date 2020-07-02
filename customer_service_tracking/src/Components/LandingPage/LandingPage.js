@@ -24,8 +24,12 @@ class LandingPage extends React.Component {
         <LogInForm
           loggingIn={this.loggingIn}
         />
-        <Link className="btn btn-info col-8" to={'/new-business-account'}>Create a Business Account!</Link>
-        <Link className="btn btn-info col-8" to={'/new-personal-account'}>Create a Personal Account!</Link>
+        <div>
+          <Link className="btn btn-info col-8" to={'/new-business-account'}>Create a Business Account!</Link>
+        </div>
+        <div>
+          <Link className="btn btn-info col-8" to={'/new-personal-account'}>Create a Personal Account!</Link>
+        </div>
       </div>
     );
   }

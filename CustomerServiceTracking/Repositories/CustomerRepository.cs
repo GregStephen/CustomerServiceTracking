@@ -114,5 +114,9 @@ namespace CustomerServiceTracking.Repositories
                 return (db.Execute(sql, updatedCustomer) == 1);
             }
         }
+        public bool UpdateCustomerAddress(Customer updatedCustomerAddress)
+        {
+            return (_addressRepo.UpdateCustomerAddress(updatedCustomerAddress));
+        }
     }
 }
