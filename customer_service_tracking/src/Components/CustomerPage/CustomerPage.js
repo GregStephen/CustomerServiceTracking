@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import {
   Modal,
   ModalHeader,
@@ -95,11 +96,20 @@ class CustomerPage extends React.Component {
   }
 
   showSystems = () => {
-    console.error('show the systems or show a message if there are no systems');
+    const { systems } = this.state;
+    if (!systems) {
+      return (<p>Customer has no systems. You should add some!</p>);
+    }
+    return (
+        <div>
+          <p>found some systems</p>
+        </div>
+    );
   }
 
   render() {
     const { customer, modalOpen } = this.state;
+    const addSystemLink = `/add-system-to-customer/${customer.id}`;
     return (
       <div className="CustomerPage">
         <h1>Customer {customer.firstName} {customer.lastName}</h1>
@@ -113,7 +123,12 @@ class CustomerPage extends React.Component {
         <p>{customer.address.zipCode}</p>
         <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
         <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
-        {this.showSystems()}
+        <div>
+          <h1>Systems</h1>
+          {this.showSystems()}
+        </div>
+
+        <Link className="btn btn-info" tag={Link} to={addSystemLink}>Add System</Link>
         <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
           <ModalHeader toggle={this.modalIsOpen}>
             {modalOpen === 'editCustomer' ? 'Edit Customer'

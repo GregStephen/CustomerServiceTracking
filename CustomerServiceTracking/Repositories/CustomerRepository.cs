@@ -14,11 +14,13 @@ namespace CustomerServiceTracking.Repositories
     {
         string _connectionString;
         private IAddressRepository _addressRepo;
+        private ISystemRepository _systemRepo;
 
-        public CustomerRepository(IConfiguration configuration, IAddressRepository addressRepo)
+        public CustomerRepository(IConfiguration configuration, IAddressRepository addressRepo, ISystemRepository systemRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _addressRepo = addressRepo;
+            _systemRepo = systemRepo;
         }
 
         public IEnumerable<Customer> GetCustomersByBusinessId(Guid businessId)
@@ -35,6 +37,7 @@ namespace CustomerServiceTracking.Repositories
                 foreach (var customer in customers)
                 {
                     customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
+                    customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
                 }
                 return customers;
             }
@@ -50,10 +53,18 @@ namespace CustomerServiceTracking.Repositories
                 var parameters = new { customerId };
                 var customer = db.QueryFirstOrDefault<Customer>(sql, parameters);
                 customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
+                customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
                 return customer;
             }
         }
-
+        /*
+        public Customer AddAddressAndSystemsToCustomer(Customer CustomerToAddAddressAndSystems)
+        {
+            CustomerToAddAddressAndSystems.Address = _addressRepo.GetAddressByAddressId(CustomerToAddAddressAndSystems.AddressId);
+            CustomerToAddAddressAndSystems.Systems = _systemRepo.GetCustomerSystemsByCustomerId(CustomerToAddAddressAndSystems.Id).ToList();
+            return CustomerToAddAddressAndSystems;
+        }
+        */
         private bool AddCustomerToBusiness(Guid customerId, Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))

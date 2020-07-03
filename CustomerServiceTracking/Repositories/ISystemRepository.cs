@@ -13,6 +13,7 @@ namespace CustomerServiceTracking.Repositories
         bool AddNewSystemToBusiness(NewSystemDTO newSystemDTO);
         bool DeleteSystemFromDatabase(Guid systemId);
         bool UpdateSystem(BusinessSystem updatedSystem);
+        IEnumerable<CustomerSystem> GetCustomerSystemsByCustomerId(Guid customerId);
 
     }
 }

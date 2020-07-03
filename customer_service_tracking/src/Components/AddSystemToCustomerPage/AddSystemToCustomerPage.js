@@ -66,7 +66,7 @@ class AddSystemToCustomerPage extends React.Component {
   render() {
     return (
       <div className='AddSystemToCustomerPage'>
-
+        <h1>add system to customer page</h1>
       </div>
     );
   }
