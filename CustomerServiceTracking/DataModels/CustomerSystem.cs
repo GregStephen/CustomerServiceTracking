@@ -16,9 +16,7 @@ namespace CustomerServiceTracking.DataModels
         public int SprayCycles { get; set; }
         public int SprayDuration { get; set; }
         public Guid SystemId { get; set; }
-        public string Type { get; set; }
-        public int Gallons { get; set; }
-        public int Inches { get; set; }
+        public BusinessSystem SystemInfo { get; set; }
 
     }
 }

@@ -7,6 +7,7 @@ import 'firebase/auth';
 
 import './App.scss';
 
+import AddSystemToCustomerPage from '../Components/AddSystemToCustomerPage/AddSystemToCustomerPage';
 import CustomerPage from '../Components/CustomerPage/CustomerPage';
 import CustomersPage from '../Components/CustomersPage/CustomersPage';
 import HomePage from '../Components/HomePage/HomePage';
@@ -82,6 +83,7 @@ class App extends React.Component {
             <PrivateRoute path='/customers' component={CustomersPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj}/>
+            <PrivateRoute path='/add-system-to-customer/:id' component={AddSystemToCustomerPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
         </BrowserRouter>

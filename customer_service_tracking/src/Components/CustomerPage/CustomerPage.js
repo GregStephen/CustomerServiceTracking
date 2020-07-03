@@ -36,9 +36,11 @@ const defaultCustomer = {
       sold: false,
       sprayCycles: 0,
       sprayDuration: 0,
-      type: '',
-      gallons: '',
-      inches: '',
+      systemInfo: {
+        type: '',
+        gallons: '',
+        inches: '',
+      },
     },
   ],
 };
