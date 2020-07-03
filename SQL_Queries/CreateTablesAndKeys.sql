@@ -338,6 +338,16 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_
 ELSE
 	PRINT 'Foreign key FK_CustomerSystem_Customer already exists'
 
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_System')
+	BEGIN
+	ALTER TABLE [CustomerSystem]
+	ADD CONSTRAINT FK_CustomerSystem_System
+		FOREIGN KEY (SystemId) 
+		REFERENCES [System] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_CustomerSystem_System already exists'
+
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_Customer')
 	BEGIN
 	ALTER TABLE [Report]
