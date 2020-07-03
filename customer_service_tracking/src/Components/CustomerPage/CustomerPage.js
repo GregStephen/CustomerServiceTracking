@@ -26,6 +26,21 @@ const defaultCustomer = {
     state: '',
     zipCode: '',
   },
+  systems: [
+    {
+      id: '',
+      systemId: '',
+      installDate: '',
+      nozzles: 0,
+      serialNumber: '',
+      sold: false,
+      sprayCycles: 0,
+      sprayDuration: 0,
+      type: '',
+      gallons: '',
+      inches: '',
+    },
+  ],
 };
 
 class CustomerPage extends React.Component {
@@ -77,6 +92,10 @@ class CustomerPage extends React.Component {
     this.loadPage();
   }
 
+  showSystems = () => {
+    console.error('show the systems or show a message if there are no systems');
+  }
+
   render() {
     const { customer, modalOpen } = this.state;
     return (
@@ -92,6 +111,7 @@ class CustomerPage extends React.Component {
         <p>{customer.address.zipCode}</p>
         <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
         <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
+        {this.showSystems()}
         <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
           <ModalHeader toggle={this.modalIsOpen}>
             {modalOpen === 'editCustomer' ? 'Edit Customer'

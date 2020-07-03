@@ -14,5 +14,6 @@ namespace CustomerServiceTracking.DataModels
         public string HomePhone { get; set; }
         public Guid AddressId { get; set; }
         public Address Address { get; set; }
+        public List<CustomerSystem> Systems { get; set; }
     }
 }

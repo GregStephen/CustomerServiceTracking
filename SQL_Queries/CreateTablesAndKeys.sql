@@ -63,7 +63,6 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'CustomerSystem')
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[CustomerId] UNIQUEIDENTIFIER not null,
-		[ForeverWarrantyId] UNIQUEIDENTIFIER not null,
 		[InstallDate] DATETIME not null,
 		[Nozzles] INT not null,		
 		[SerialNumber] NVARCHAR(255) not null,
