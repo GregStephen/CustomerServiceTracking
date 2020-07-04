@@ -28,12 +28,30 @@ const defaultCustomer = {
       sprayCycles: 0,
       sprayDuration: 0,
       systemInfo: {
+        id: '',
         type: '',
         gallons: '',
         inches: '',
       },
     },
   ],
+};
+
+const defaultCustomerSystem = {
+  systemId: '',
+  installDate: '',
+  nozzles: 0,
+  serialNumber: '',
+  sold: false,
+  sprayCycles: 0,
+  sprayDuration: 0,
+};
+
+const defaultSystem = {
+  id: '',
+  type: '',
+  gallons: '',
+  inches: '',
 };
 
 class AddSystemToCustomerPage extends React.Component {
@@ -45,6 +63,8 @@ class AddSystemToCustomerPage extends React.Component {
   state = {
     customer: defaultCustomer,
     systemOptions: [],
+    newCustomerSystem: defaultCustomerSystem,
+    chosenSystem: defaultSystem,
   }
 
 
@@ -63,10 +83,119 @@ class AddSystemToCustomerPage extends React.Component {
     this.loadPage();
   }
 
+  createNewCustomerSystem = (e) => {
+    e.preventDefault();
+    const { newCustomerSystem, chosenSystem } = this.state;
+    newCustomerSystem.systemId = chosenSystem.id;
+    SystemRequests.addNewCustomerSystem(newCustomerSystem)
+      .then(() => this.props.history.push('/systems'))
+      .catch((err) => console.error(err));
+  }
+
+  formFieldStringState = (e) => {
+    const tempCustomerSystem = { ...this.state.newCustomerSystem };
+    tempCustomerSystem[e.target.id] = e.target.value;
+    this.setState({ newCustomerSystem: tempCustomerSystem });
+  };
+
+  handleRadio = (e) => {
+    const tempCustomerSystem = { ...this.state.newCustomerSystem };
+    const sold = e.currentTarget.value === 'true';
+    tempCustomerSystem[e.target.id] = sold;
+    this.setState({ newCustomerSystem: tempCustomerSystem });
+  }
+
   render() {
+    const { newCustomerSystem } = this.state;
     return (
       <div className='AddSystemToCustomerPage'>
         <h1>add system to customer page</h1>
+        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewCustomerSystem}>
+          <h3>New System</h3>
+          <div className="form-group">
+            <label htmlFor="installDate">Install Date</label>
+            <input
+              type="date"
+              className="form-control"
+              id="installDate"
+              value={newCustomerSystem.installDate}
+              onChange={this.formFieldStringState}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="nozzles">Number of nozzles</label>
+            <input
+              type="number"
+              className="form-control"
+              id="nozzles"
+              min="0"
+              value={newCustomerSystem.nozzles}
+              onChange={this.formFieldStringState}
+              required
+            />
+            <div className="form-group">
+              <label htmlFor="sprayCycles">Spray Cycles</label>
+              <input
+                type="number"
+                className="form-control"
+                id="sprayCycles"
+                min="0"
+                value={newCustomerSystem.sprayCycles}
+                onChange={this.formFieldStringState}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="sprayDuration">Duration of spray in seconds</label>
+              <input
+                type="number"
+                className="form-control"
+                id="sprayDuration"
+                min="0"
+                value={newCustomerSystem.sprayDuration}
+                onChange={this.formFieldStringState}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="serialNumber">Serial Number</label>
+              <input
+                type="input"
+                className="form-control"
+                id="serialNumber"
+                value={newCustomerSystem.serialNumber}
+                onChange={this.formFieldStringState}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="sold">Sold</label>
+              <input
+                type="radio"
+                className="form-control"
+                id="sold"
+                value="true"
+                checked={newCustomerSystem.sold === true}
+                onChange={this.handleRadio}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="lease">Lease</label>
+              <input
+                type="radio"
+                className="form-control"
+                id="sold"
+                value="false"
+                checked={newCustomerSystem.sold === false}
+                onChange={this.handleRadio}
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" className="btn btn-success">Add New System</button>
+        </form>
       </div>
     );
   }
