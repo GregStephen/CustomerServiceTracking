@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormGroup, Label, Input,
+} from 'reactstrap';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import SystemRequests from '../../Helpers/Data/SystemRequests';
@@ -106,12 +109,27 @@ class AddSystemToCustomerPage extends React.Component {
   }
 
   render() {
-    const { newCustomerSystem } = this.state;
+    const { newCustomerSystem, systemOptions } = this.state;
     return (
       <div className='AddSystemToCustomerPage'>
         <h1>add system to customer page</h1>
         <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewCustomerSystem}>
           <h3>New System</h3>
+          <FormGroup>
+                <Label htmlFor="systemId">Which system did you install?</Label>
+                <Input
+                  type="select"
+                  name="systemId"
+                  id="systemId"
+                  value={newCustomerSystem.systemId}
+                  onChange={this.formFieldStringState}
+                  required>
+                  <option value="">Select a system</option>
+                { systemOptions.map((object) => (
+                    <option key={object.id} value={object.id}>{object.type}</option>
+                )) }
+                </Input>
+              </FormGroup>
           <div className="form-group">
             <label htmlFor="installDate">Install Date</label>
             <input
