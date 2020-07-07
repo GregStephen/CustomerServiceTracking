@@ -41,6 +41,7 @@ const defaultCustomer = {
 };
 
 const defaultCustomerSystem = {
+  customerId: '',
   systemId: '',
   installDate: '',
   nozzles: 0,
@@ -48,13 +49,6 @@ const defaultCustomerSystem = {
   sold: false,
   sprayCycles: 0,
   sprayDuration: 0,
-};
-
-const defaultSystem = {
-  id: '',
-  type: '',
-  gallons: '',
-  inches: '',
 };
 
 class AddSystemToCustomerPage extends React.Component {
@@ -67,7 +61,6 @@ class AddSystemToCustomerPage extends React.Component {
     customer: defaultCustomer,
     systemOptions: [],
     newCustomerSystem: defaultCustomerSystem,
-    chosenSystem: defaultSystem,
   }
 
 
@@ -88,10 +81,16 @@ class AddSystemToCustomerPage extends React.Component {
 
   createNewCustomerSystem = (e) => {
     e.preventDefault();
-    const { newCustomerSystem, chosenSystem } = this.state;
-    newCustomerSystem.systemId = chosenSystem.id;
-    SystemRequests.addNewCustomerSystem(newCustomerSystem)
-      .then(() => this.props.history.push('/systems'))
+    const { newCustomerSystem } = this.state;
+    const customerId = this.props.match.params.id;
+    newCustomerSystem.customerId = customerId;
+    newCustomerSystem.nozzles = parseInt(newCustomerSystem.nozzles, 10);
+    newCustomerSystem.sprayCycles = parseInt(newCustomerSystem.sprayCycles, 10);
+    newCustomerSystem.sprayDuration = parseInt(newCustomerSystem.sprayDuration, 10);
+    CustomerRequests.addNewCustomerSystem(newCustomerSystem)
+      .then(() => {
+        this.props.history.push(`/customer/${customerId}`);
+      })
       .catch((err) => console.error(err));
   }
 
@@ -116,20 +115,20 @@ class AddSystemToCustomerPage extends React.Component {
         <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewCustomerSystem}>
           <h3>New System</h3>
           <FormGroup>
-                <Label htmlFor="systemId">Which system did you install?</Label>
-                <Input
-                  type="select"
-                  name="systemId"
-                  id="systemId"
-                  value={newCustomerSystem.systemId}
-                  onChange={this.formFieldStringState}
-                  required>
-                  <option value="">Select a system</option>
-                { systemOptions.map((object) => (
-                    <option key={object.id} value={object.id}>{object.type}</option>
-                )) }
-                </Input>
-              </FormGroup>
+            <Label htmlFor="systemId">Which system did you install?</Label>
+            <Input
+              type="select"
+              name="systemId"
+              id="systemId"
+              value={newCustomerSystem.systemId}
+              onChange={this.formFieldStringState}
+              required>
+              <option value="">Select a system</option>
+              {systemOptions.map((object) => (
+                <option key={object.id} value={object.id}>{object.type}</option>
+              ))}
+            </Input>
+          </FormGroup>
           <div className="form-group">
             <label htmlFor="installDate">Install Date</label>
             <input

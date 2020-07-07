@@ -41,6 +41,12 @@ const deleteCustomer = (customerToDeleteId) => new Promise((resolve, reject) => 
     .catch((err) => reject(err));
 });
 
+const addNewCustomerSystem = (customerSystem) => new Promise((resolve, reject) => {
+  axios.post(`${baseUrl}/addSystem`, customerSystem)
+    .then((result) => resolve(result.data))
+    .catch((err) => reject(err));
+});
+
 export default {
   getCustomersForBusiness,
   getCustomerFromCustomerId,
@@ -48,4 +54,5 @@ export default {
   updateCustomer,
   updateCustomerAddress,
   deleteCustomer,
+  addNewCustomerSystem,
 };

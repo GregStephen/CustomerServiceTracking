@@ -110,7 +110,36 @@ namespace CustomerServiceTracking.Repositories
                 return AddCustomerToBusiness(customerId, newCustomerDTO.BusinessId);
             }
         }
-
+        
+        public bool AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [CustomerSystem]
+                            (
+                            [CustomerId],
+                            [InstallDate],
+                            [Nozzles],
+                            [SerialNumber],
+                            [Sold],
+                            [SprayCycles],
+                            [SprayDuration],
+                            [SystemId]
+                            )
+                            VALUES
+                            (
+                            @customerId,
+                            @installDate,
+                            @nozzles,
+                            @serialNumber,
+                            @sold,
+                            @sprayCycles,
+                            @sprayDuration,
+                            @systemId
+                            )";
+                return db.Execute(sql, newCustomerSystemDTO) == 1;
+            }
+        }
         public bool UpdateCustomer(Customer updatedCustomer)
         {
             using (var db = new SqlConnection(_connectionString))

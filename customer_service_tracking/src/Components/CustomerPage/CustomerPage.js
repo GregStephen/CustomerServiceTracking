@@ -96,8 +96,8 @@ class CustomerPage extends React.Component {
   }
 
   showSystems = () => {
-    const { systems } = this.state;
-    if (!systems) {
+    const { customer } = this.state;
+    if (!customer.systems) {
       return (<p>Customer has no systems. You should add some!</p>);
     }
     return (

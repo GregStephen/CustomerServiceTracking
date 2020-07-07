@@ -56,6 +56,19 @@ namespace CustomerServiceTracking.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPost("addSystem")]
+        public IActionResult AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO)
+        {
+            if (_repo.AddNewSystemToCustomer(newCustomerSystemDTO))
+            {
+                return Created($"customer/addSystem{newCustomerSystemDTO.CustomerId}", newCustomerSystemDTO);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
         [HttpPut("updateCustomer")]
         public IActionResult UpdateCustomer(Customer updateCustomer)
         {
