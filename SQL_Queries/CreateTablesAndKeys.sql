@@ -63,7 +63,6 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'CustomerSystem')
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[CustomerId] UNIQUEIDENTIFIER not null,
-		[ForeverWarrantyId] UNIQUEIDENTIFIER not null,
 		[InstallDate] DATETIME not null,
 		[Nozzles] INT not null,		
 		[SerialNumber] NVARCHAR(255) not null,
@@ -338,6 +337,16 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_
 	END
 ELSE
 	PRINT 'Foreign key FK_CustomerSystem_Customer already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_CustomerSystem_System')
+	BEGIN
+	ALTER TABLE [CustomerSystem]
+	ADD CONSTRAINT FK_CustomerSystem_System
+		FOREIGN KEY (SystemId) 
+		REFERENCES [System] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_CustomerSystem_System already exists'
 
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_Customer')
 	BEGIN
