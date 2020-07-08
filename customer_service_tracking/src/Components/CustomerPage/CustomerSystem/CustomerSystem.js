@@ -8,9 +8,10 @@ class CustomerSystem extends React.Component {
   }
 
   render() {
+    const { system } = this.props;
     return (
       <div className='CustomerSystem'>
-
+        <p>{system.id}</p>
       </div>
     );
   }

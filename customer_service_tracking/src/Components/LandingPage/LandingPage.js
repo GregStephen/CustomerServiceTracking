@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import LogInForm from '../LogInForm/LogInForm';
+import LogInForm from './LogInForm/LogInForm';
 
 import './LandingPage.scss';
 

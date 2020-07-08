@@ -5,7 +5,7 @@ import {
   ModalHeader,
 } from 'reactstrap';
 
-import EditSystemModal from '../EditSystemModal/EditSystemModal';
+import EditSystemModal from '../../Modals/EditSystemModal/EditSystemModal';
 
 import './System.scss';
 

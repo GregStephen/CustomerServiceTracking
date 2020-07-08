@@ -7,8 +7,9 @@ import {
   ModalHeader,
 } from 'reactstrap';
 
-import EditCustomerModal from '../EditCustomerModal/EditCustomerModal';
-import EditCustomerAddressModal from '../EditCustomerAddressModal/EditCustomerAddressModal';
+import CustomerSystem from './CustomerSystem/CustomerSystem';
+import EditCustomerModal from '../Modals/EditCustomerModal/EditCustomerModal';
+import EditCustomerAddressModal from '../Modals/EditCustomerAddressModal/EditCustomerAddressModal';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 
@@ -97,13 +98,15 @@ class CustomerPage extends React.Component {
 
   showSystems = () => {
     const { customer } = this.state;
-    if (!customer.systems) {
+    if (customer.systems.length === 0) {
       return (<p>Customer has no systems. You should add some!</p>);
     }
     return (
-        <div>
-          <p>found some systems</p>
-        </div>
+      customer.systems.map((system) => (
+          <CustomerSystem
+          key={ system.id }
+          system={ system }/>
+      ))
     );
   }
 
