@@ -11,7 +11,15 @@ class CustomerSystem extends React.Component {
     const { system } = this.props;
     return (
       <div className='CustomerSystem'>
-        <p>{system.id}</p>
+        <p>Install Date: {system.installDate}</p>
+        <p>Serial Number: {system.serialNumber}</p>
+        {system.sold
+          ? <p>Sold</p>
+          : <p>Lease</p>}
+        <p>Nozzles: {system.nozzles}</p>
+        <p>Spray Cycles: {system.sprayCycles}</p>
+        <p>Spray Duration: {system.sprayDuration}</p>
+        <button className="btn btn-info">Change settings</button>
       </div>
     );
   }
