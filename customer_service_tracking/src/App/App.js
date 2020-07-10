@@ -13,7 +13,8 @@ import CustomersPage from '../Components/CustomersPage/CustomersPage';
 import HomePage from '../Components/HomePage/HomePage';
 import LandingPage from '../Components/LandingPage/LandingPage';
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
-import NewAccountPage from '../Components/NewAccountPage/NewAccountPage';
+import NewAccountPage from '../Components/NewAccountPage/NewBusinessAccount/NewAccountPage';
+import NewPersonalAccountCheckPage from '../Components/NewAccountPage/ChooseBusinessForPersonalPage/ChooseBusinessForPersonalPage';
 import NewCustomerPage from '../Components/NewCustomerPage/NewCustomerPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
@@ -77,6 +78,7 @@ class App extends React.Component {
           <Switch>
             <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn}/>
             <PublicRoute path='/new-business-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
+            <PublicRoute path='/select-business' component={NewPersonalAccountCheckPage} authorized={authorized}/>
             <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/new-system' component={NewSystemPage} authorized={authorized} userObj={userObj}/>
