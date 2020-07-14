@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 const defaultTeamMember = {
   businessId: '',
   firstName: '',
+  lastName: '',
   email: '',
 };
 
@@ -54,6 +55,17 @@ class NewTeamMemberModal extends React.Component {
                 className="form-control"
                 id="firstName"
                 value={newTeamMember.firstName}
+                onChange={this.formFieldStringState}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="lastName">Last Name</label>
+              <input
+                type="input"
+                className="form-control"
+                id="lastName"
+                value={newTeamMember.lastName}
                 onChange={this.formFieldStringState}
                 required
               />
