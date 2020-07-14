@@ -18,6 +18,7 @@ import NewPersonalAccountCheckPage from '../Components/NewAccountPage/ChooseBusi
 import NewCustomerPage from '../Components/NewCustomerPage/NewCustomerPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
+import TeamPage from '../Components/TeamPage/TeamPage';
 
 import UserRequests from '../Helpers/Data/UserRequests';
 
@@ -86,6 +87,7 @@ class App extends React.Component {
             <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/add-system-to-customer/:id' component={AddSystemToCustomerPage} authorized={authorized} userObj={userObj}/>
+            <PrivateRoute path='/team' component={TeamPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
         </BrowserRouter>

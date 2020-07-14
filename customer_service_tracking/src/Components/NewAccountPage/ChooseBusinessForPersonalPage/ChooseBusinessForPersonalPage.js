@@ -33,6 +33,9 @@ class ChooseBusinessForPersonalPage extends React.Component {
 
   checkBusinessForEmail = (e) => {
     e.preventDefault();
+    // checks db for that business and if that email is added.
+    // if true then proceed to next page
+    // if false then throw an error on the screen
   };
 
   render() {

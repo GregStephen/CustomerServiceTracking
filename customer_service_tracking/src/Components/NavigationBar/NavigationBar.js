@@ -51,6 +51,9 @@ class NavigationBar extends React.Component {
     const buildAdminNavbar = () => (
         <Nav className="ml-auto" navbar>
             <NavItem>
+              <NavLink tag={RRNavLink} to='/team'>Team</NavLink>
+            </NavItem>
+            <NavItem>
                 <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
             </NavItem>
             <NavItem>
