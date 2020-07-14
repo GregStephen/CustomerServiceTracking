@@ -18,6 +18,15 @@ namespace CustomerServiceTracking.Repositories
             _connectionString = configuration.GetValue<string>("ConnectionString");
         }
 
+        public IEnumerable<Business> GetBusinesses()
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [Business]";
+                return db.Query<Business>(sql);
+            }
+        }
         public Guid AddNewBusinessToDatabase(string businessName, Guid addressId)
         {
             using (var db = new SqlConnection(_connectionString))
