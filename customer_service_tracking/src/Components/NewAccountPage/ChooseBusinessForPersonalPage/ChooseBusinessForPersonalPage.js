@@ -14,8 +14,10 @@ class ChooseBusinessForPersonalPage extends React.Component {
 
   state = {
     businessOptions: [],
-    chosenBusiness: '',
-    email: '',
+    newAccount: {
+      email: '',
+      chosenBusiness: '',
+    },
     error: '',
   }
 
@@ -28,18 +30,29 @@ class ChooseBusinessForPersonalPage extends React.Component {
   }
 
   formFieldStringState = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
+    const tempNewAccount = { ...this.state.newAccount };
+    tempNewAccount[e.target.id] = e.target.value;
+    this.setState({ newAccount: tempNewAccount });
   };
 
   checkBusinessForEmail = (e) => {
     e.preventDefault();
+    const { newAccount } = this.state;
+    BusinessRequests.checkBusinessForEmail(newAccount)
+      .then((results) => {
+        if (results) {
+          console.error('proceed to next page', results);
+        }
+        this.setState({ error: 'There is no such email registered for that business' });
+      })
+      .catch((err) => console.error(err));
     // checks db for that business and if that email is added.
     // if true then proceed to next page
     // if false then throw an error on the screen
   };
 
   render() {
-    const { businessOptions, chosenBusiness, email } = this.state;
+    const { businessOptions, newAccount, error } = this.state;
     return (
       <div>
         <h1>Choose business then enter email</h1>
@@ -50,7 +63,7 @@ class ChooseBusinessForPersonalPage extends React.Component {
               type="select"
               name="chosenBusiness"
               id="chosenBusiness"
-              value={chosenBusiness}
+              value={newAccount.chosenBusiness}
               onChange={this.formFieldStringState}
               required>
               <option value="">Select a business</option>
@@ -65,12 +78,13 @@ class ChooseBusinessForPersonalPage extends React.Component {
               type="email"
               className="form-control"
               id="email"
-              value={email}
+              value={newAccount.email}
               onChange={this.formFieldStringState}
               placeholder="Tom@ExampleEmail.com"
               required
             />
           </FormGroup>
+              {<p className="error">{error}</p>}
           <button type="submit" className="btn btn-success">Continue</button>
         </form>
       </div>

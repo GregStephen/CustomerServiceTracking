@@ -38,6 +38,25 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_unregisteredEmployeeRepo.GetUnregisteredEmployeesByBusinessId(businessId));
         }
 
+        [HttpGet("unregisteredEmployee/email={email}/businessId={businessId}")]
+        public IActionResult CheckIfBusinessHasEmailOfUnregisteredEmployee(string email, Guid businessId)
+        {
+            var unregisteredEmployeeId = _unregisteredEmployeeRepo.CheckIfBusinessHasEmailOfUnregisteredEmployee(email, businessId);
+            if (unregisteredEmployeeId == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(unregisteredEmployeeId);
+            }
+        }
+
+        [HttpGet("unregisteredEmployee/{id}")]
+        public IActionResult GetUnregisteredEmployeeById(Guid id)
+        {
+            return Ok(_unregisteredEmployeeRepo.GetUnregisteredEmployeeById(id));
+        }
         [HttpPost("unregisteredEmployee")]
         public IActionResult AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee)
         {

@@ -20,8 +20,15 @@ const addUnregisteredEmployee = (unregisteredEmployeeObject) => new Promise((res
     .catch((err) => reject(err));
 });
 
+const checkBusinessForEmail = (possibleMatch) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/unregisteredEmployee/email=${possibleMatch.email}/businessId=${possibleMatch.chosenBusiness}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 export default {
   getBusinesses,
   getUnregisteredEmployees,
   addUnregisteredEmployee,
+  checkBusinessForEmail,
 };
