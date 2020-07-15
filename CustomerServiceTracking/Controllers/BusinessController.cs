@@ -17,17 +17,38 @@ namespace CustomerServiceTracking.Controllers
     {
         private readonly ILogger<BusinessController> _logger;
         private readonly IBusinessRepository _repo;
+        private readonly IUnregisteredEmployeeRepository _unregisteredEmployeeRepo;
 
-        public BusinessController(ILogger<BusinessController> logger, IBusinessRepository repo)
+        public BusinessController(ILogger<BusinessController> logger, IBusinessRepository repo, IUnregisteredEmployeeRepository unregisteredEmployeeRepo)
         {
             _logger = logger;
             _repo = repo;
+            _unregisteredEmployeeRepo = unregisteredEmployeeRepo;
         }
 
         [HttpGet]
         public IActionResult GetBusinesses()
         {
             return Ok(_repo.GetBusinesses());
+        }
+
+        [HttpGet("unregisteredEmployees/{businessId}")]
+        public IActionResult GetBusinessesUnRegisteredEmployees(Guid businessId)
+        {
+            return Ok(_unregisteredEmployeeRepo.GetUnregisteredEmployeesByBusinessId(businessId));
+        }
+
+        [HttpPost("unregisteredEmployee")]
+        public IActionResult AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee)
+        {
+            if (_unregisteredEmployeeRepo.AddUnregisteredEmployeeToDatabase(unregisteredEmployee))
+            {
+                return Created($"business/{unregisteredEmployee.FirstName}", unregisteredEmployee);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
