@@ -75,5 +75,17 @@ namespace CustomerServiceTracking.Repositories
                 return db.Execute(sql, unregisteredEmployee) == 1;
             }
         }
+
+        public bool DeleteUnregisteredEmployee(Guid unregisteredEmployeeId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"DELETE
+                            FROM [UnregisteredEmployee]
+                            WHERE [Id] = @unregisteredEmployeeId";
+                var parameter = new { unregisteredEmployeeId };
+                return db.Execute(sql, parameter) == 1;
+            }
+        }
     }
 }

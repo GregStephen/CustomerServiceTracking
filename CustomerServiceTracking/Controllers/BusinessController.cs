@@ -57,12 +57,26 @@ namespace CustomerServiceTracking.Controllers
         {
             return Ok(_unregisteredEmployeeRepo.GetUnregisteredEmployeeById(id));
         }
+
         [HttpPost("unregisteredEmployee")]
         public IActionResult AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee)
         {
             if (_unregisteredEmployeeRepo.AddUnregisteredEmployeeToDatabase(unregisteredEmployee))
             {
                 return Created($"business/{unregisteredEmployee.FirstName}", unregisteredEmployee);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{unregisteredId}")]
+        public IActionResult DeleteCustomer(Guid unregisteredId)
+        {
+            if (_unregisteredEmployeeRepo.DeleteUnregisteredEmployee(unregisteredId))
+            {
+                return Ok();
             }
             else
             {

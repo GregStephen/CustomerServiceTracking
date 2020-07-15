@@ -12,5 +12,6 @@ namespace CustomerServiceTracking.Repositories
         Guid CheckIfBusinessHasEmailOfUnregisteredEmployee(string email, Guid businessId);
         UnregisteredEmployee GetUnregisteredEmployeeById(Guid id);
         bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee);
+        bool DeleteUnregisteredEmployee(Guid unregisteredEmployeeId);
     }
 }

@@ -63,5 +63,27 @@ namespace CustomerServiceTracking.Repositories
                 return (_businessRepo.AddUserToBusiness(userId, businessId));
             }
         }
+
+        public bool AddNewPersonalUserToDatabase(NewPersonalUserDTO newUser)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [User]
+                            (
+                            [FirstName],
+                            [LastName],
+                            [FirebaseUid],
+                            [Admin]
+                            )
+                            VALUES
+                            (
+                            @firstName,
+                            @lastName,
+                            @firebaseUid,
+                            @admin
+                            )";
+                return db.Execute(sql, newUser) == 1;
+            }
+        }
     }
 }

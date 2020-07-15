@@ -49,5 +49,18 @@ namespace CustomerServiceTracking.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPost("personal")]
+        public IActionResult AddNewPersonalUserToDatabase(NewPersonalUserDTO newUser)
+        {
+            if (_repo.AddNewPersonalUserToDatabase(newUser))
+            {
+                return Created($"user/personal/{newUser.FirstName}", newUser);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }
