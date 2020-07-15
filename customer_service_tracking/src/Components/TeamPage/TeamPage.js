@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
 import TeamMemberWidget from './TeamMemberWidget/TeamMemberWidget';
 
+import BusinessRequests from '../../Helpers/Data/BusinessRequests';
+
 import './TeamPage.scss';
 
 class TeamPage extends React.Component {
@@ -21,8 +23,16 @@ class TeamPage extends React.Component {
     modalIsOpen: false,
   }
 
+  pageLoad = () => {
+    const { userObj } = this.props;
+    BusinessRequests.getUnregisteredEmployees(userObj.businessId)
+      .then((teamMembers) => this.setState({ teamMembers }))
+      .catch((err) => console.error(err));
+  }
+
   componentDidMount() {
     // find employees of business
+    this.pageLoad();
   }
 
   toggleModalOpen = () => {
@@ -32,7 +42,9 @@ class TeamPage extends React.Component {
   }
 
   addTeamMember = (teamMember) => {
-    console.error(teamMember);
+    BusinessRequests.addUnregisteredEmployee(teamMember)
+      .then(this.pageLoad())
+      .catch((err) => console.error(err));
   }
 
   render() {
@@ -45,6 +57,7 @@ class TeamPage extends React.Component {
           teamMembers.map((teamMember) => (
             <TeamMemberWidget
             key={teamMember.id}
+            teamMember={teamMember}
             />
           ))
         );

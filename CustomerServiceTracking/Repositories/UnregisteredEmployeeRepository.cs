@@ -29,5 +29,27 @@ namespace CustomerServiceTracking.Repositories
                 return db.Query<UnregisteredEmployee>(sql, parameters);
             }
         }
+
+        public bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [UnregisteredEmployee]
+                            (
+                             [FirstName],
+                             [LastName],
+                             [BusinessId],
+                             [Email]
+                            )
+                            VALUES
+                            (
+                            @firstName,
+                            @lastName,
+                            @businessId,
+                            @email
+                            )";
+                return db.Execute(sql, unregisteredEmployee) == 1;
+            }
+        }
     }
 }
