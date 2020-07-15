@@ -42,9 +42,9 @@ namespace CustomerServiceTracking.Controllers
         public IActionResult CheckIfBusinessHasEmailOfUnregisteredEmployee(string email, Guid businessId)
         {
             var unregisteredEmployeeId = _unregisteredEmployeeRepo.CheckIfBusinessHasEmailOfUnregisteredEmployee(email, businessId);
-            if (unregisteredEmployeeId == null)
+            if (unregisteredEmployeeId == default(Guid))
             {
-                return NotFound();
+                return Ok();
             }
             else
             {

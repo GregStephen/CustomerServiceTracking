@@ -41,7 +41,7 @@ class ChooseBusinessForPersonalPage extends React.Component {
     BusinessRequests.checkBusinessForEmail(newAccount)
       .then((results) => {
         if (results) {
-          console.error('proceed to next page', results);
+          this.props.history.push(`/new-personal-account/${results}`);
         }
         this.setState({ error: 'There is no such email registered for that business' });
       })
