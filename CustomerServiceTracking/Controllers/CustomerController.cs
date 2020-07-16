@@ -94,10 +94,24 @@ namespace CustomerServiceTracking.Controllers
                 return BadRequest();
             }
         }
+
         [HttpDelete("{customerId}")]
         public IActionResult DeleteCustomer(Guid customerId)
         {
             if (_repo.DeleteCustomer(customerId))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("customerSystem/{customerSystemId}")]
+        public IActionResult DeleteCustomerSystem(Guid customerSystemId)
+        {
+            if (_repo.DeleteCustomerSystem(customerSystemId))
             {
                 return Ok();
             }

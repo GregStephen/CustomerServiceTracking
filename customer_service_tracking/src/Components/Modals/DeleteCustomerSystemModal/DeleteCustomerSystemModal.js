@@ -4,10 +4,10 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-class DeleteCustomerModal extends React.Component {
+class DeleteCustomerSystemModal extends React.Component {
   static propTypes = {
     toggleModalOpen: PropTypes.func.isRequired,
-    deleteCustomer: PropTypes.func.isRequired,
+    deleteCustomerSystem: PropTypes.func.isRequired,
   }
 
   toggleModal = (e) => {
@@ -16,19 +16,19 @@ class DeleteCustomerModal extends React.Component {
   };
 
   confirmDeletion = () => {
-    const { deleteCustomer } = this.props;
-    deleteCustomer();
+    const { deleteCustomerSystem } = this.props;
+    deleteCustomerSystem();
   }
 
   render() {
     return (
-      <div className="DeleteCustomerModal">
+      <div className="DeleteCustomerSystemModal">
           <ModalBody>
-          <h1>Are you sure you want to delete this customer?</h1>
-          <h2>All records will be deleted and this cannot be undone</h2>
+          <h1>Are you sure you want to delete this customers system?</h1>
+          <h2>This cannot be undone</h2>
           </ModalBody>
           <ModalFooter>
-            <Button type="submit" onClick={this.confirmDeletion} color="danger">Delete Customer</Button>{' '}
+            <Button type="submit" onClick={this.confirmDeletion} color="danger">Delete Customer System</Button>{' '}
             <Button color="secondary" value="info" onClick={this.toggleModal}>Cancel</Button>
           </ModalFooter>
       </div>
@@ -36,4 +36,4 @@ class DeleteCustomerModal extends React.Component {
   }
 }
 
-export default DeleteCustomerModal;
+export default DeleteCustomerSystemModal;

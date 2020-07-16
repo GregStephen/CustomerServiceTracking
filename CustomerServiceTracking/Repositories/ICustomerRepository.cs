@@ -16,5 +16,6 @@ namespace CustomerServiceTracking.Repositories
         bool UpdateCustomer(Customer updatedCustomer);
         bool UpdateCustomerAddress(Customer updatedCustomerAddress);
         bool DeleteCustomer(Guid customerId);
+        bool DeleteCustomerSystem(Guid customerSystemId);
     }
 }

@@ -41,6 +41,12 @@ const deleteCustomer = (customerToDeleteId) => new Promise((resolve, reject) => 
     .catch((err) => reject(err));
 });
 
+const deleteThisCustomerSystem = (customerSystemId) => new Promise((resolve, reject) => {
+  axios.delete(`${baseUrl}/customerSystem/${customerSystemId}`)
+    .then((result) => resolve(result.data))
+    .catch((err) => reject(err));
+});
+
 const addNewCustomerSystem = (customerSystem) => new Promise((resolve, reject) => {
   axios.post(`${baseUrl}/addSystem`, customerSystem)
     .then((result) => resolve(result.data))
@@ -54,5 +60,6 @@ export default {
   updateCustomer,
   updateCustomerAddress,
   deleteCustomer,
+  deleteThisCustomerSystem,
   addNewCustomerSystem,
 };
