@@ -189,5 +189,15 @@ namespace CustomerServiceTracking.Repositories
                 return false;
             }
         }
+        public bool DeleteCustomerSystem(Guid customerSystemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"DELETE [CustomerSystem]
+                            WHERE Id = @customerSystemId";
+                var parameters = new { customerSystemId };
+                return db.Execute(sql, parameters) == 1;
+            }
+        }
     }
 }
