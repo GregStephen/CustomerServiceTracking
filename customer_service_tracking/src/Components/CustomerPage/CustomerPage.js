@@ -92,6 +92,12 @@ class CustomerPage extends React.Component {
       .catch((err) => console.error(err));
   }
 
+  deleteThisCustomerSystem = (systemId) => {
+    CustomerRequests.deleteThisCustomerSystem(systemId)
+      .then(() => this.loadPage())
+      .catch((err) => console.error(err));
+  }
+
   componentDidMount() {
     this.loadPage();
   }
@@ -105,7 +111,8 @@ class CustomerPage extends React.Component {
       customer.systems.map((system) => (
           <CustomerSystem
           key={ system.id }
-          system={ system }/>
+          system={ system }
+          deleteThisCustomerSystem={ this.deleteThisCustomerSystem }/>
       ))
     );
   }
