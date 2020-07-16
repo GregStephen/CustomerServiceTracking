@@ -22,6 +22,7 @@ class NewPersonalAccountPage extends React.Component {
 
   state = {
     newUser: defaultUser,
+    businessId: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -33,6 +34,7 @@ class NewPersonalAccountPage extends React.Component {
     BusinessRequests.getUnregisteredEmployeeById(unregisteredUserId)
       .then((unregisteredUser) => {
         this.setState({ email: unregisteredUser.email });
+        this.setState({ businessId: unregisteredUser.businessId });
       })
       .catch();
   }
@@ -54,7 +56,7 @@ class NewPersonalAccountPage extends React.Component {
   createAccount = (e) => {
     e.preventDefault();
     const {
-      email, password, confirmPassword,
+      email, password, confirmPassword, businessId,
     } = this.state;
     const { logIn } = this.props;
     const unregisteredUserId = this.props.match.params.id;
@@ -68,10 +70,11 @@ class NewPersonalAccountPage extends React.Component {
           .then((token) => sessionStorage.setItem('token', token));
         const saveMe = { ...this.state.newUser };
         saveMe.firebaseUid = firebase.auth().currentUser.uid;
+        saveMe.businessId = businessId;
+        saveMe.unregisteredUserId = unregisteredUserId;
         UserRequests.addNewPersonalUser(saveMe)
           .then(() => {
             logIn(email, password);
-            BusinessRequests.deleteUnregisteredUser(unregisteredUserId);
           })
           .catch((err) => console.error(err));
       })

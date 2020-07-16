@@ -15,12 +15,14 @@ namespace CustomerServiceTracking.Repositories
         string _connectionString;
         private IBusinessRepository _businessRepo;
         private IAddressRepository _addressRepo;
+        private IUnregisteredEmployeeRepository _unregisteredEmployeeRepo;
 
-        public UserRepository(IConfiguration configuration, IBusinessRepository businessRepo, IAddressRepository addressRepo)
+        public UserRepository(IConfiguration configuration, IBusinessRepository businessRepo, IAddressRepository addressRepo, IUnregisteredEmployeeRepository unregisteredEmployeeRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _businessRepo = businessRepo;
             _addressRepo = addressRepo;
+            _unregisteredEmployeeRepo = unregisteredEmployeeRepo;
         }
 
         public User GetUserByFirebaseId(string firebaseId)
@@ -75,6 +77,7 @@ namespace CustomerServiceTracking.Repositories
                             [FirebaseUid],
                             [Admin]
                             )
+                            OUTPUT INSERTED.Id
                             VALUES
                             (
                             @firstName,
@@ -82,7 +85,10 @@ namespace CustomerServiceTracking.Repositories
                             @firebaseUid,
                             @admin
                             )";
-                return db.Execute(sql, newUser) == 1;
+                var userId = db.QueryFirst<Guid>(sql, newUser);
+                var businessId = newUser.BusinessId;
+                _unregisteredEmployeeRepo.DeleteUnregisteredEmployee(newUser.UnregisteredUserId);
+                return (_businessRepo.AddUserToBusiness(userId, businessId));
             }
         }
     }
