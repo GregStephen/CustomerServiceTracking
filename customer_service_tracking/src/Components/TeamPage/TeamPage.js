@@ -6,7 +6,7 @@ import {
 import PropTypes from 'prop-types';
 
 import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
-import TeamMemberWidget from './TeamMemberWidget/TeamMemberWidget';
+import UnregisteredTeamMemberWidget from './UnregisteredTeamMemberWidget/UnregisteredTeamMemberWidget';
 
 import BusinessRequests from '../../Helpers/Data/BusinessRequests';
 
@@ -55,9 +55,9 @@ class TeamPage extends React.Component {
       if (teamMembers.length > 0) {
         return (
           teamMembers.map((teamMember) => (
-            <TeamMemberWidget
+            <UnregisteredTeamMemberWidget
             key={teamMember.id}
-            teamMember={teamMember}
+            unregisteredTeamMember={teamMember}
             />
           ))
         );

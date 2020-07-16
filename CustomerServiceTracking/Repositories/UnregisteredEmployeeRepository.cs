@@ -30,6 +30,30 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public Guid CheckIfBusinessHasEmailOfUnregisteredEmployee(string email, Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT [Id]
+                            FROM [UnregisteredEmployee]
+                            WHERE [BusinessId] = @businessId
+                            AND [Email] = @email" ;
+                var parameters = new { email, businessId };
+                return db.QueryFirstOrDefault<Guid>(sql, parameters);
+            }
+        }
+
+        public UnregisteredEmployee GetUnregisteredEmployeeById(Guid id)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [UnregisteredEmployee]
+                            WHERE [Id] = @id";
+                var parameters = new { id };
+                return db.QueryFirst<UnregisteredEmployee>(sql, parameters);
+            }
+        }
         public bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee)
         {
             using (var db = new SqlConnection(_connectionString))
@@ -49,6 +73,18 @@ namespace CustomerServiceTracking.Repositories
                             @email
                             )";
                 return db.Execute(sql, unregisteredEmployee) == 1;
+            }
+        }
+
+        public bool DeleteUnregisteredEmployee(Guid unregisteredEmployeeId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"DELETE
+                            FROM [UnregisteredEmployee]
+                            WHERE [Id] = @unregisteredEmployeeId";
+                var parameter = new { unregisteredEmployeeId };
+                return db.Execute(sql, parameter) == 1;
             }
         }
     }

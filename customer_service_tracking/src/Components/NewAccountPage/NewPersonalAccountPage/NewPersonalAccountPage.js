@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import './NewPersonalAccountPage.scss';
 
 import UserRequests from '../../../Helpers/Data/UserRequests';
+import BusinessRequests from '../../../Helpers/Data/BusinessRequests';
 
 const defaultUser = {
   firstName: '',
@@ -21,10 +22,21 @@ class NewPersonalAccountPage extends React.Component {
 
   state = {
     newUser: defaultUser,
+    businessId: '',
     email: '',
     password: '',
     confirmPassword: '',
     error: '',
+  }
+
+  componentDidMount() {
+    const unregisteredUserId = this.props.match.params.id;
+    BusinessRequests.getUnregisteredEmployeeById(unregisteredUserId)
+      .then((unregisteredUser) => {
+        this.setState({ email: unregisteredUser.email });
+        this.setState({ businessId: unregisteredUser.businessId });
+      })
+      .catch();
   }
 
   formFieldStringState = (e) => {
@@ -44,9 +56,10 @@ class NewPersonalAccountPage extends React.Component {
   createAccount = (e) => {
     e.preventDefault();
     const {
-      email, password, confirmPassword,
+      email, password, confirmPassword, businessId,
     } = this.state;
     const { logIn } = this.props;
+    const unregisteredUserId = this.props.match.params.id;
     if (password !== confirmPassword) {
       this.setState({ error: 'Passwords must match' });
       return;
@@ -57,9 +70,12 @@ class NewPersonalAccountPage extends React.Component {
           .then((token) => sessionStorage.setItem('token', token));
         const saveMe = { ...this.state.newUser };
         saveMe.firebaseUid = firebase.auth().currentUser.uid;
-        // need to create this function
+        saveMe.businessId = businessId;
+        saveMe.unregisteredUserId = unregisteredUserId;
         UserRequests.addNewPersonalUser(saveMe)
-          .then(() => logIn(email, password))
+          .then(() => {
+            logIn(email, password);
+          })
           .catch((err) => console.error(err));
       })
       .catch((err) => this.setState({ error: err.message }));

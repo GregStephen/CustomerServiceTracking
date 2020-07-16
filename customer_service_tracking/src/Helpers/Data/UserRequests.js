@@ -31,7 +31,14 @@ const addNewUser = (userobj) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
+const addNewPersonalUser = (userObj) => new Promise((resolve, reject) => {
+  axios.post(`${baseUrl}/personal`, userObj)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 export default {
   getUserByFirebaseUid,
   addNewUser,
+  addNewPersonalUser,
 };

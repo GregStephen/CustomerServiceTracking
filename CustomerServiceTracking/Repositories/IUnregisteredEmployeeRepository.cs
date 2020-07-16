@@ -9,6 +9,9 @@ namespace CustomerServiceTracking.Repositories
     public interface IUnregisteredEmployeeRepository
     {
         IEnumerable<UnregisteredEmployee> GetUnregisteredEmployeesByBusinessId(Guid businessId);
+        Guid CheckIfBusinessHasEmailOfUnregisteredEmployee(string email, Guid businessId);
+        UnregisteredEmployee GetUnregisteredEmployeeById(Guid id);
         bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee);
+        bool DeleteUnregisteredEmployee(Guid unregisteredEmployeeId);
     }
 }

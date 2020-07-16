@@ -15,12 +15,14 @@ namespace CustomerServiceTracking.Repositories
         string _connectionString;
         private IBusinessRepository _businessRepo;
         private IAddressRepository _addressRepo;
+        private IUnregisteredEmployeeRepository _unregisteredEmployeeRepo;
 
-        public UserRepository(IConfiguration configuration, IBusinessRepository businessRepo, IAddressRepository addressRepo)
+        public UserRepository(IConfiguration configuration, IBusinessRepository businessRepo, IAddressRepository addressRepo, IUnregisteredEmployeeRepository unregisteredEmployeeRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _businessRepo = businessRepo;
             _addressRepo = addressRepo;
+            _unregisteredEmployeeRepo = unregisteredEmployeeRepo;
         }
 
         public User GetUserByFirebaseId(string firebaseId)
@@ -60,6 +62,32 @@ namespace CustomerServiceTracking.Repositories
                 var userId = db.QueryFirst<Guid>(sql, newUser);
                 var addressId = _addressRepo.AddNewAddressToDatabase(newUser.BusinessAddress);
                 var businessId = _businessRepo.AddNewBusinessToDatabase(newUser.BusinessName, addressId);
+                return (_businessRepo.AddUserToBusiness(userId, businessId));
+            }
+        }
+
+        public bool AddNewPersonalUserToDatabase(NewPersonalUserDTO newUser)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [User]
+                            (
+                            [FirstName],
+                            [LastName],
+                            [FirebaseUid],
+                            [Admin]
+                            )
+                            OUTPUT INSERTED.Id
+                            VALUES
+                            (
+                            @firstName,
+                            @lastName,
+                            @firebaseUid,
+                            @admin
+                            )";
+                var userId = db.QueryFirst<Guid>(sql, newUser);
+                var businessId = newUser.BusinessId;
+                _unregisteredEmployeeRepo.DeleteUnregisteredEmployee(newUser.UnregisteredUserId);
                 return (_businessRepo.AddUserToBusiness(userId, businessId));
             }
         }
