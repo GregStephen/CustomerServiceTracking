@@ -44,6 +44,20 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
+        [HttpGet("customerSystemId/{customerSystemId}")]
+        public IActionResult GetCustomerSystemByCustomerSystemId(Guid customerSystemId)
+        {
+            var customerSystem = _repo.GetCustomerSystemByCustomerSystemId(customerSystemId);
+            if (customerSystem != null)
+            {
+                return Ok(customerSystem);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         public IActionResult AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO)
         {
