@@ -17,6 +17,12 @@ const getCustomerFromCustomerId = (customerId) => new Promise((resolve, reject) 
     .catch((err) => reject(err));
 });
 
+const getCustomerSystemFromCustomerSystemId = (customerSystemId) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/customerSystemId/${customerSystemId}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 const addNewCustomer = (newCustomerObj) => new Promise((resolve, reject) => {
   axios.post(`${baseUrl}`, newCustomerObj)
     .then((results) => resolve(results.data))
@@ -31,6 +37,12 @@ const updateCustomer = (updatedCustomer) => new Promise((resolve, reject) => {
 
 const updateCustomerAddress = (updatedCustomerAddress) => new Promise((resolve, reject) => {
   axios.put(`${baseUrl}/updateCustomerAddress`, updatedCustomerAddress)
+    .then((result) => resolve(result.data))
+    .catch((err) => reject(err));
+});
+
+const updateCustomerSystem = (updatedCustomerSystem) => new Promise((resolve, reject) => {
+  axios.put(`${baseUrl}/updatedCustomerSystem`, updatedCustomerSystem)
     .then((result) => resolve(result.data))
     .catch((err) => reject(err));
 });
@@ -56,9 +68,11 @@ const addNewCustomerSystem = (customerSystem) => new Promise((resolve, reject) =
 export default {
   getCustomersForBusiness,
   getCustomerFromCustomerId,
+  getCustomerSystemFromCustomerSystemId,
   addNewCustomer,
   updateCustomer,
   updateCustomerAddress,
+  updateCustomerSystem,
   deleteCustomer,
   deleteThisCustomerSystem,
   addNewCustomerSystem,

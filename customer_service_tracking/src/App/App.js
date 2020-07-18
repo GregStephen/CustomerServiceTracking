@@ -10,6 +10,7 @@ import './App.scss';
 import AddSystemToCustomerPage from '../Components/AddSystemToCustomerPage/AddSystemToCustomerPage';
 import CustomerPage from '../Components/CustomerPage/CustomerPage';
 import CustomersPage from '../Components/CustomersPage/CustomersPage';
+import EditCustomerSystemPage from '../Components/EditCustomerSystemPage/EditCustomerSystemPage';
 import HomePage from '../Components/HomePage/HomePage';
 import LandingPage from '../Components/LandingPage/LandingPage';
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
@@ -89,6 +90,7 @@ class App extends React.Component {
             <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/add-system-to-customer/:id' component={AddSystemToCustomerPage} authorized={authorized} userObj={userObj}/>
+            <PrivateRoute path='/edit-customer-system/:id' component={EditCustomerSystemPage} authorized={authorized} userObj={userObj}/>
             <PrivateRoute path='/team' component={TeamPage} authorized={authorized} userObj={userObj}/>
             <Redirect from='*' to='/landing-page' />
           </Switch>
