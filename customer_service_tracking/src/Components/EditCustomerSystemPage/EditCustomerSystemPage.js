@@ -1,8 +1,10 @@
+/* eslint-disable no-param-reassign */
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
   FormGroup, Label, Input,
 } from 'reactstrap';
+import moment from 'moment';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import SystemRequests from '../../Helpers/Data/SystemRequests';
@@ -34,7 +36,10 @@ class EditCustomerSystemPage extends React.Component {
     const { userObj } = this.props;
     const customerSystemId = this.props.match.params.id;
     CustomerRequests.getCustomerSystemFromCustomerSystemId(customerSystemId)
-      .then((customerSystemResult) => this.setState({ updatedCustomerSystem: customerSystemResult }))
+      .then((customerSystemResult) => {
+        customerSystemResult.installDate = moment(customerSystemResult.installDate).format('YYYY-MM-DD');
+        this.setState({ updatedCustomerSystem: customerSystemResult });
+      })
       .catch((err) => console.error(err));
     SystemRequests.getSystemsForBusiness(userObj.businessId)
       .then((systemOptions) => this.setState({ systemOptions }))
@@ -51,6 +56,7 @@ class EditCustomerSystemPage extends React.Component {
     updatedCustomerSystem.nozzles = parseInt(updatedCustomerSystem.nozzles, 10);
     updatedCustomerSystem.sprayCycles = parseInt(updatedCustomerSystem.sprayCycles, 10);
     updatedCustomerSystem.sprayDuration = parseInt(updatedCustomerSystem.sprayDuration, 10);
+    updatedCustomerSystem.installDate = moment(updatedCustomerSystem.installDate).format('YYYY-MM-DD');
     CustomerRequests.updateCustomerSystem(updatedCustomerSystem)
       .then(() => {
         this.props.history.push(`/customer/${updatedCustomerSystem.customerId}`);

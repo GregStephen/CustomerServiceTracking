@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   FormGroup, Label, Input,
 } from 'reactstrap';
+import moment from 'moment';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import SystemRequests from '../../Helpers/Data/SystemRequests';
@@ -87,6 +88,7 @@ class AddSystemToCustomerPage extends React.Component {
     newCustomerSystem.nozzles = parseInt(newCustomerSystem.nozzles, 10);
     newCustomerSystem.sprayCycles = parseInt(newCustomerSystem.sprayCycles, 10);
     newCustomerSystem.sprayDuration = parseInt(newCustomerSystem.sprayDuration, 10);
+    newCustomerSystem.installDate = moment(newCustomerSystem.installDate).format('YYYY-MM-DD');
     CustomerRequests.addNewCustomerSystem(newCustomerSystem)
       .then(() => {
         this.props.history.push(`/customer/${customerId}`);
