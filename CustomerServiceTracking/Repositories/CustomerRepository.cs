@@ -66,7 +66,9 @@ namespace CustomerServiceTracking.Repositories
                             FROM [CustomerSystem]
                             WHERE [Id] = @customerSystemId";
                 var parameters = new { customerSystemId };
-                return db.QueryFirstOrDefault<CustomerSystem>(sql, parameters);
+                var customerSystem =  db.QueryFirstOrDefault<CustomerSystem>(sql, parameters);
+                customerSystem.SystemInfo = _systemRepo.GetSystemInfoBySystemId(customerSystem.SystemId);
+                return customerSystem;
             }
         }
         /*
@@ -169,6 +171,24 @@ namespace CustomerServiceTracking.Repositories
         public bool UpdateCustomerAddress(Customer updatedCustomerAddress)
         {
             return (_addressRepo.UpdateCustomerAddress(updatedCustomerAddress));
+        }
+
+        public bool UpdateCustomerSystem(CustomerSystem updatedCustomerSystem)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [CustomerSystem]
+                            SET 
+                                [InstallDate] = @installDate,
+                                [Nozzles] = @nozzles,
+                                [SerialNumber] = @serialNumber,
+                                [Sold] = @sold,
+                                [SprayCycles] = @sprayCycles,
+                                [SprayDuration] = @sprayDuration,
+                                [SystemId] = @systemId
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedCustomerSystem) == 1);
+            }
         }
 
         public bool DeleteFromBusinessCustomer(Guid customerId)

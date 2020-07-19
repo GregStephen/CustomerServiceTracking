@@ -57,6 +57,7 @@ class EditCustomerSystemPage extends React.Component {
     updatedCustomerSystem.sprayCycles = parseInt(updatedCustomerSystem.sprayCycles, 10);
     updatedCustomerSystem.sprayDuration = parseInt(updatedCustomerSystem.sprayDuration, 10);
     updatedCustomerSystem.installDate = moment(updatedCustomerSystem.installDate).format('YYYY-MM-DD');
+    console.error(updatedCustomerSystem);
     CustomerRequests.updateCustomerSystem(updatedCustomerSystem)
       .then(() => {
         this.props.history.push(`/customer/${updatedCustomerSystem.customerId}`);
@@ -180,7 +181,7 @@ class EditCustomerSystemPage extends React.Component {
               />
             </div>
           </div>
-          <button type="submit" className="btn btn-success">Add New System</button>
+          <button type="submit" className="btn btn-success">Update System</button>
         </form>
       </div>
     );

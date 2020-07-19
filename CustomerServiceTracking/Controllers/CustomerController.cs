@@ -109,6 +109,19 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
+        [HttpPut("updateCustomerSystem")]
+        public IActionResult UpdateCustomerSystem(CustomerSystem updateCustomerSystem)
+        {
+            if (_repo.UpdateCustomerSystem(updateCustomerSystem))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpDelete("{customerId}")]
         public IActionResult DeleteCustomer(Guid customerId)
         {

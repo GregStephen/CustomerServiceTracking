@@ -42,7 +42,7 @@ const updateCustomerAddress = (updatedCustomerAddress) => new Promise((resolve, 
 });
 
 const updateCustomerSystem = (updatedCustomerSystem) => new Promise((resolve, reject) => {
-  axios.put(`${baseUrl}/updatedCustomerSystem`, updatedCustomerSystem)
+  axios.put(`${baseUrl}/updateCustomerSystem`, updatedCustomerSystem)
     .then((result) => resolve(result.data))
     .catch((err) => reject(err));
 });
