@@ -57,6 +57,20 @@ namespace CustomerServiceTracking.Repositories
                 return customer;
             }
         }
+
+        public CustomerSystem GetCustomerSystemByCustomerSystemId(Guid customerSystemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [CustomerSystem]
+                            WHERE [Id] = @customerSystemId";
+                var parameters = new { customerSystemId };
+                var customerSystem =  db.QueryFirstOrDefault<CustomerSystem>(sql, parameters);
+                customerSystem.SystemInfo = _systemRepo.GetSystemInfoBySystemId(customerSystem.SystemId);
+                return customerSystem;
+            }
+        }
         /*
         public Customer AddAddressAndSystemsToCustomer(Customer CustomerToAddAddressAndSystems)
         {
@@ -157,6 +171,24 @@ namespace CustomerServiceTracking.Repositories
         public bool UpdateCustomerAddress(Customer updatedCustomerAddress)
         {
             return (_addressRepo.UpdateCustomerAddress(updatedCustomerAddress));
+        }
+
+        public bool UpdateCustomerSystem(CustomerSystem updatedCustomerSystem)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [CustomerSystem]
+                            SET 
+                                [InstallDate] = @installDate,
+                                [Nozzles] = @nozzles,
+                                [SerialNumber] = @serialNumber,
+                                [Sold] = @sold,
+                                [SprayCycles] = @sprayCycles,
+                                [SprayDuration] = @sprayDuration,
+                                [SystemId] = @systemId
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedCustomerSystem) == 1);
+            }
         }
 
         public bool DeleteFromBusinessCustomer(Guid customerId)

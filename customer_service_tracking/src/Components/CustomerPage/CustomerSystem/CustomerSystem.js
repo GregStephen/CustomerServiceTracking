@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import {
   Modal,
   ModalHeader,
 } from 'reactstrap';
+import moment from 'moment';
 
 import DeleteCustomerSystemModal from '../../Modals/DeleteCustomerSystemModal/DeleteCustomerSystemModal';
 
@@ -30,9 +32,10 @@ class CustomerSystem extends React.Component {
 
   render() {
     const { system } = this.props;
+    const editCustomerSystemLink = `/edit-customer-system/${system.id}`;
     return (
       <div className='CustomerSystem'>
-        <p>Install Date: {system.installDate}</p>
+        <p>Install Date: {moment(system.installDate).format('MM/DD/YY')}</p>
         <p>Serial Number: {system.serialNumber}</p>
         {system.sold
           ? <p>Sold</p>
@@ -40,7 +43,7 @@ class CustomerSystem extends React.Component {
         <p>Nozzles: {system.nozzles}</p>
         <p>Spray Cycles: {system.sprayCycles}</p>
         <p>Spray Duration: {system.sprayDuration}</p>
-        <button className="btn btn-info">Change settings</button>
+        <Link className="btn btn-info" tag={Link} to={editCustomerSystemLink}>Change settings</Link>
         <button className="btn btn-danger" onClick={this.toggleModalOpen}>DELETE SYSTEM</button>
         <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
           <ModalHeader toggle={this.modalIsOpen}>Delete Customer System</ModalHeader>

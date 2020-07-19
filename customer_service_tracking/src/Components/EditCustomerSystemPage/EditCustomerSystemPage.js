@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -7,39 +8,6 @@ import moment from 'moment';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import SystemRequests from '../../Helpers/Data/SystemRequests';
-
-const defaultCustomer = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  officePhone: '',
-  homePhone: '',
-  address: {
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-  },
-  systems: [
-    {
-      id: '',
-      systemId: '',
-      installDate: '',
-      nozzles: 0,
-      serialNumber: '',
-      sold: false,
-      sprayCycles: 0,
-      sprayDuration: 0,
-      systemInfo: {
-        id: '',
-        type: '',
-        gallons: '',
-        inches: '',
-      },
-    },
-  ],
-};
 
 const defaultCustomerSystem = {
   customerId: '',
@@ -52,24 +20,26 @@ const defaultCustomerSystem = {
   sprayDuration: 0,
 };
 
-class AddSystemToCustomerPage extends React.Component {
+class EditCustomerSystemPage extends React.Component {
   static propTypes = {
     authorized: PropTypes.bool.isRequired,
     userObj: PropTypes.object.isRequired,
   }
 
   state = {
-    customer: defaultCustomer,
     systemOptions: [],
-    newCustomerSystem: defaultCustomerSystem,
+    updatedCustomerSystem: defaultCustomerSystem,
   }
 
 
   loadPage() {
     const { userObj } = this.props;
-    const customerId = this.props.match.params.id;
-    CustomerRequests.getCustomerFromCustomerId(customerId)
-      .then((customerResult) => this.setState({ customer: customerResult }))
+    const customerSystemId = this.props.match.params.id;
+    CustomerRequests.getCustomerSystemFromCustomerSystemId(customerSystemId)
+      .then((customerSystemResult) => {
+        customerSystemResult.installDate = moment(customerSystemResult.installDate).format('YYYY-MM-DD');
+        this.setState({ updatedCustomerSystem: customerSystemResult });
+      })
       .catch((err) => console.error(err));
     SystemRequests.getSystemsForBusiness(userObj.businessId)
       .then((systemOptions) => this.setState({ systemOptions }))
@@ -80,49 +50,47 @@ class AddSystemToCustomerPage extends React.Component {
     this.loadPage();
   }
 
-  createNewCustomerSystem = (e) => {
+  updateCustomerSystem = (e) => {
     e.preventDefault();
-    const { newCustomerSystem } = this.state;
-    const customerId = this.props.match.params.id;
-    newCustomerSystem.customerId = customerId;
-    newCustomerSystem.nozzles = parseInt(newCustomerSystem.nozzles, 10);
-    newCustomerSystem.sprayCycles = parseInt(newCustomerSystem.sprayCycles, 10);
-    newCustomerSystem.sprayDuration = parseInt(newCustomerSystem.sprayDuration, 10);
-    newCustomerSystem.installDate = moment(newCustomerSystem.installDate).format('YYYY-MM-DD');
-    CustomerRequests.addNewCustomerSystem(newCustomerSystem)
+    const { updatedCustomerSystem } = this.state;
+    updatedCustomerSystem.nozzles = parseInt(updatedCustomerSystem.nozzles, 10);
+    updatedCustomerSystem.sprayCycles = parseInt(updatedCustomerSystem.sprayCycles, 10);
+    updatedCustomerSystem.sprayDuration = parseInt(updatedCustomerSystem.sprayDuration, 10);
+    updatedCustomerSystem.installDate = moment(updatedCustomerSystem.installDate).format('YYYY-MM-DD');
+    console.error(updatedCustomerSystem);
+    CustomerRequests.updateCustomerSystem(updatedCustomerSystem)
       .then(() => {
-        this.props.history.push(`/customer/${customerId}`);
+        this.props.history.push(`/customer/${updatedCustomerSystem.customerId}`);
       })
       .catch((err) => console.error(err));
   }
 
   formFieldStringState = (e) => {
-    const tempCustomerSystem = { ...this.state.newCustomerSystem };
+    const tempCustomerSystem = { ...this.state.updatedCustomerSystem };
     tempCustomerSystem[e.target.id] = e.target.value;
-    this.setState({ newCustomerSystem: tempCustomerSystem });
+    this.setState({ updatedCustomerSystem: tempCustomerSystem });
   };
 
   handleRadio = (e) => {
-    const tempCustomerSystem = { ...this.state.newCustomerSystem };
+    const tempCustomerSystem = { ...this.state.updatedCustomerSystem };
     const sold = e.currentTarget.value === 'true';
     tempCustomerSystem[e.target.id] = sold;
-    this.setState({ newCustomerSystem: tempCustomerSystem });
+    this.setState({ updatedCustomerSystem: tempCustomerSystem });
   }
 
   render() {
-    const { newCustomerSystem, systemOptions } = this.state;
+    const { updatedCustomerSystem, systemOptions } = this.state;
     return (
-      <div className='AddSystemToCustomerPage'>
-        <h1>add system to customer page</h1>
-        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewCustomerSystem}>
-          <h3>New System</h3>
+      <div className='EditCustomerSystemPage'>
+        <h1>Edit Customer System</h1>
+        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.updateCustomerSystem}>
           <FormGroup>
             <Label htmlFor="systemId">Which system did you install?</Label>
             <Input
               type="select"
               name="systemId"
               id="systemId"
-              value={newCustomerSystem.systemId}
+              value={updatedCustomerSystem.systemId}
               onChange={this.formFieldStringState}
               required>
               <option value="">Select a system</option>
@@ -137,7 +105,7 @@ class AddSystemToCustomerPage extends React.Component {
               type="date"
               className="form-control"
               id="installDate"
-              value={newCustomerSystem.installDate}
+              value={updatedCustomerSystem.installDate}
               onChange={this.formFieldStringState}
               required
             />
@@ -149,7 +117,7 @@ class AddSystemToCustomerPage extends React.Component {
               className="form-control"
               id="nozzles"
               min="0"
-              value={newCustomerSystem.nozzles}
+              value={updatedCustomerSystem.nozzles}
               onChange={this.formFieldStringState}
               required
             />
@@ -160,7 +128,7 @@ class AddSystemToCustomerPage extends React.Component {
                 className="form-control"
                 id="sprayCycles"
                 min="0"
-                value={newCustomerSystem.sprayCycles}
+                value={updatedCustomerSystem.sprayCycles}
                 onChange={this.formFieldStringState}
                 required
               />
@@ -172,7 +140,7 @@ class AddSystemToCustomerPage extends React.Component {
                 className="form-control"
                 id="sprayDuration"
                 min="0"
-                value={newCustomerSystem.sprayDuration}
+                value={updatedCustomerSystem.sprayDuration}
                 onChange={this.formFieldStringState}
                 required
               />
@@ -183,7 +151,7 @@ class AddSystemToCustomerPage extends React.Component {
                 type="input"
                 className="form-control"
                 id="serialNumber"
-                value={newCustomerSystem.serialNumber}
+                value={updatedCustomerSystem.serialNumber}
                 onChange={this.formFieldStringState}
                 required
               />
@@ -195,7 +163,7 @@ class AddSystemToCustomerPage extends React.Component {
                 className="form-control"
                 id="sold"
                 value="true"
-                checked={newCustomerSystem.sold === true}
+                checked={updatedCustomerSystem.sold === true}
                 onChange={this.handleRadio}
                 required
               />
@@ -207,17 +175,17 @@ class AddSystemToCustomerPage extends React.Component {
                 className="form-control"
                 id="sold"
                 value="false"
-                checked={newCustomerSystem.sold === false}
+                checked={updatedCustomerSystem.sold === false}
                 onChange={this.handleRadio}
                 required
               />
             </div>
           </div>
-          <button type="submit" className="btn btn-success">Add New System</button>
+          <button type="submit" className="btn btn-success">Update System</button>
         </form>
       </div>
     );
   }
 }
 
-export default AddSystemToCustomerPage;
+export default EditCustomerSystemPage;

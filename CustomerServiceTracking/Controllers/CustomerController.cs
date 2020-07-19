@@ -44,6 +44,20 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
+        [HttpGet("customerSystemId/{customerSystemId}")]
+        public IActionResult GetCustomerSystemByCustomerSystemId(Guid customerSystemId)
+        {
+            var customerSystem = _repo.GetCustomerSystemByCustomerSystemId(customerSystemId);
+            if (customerSystem != null)
+            {
+                return Ok(customerSystem);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         public IActionResult AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO)
         {
@@ -86,6 +100,19 @@ namespace CustomerServiceTracking.Controllers
         public IActionResult UpdateCustomerAddress(Customer updateCustomerAddress)
         {
             if (_repo.UpdateCustomerAddress(updateCustomerAddress))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("updateCustomerSystem")]
+        public IActionResult UpdateCustomerSystem(CustomerSystem updateCustomerSystem)
+        {
+            if (_repo.UpdateCustomerSystem(updateCustomerSystem))
             {
                 return Ok();
             }
