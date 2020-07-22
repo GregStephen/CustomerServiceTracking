@@ -1,4 +1,5 @@
 ﻿using CustomerServiceTracking.DataModels;
+using CustomerServiceTracking.DTOS;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -18,15 +19,19 @@ namespace CustomerServiceTracking.Repositories
             _connectionString = configuration.GetValue<string>("ConnectionString");
         }
 
-        public IEnumerable<Report> GetReportByCustomerId(Guid customerId)
+        public IEnumerable<ReportToSendDTO> GetReportsByCustomerId(Guid customerId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT *
-                            FROM [Report] 
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.CustomerId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                            FROM [Report] r
+                            JOIN [User] u
+							ON r.TechnicianId = u.Id
+							JOIN [JobType] jt
+							ON r.JobTypeId = jt.Id
                             WHERE [CustomerId] = @customerId";
                 var parameters = new { customerId };
-                return db.Query<Report>(sql, parameters);
+                return db.Query<ReportToSendDTO>(sql, parameters);
             }
         }
 

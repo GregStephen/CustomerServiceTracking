@@ -40,6 +40,7 @@ namespace CustomerServiceTracking
             services.AddScoped<ISystemRepository, SystemRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IUnregisteredEmployeeRepository, UnregisteredEmployeeRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
