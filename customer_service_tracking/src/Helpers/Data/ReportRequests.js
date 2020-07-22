@@ -8,4 +8,10 @@ const getReportsByCustomerId = (customerId) => new Promise((resolve, reject) => 
     .catch((err) => reject(err));
 });
 
-export default { getReportsByCustomerId };
+const addNewReport = (newReport) => new Promise((resolve, reject) => {
+  axios.post(`${baseUrl}`, newReport)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
+export default { getReportsByCustomerId, addNewReport };

@@ -35,7 +35,7 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        public bool AddReport(Report newReport)
+        public bool AddReport(NewReportDTO newReport)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -44,6 +44,7 @@ namespace CustomerServiceTracking.Repositories
                                 [AmountRemaining],
                                 [CustomerId],
                                 [InchesAdded],
+                                [JobTypeId],
                                 [Notes],
                                 [ServiceDate],
                                 [SolutionAdded],
@@ -55,6 +56,7 @@ namespace CustomerServiceTracking.Repositories
                                 @amountRemaining,
                                 @customerId,
                                 @inchesAdded,
+                                @jobTypeId,
                                 @notes,
                                 @serviceDate,
                                 @solutionAdded,

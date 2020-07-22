@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CustomerServiceTracking.DataModels
+namespace CustomerServiceTracking.DTOS
 {
-    public class Report
+    public class NewReportDTO
     {
-        public Guid Id { get; set; }
         public int AmountRemaining { get; set; }
         public Guid CustomerId { get; set; }
         public int InchesAdded { get; set; }

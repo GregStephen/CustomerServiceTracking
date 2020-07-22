@@ -125,7 +125,7 @@ namespace CustomerServiceTracking.Repositories
             }
         }
         
-        public bool AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO)
+        public Guid AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -141,11 +141,12 @@ namespace CustomerServiceTracking.Repositories
                             [SprayDuration],
                             [SystemId]
                             )
+                            OUTPUT INSERTED.Id
                             VALUES
                             (
                             @customerId,
                             @installDate,
-                            @notes
+                            @notes,
                             @nozzles,
                             @serialNumber,
                             @sold,
@@ -153,7 +154,7 @@ namespace CustomerServiceTracking.Repositories
                             @sprayDuration,
                             @systemId
                             )";
-                return db.Execute(sql, newCustomerSystemDTO) == 1;
+                return db.QueryFirst<Guid>(sql, newCustomerSystemDTO);
             }
         }
         public bool UpdateCustomer(Customer updatedCustomer)

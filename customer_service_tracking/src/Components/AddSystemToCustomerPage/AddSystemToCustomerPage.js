@@ -6,6 +6,8 @@ import {
 import moment from 'moment';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
+import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
+import ReportRequests from '../../Helpers/Data/ReportRequests';
 import SystemRequests from '../../Helpers/Data/SystemRequests';
 
 const defaultCustomer = {
@@ -52,6 +54,18 @@ const defaultCustomerSystem = {
   sprayDuration: 0,
 };
 
+const defaultReport = {
+  amountRemaining: 0,
+  customerId: '',
+  inchesAdded: 0,
+  notes: '',
+  serviceDate: '',
+  solutionAdded: 0,
+  systemId: '',
+  technicianId: '',
+  jobTypeId: '',
+};
+
 class AddSystemToCustomerPage extends React.Component {
   static propTypes = {
     authorized: PropTypes.bool.isRequired,
@@ -61,7 +75,9 @@ class AddSystemToCustomerPage extends React.Component {
   state = {
     customer: defaultCustomer,
     systemOptions: [],
+    jobTypeOptions: [],
     newCustomerSystem: defaultCustomerSystem,
+    newInstallReport: defaultReport,
   }
 
 
@@ -74,6 +90,9 @@ class AddSystemToCustomerPage extends React.Component {
     SystemRequests.getSystemsForBusiness(userObj.businessId)
       .then((systemOptions) => this.setState({ systemOptions }))
       .catch((err) => console.error(err));
+    JobTypeRequests.getJobTypes()
+      .then((types) => this.setState({ jobTypeOptions: types }))
+      .catch((err) => console.error(err));
   }
 
   componentDidMount() {
@@ -82,7 +101,8 @@ class AddSystemToCustomerPage extends React.Component {
 
   createNewCustomerSystem = (e) => {
     e.preventDefault();
-    const { newCustomerSystem } = this.state;
+    const { newCustomerSystem, newInstallReport } = this.state;
+    const { userObj } = this.props;
     const customerId = this.props.match.params.id;
     newCustomerSystem.customerId = customerId;
     newCustomerSystem.nozzles = parseInt(newCustomerSystem.nozzles, 10);
@@ -90,8 +110,18 @@ class AddSystemToCustomerPage extends React.Component {
     newCustomerSystem.sprayDuration = parseInt(newCustomerSystem.sprayDuration, 10);
     newCustomerSystem.installDate = moment(newCustomerSystem.installDate).format('YYYY-MM-DD');
     CustomerRequests.addNewCustomerSystem(newCustomerSystem)
-      .then(() => {
-        this.props.history.push(`/customer/${customerId}`);
+      .then((newCustomerSystemId) => {
+        newInstallReport.customerId = customerId;
+        newInstallReport.systemId = newCustomerSystemId;
+        newInstallReport.amountRemaining = parseInt(newInstallReport.amountRemaining, 10);
+        newInstallReport.inchesAdded = parseInt(newInstallReport.inchesAdded, 10);
+        newInstallReport.serviceDate = newCustomerSystem.installDate;
+        newInstallReport.solutionAdded = parseInt(newInstallReport.solutionAdded, 10);
+        newInstallReport.technicianId = userObj.id;
+        ReportRequests.addNewReport(newInstallReport)
+          .then(() => {
+            this.props.history.push(`/customer/${customerId}`);
+          });
       })
       .catch((err) => console.error(err));
   }
@@ -102,6 +132,12 @@ class AddSystemToCustomerPage extends React.Component {
     this.setState({ newCustomerSystem: tempCustomerSystem });
   };
 
+  reportFormFieldStringState = (e) => {
+    const tempReport = { ...this.state.newInstallReport };
+    tempReport[e.target.id] = e.target.value;
+    this.setState({ newInstallReport: tempReport });
+  };
+
   handleRadio = (e) => {
     const tempCustomerSystem = { ...this.state.newCustomerSystem };
     const sold = e.currentTarget.value === 'true';
@@ -110,7 +146,9 @@ class AddSystemToCustomerPage extends React.Component {
   }
 
   render() {
-    const { newCustomerSystem, systemOptions } = this.state;
+    const {
+      newCustomerSystem, systemOptions, jobTypeOptions, newInstallReport,
+    } = this.state;
     return (
       <div className='AddSystemToCustomerPage'>
         <h1>add system to customer page</h1>
@@ -209,6 +247,69 @@ class AddSystemToCustomerPage extends React.Component {
                 value="false"
                 checked={newCustomerSystem.sold === false}
                 onChange={this.handleRadio}
+                required
+              />
+            </div>
+            <h1>Initial install report</h1>
+            <FormGroup>
+            <Label htmlFor="jobTypeId">What type of job?</Label>
+            <Input
+              type="select"
+              name="jobTypeId"
+              id="jobTypeId"
+              value={newInstallReport.jobTypeId}
+              onChange={this.reportFormFieldStringState}
+              required>
+              <option value="">Select a job</option>
+              {jobTypeOptions.map((object) => (
+                <option key={object.id} value={object.id}>{object.type}</option>
+              ))}
+            </Input>
+          </FormGroup>
+          <div className="form-group">
+              <label htmlFor="amountRemaining">Amount Remaining</label>
+              <input
+                type="number"
+                className="form-control"
+                id="amountRemaining"
+                min="0"
+                value={newInstallReport.amountRemaining}
+                onChange={this.reportFormFieldStringState}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="inchesAdded">Inches Added</label>
+              <input
+                type="number"
+                className="form-control"
+                id="inchesAdded"
+                min="0"
+                value={newInstallReport.inchesAdded}
+                onChange={this.reportFormFieldStringState}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="solutionAdded">Solution Added</label>
+              <input
+                type="number"
+                className="form-control"
+                id="solutionAdded"
+                min="0"
+                value={newInstallReport.solutionAdded}
+                onChange={this.reportFormFieldStringState}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="notes">Notes</label>
+              <input
+                type="input"
+                className="form-control"
+                id="notes"
+                value={newInstallReport.notes}
+                onChange={this.reportFormFieldStringState}
                 required
               />
             </div>
