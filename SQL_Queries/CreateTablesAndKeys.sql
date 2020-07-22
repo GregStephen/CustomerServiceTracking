@@ -51,7 +51,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Report')
 		[ServiceDate] DATETIME not null,
 		[SolutionAdded] INT not null,
 		[SystemId] UNIQUEIDENTIFIER not null,
-		[TechnicianId] UNIQUEIDENTIFIER not null
+		[TechnicianId] UNIQUEIDENTIFIER not null,
+		[JobTypeId] UNIQUEIDENTIFIER not null
 	)
 	END
 ELSE
@@ -64,7 +65,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'CustomerSystem')
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[CustomerId] UNIQUEIDENTIFIER not null,
 		[InstallDate] DATETIME not null,
-		[Nozzles] INT not null,		
+		[Notes] NVARCHAR(255) null,
+		[Nozzles] INT not null,	
 		[SerialNumber] NVARCHAR(255) not null,
 		[Sold] BIT not null,
 		[SprayCycles] INT not null,
@@ -163,11 +165,22 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Job')
 		[CustomerId] UNIQUEIDENTIFIER not null,
 		[DateAssigned] DATETIME not null,
 		[TechnicianId] UNIQUEIDENTIFIER not null,
-		[Repair] BIT not null
+		[JobTypeId] UNIQUEIDENTIFIER not null
 	)
 	END
 ELSE
 	PRINT 'Job table already exists'
+
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'JobType')
+	BEGIN
+	CREATE TABLE [JobType]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[Type] NVARCHAR(255) not null
+	)
+	END
+ELSE
+	PRINT 'JobType table already exists'
 
 IF not exists (SELECT * FROM sys.tables WHERE [name] = 'BusinessCustomer')
 	BEGIN
@@ -246,6 +259,16 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_User')
 	END
 ELSE
 	PRINT 'Foreign key FK_Job_User already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_JobType')
+	BEGIN
+	ALTER TABLE [Job]
+	ADD CONSTRAINT FK_Job_JobType
+		FOREIGN KEY (JobTypeId) 
+		REFERENCES [JobType] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_Job_JobType already exists'
 
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_BusinessSystem_Business')
 	BEGIN
@@ -378,6 +401,15 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_Customer
 ELSE
 	PRINT 'Foreign key FK_Report_CustomerSystem already exists'
 
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Report_JobType')
+	BEGIN
+	ALTER TABLE [Report]
+	ADD CONSTRAINT FK_Report_JobType
+		FOREIGN KEY (JobTypeId) 
+		REFERENCES [JobType] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_Report_JobType already exists'
 	
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UserBusiness_User')
 	BEGIN
