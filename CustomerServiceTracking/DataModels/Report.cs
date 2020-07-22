@@ -16,5 +16,6 @@ namespace CustomerServiceTracking.DataModels
         public int SolutionAdded { get; set; }
         public Guid SystemId { get; set; }
         public Guid TechnicianId { get; set; }
+        public Guid TypeId { get; set; }
     }
 }

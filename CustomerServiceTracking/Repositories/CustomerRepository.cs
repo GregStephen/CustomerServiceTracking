@@ -133,6 +133,7 @@ namespace CustomerServiceTracking.Repositories
                             (
                             [CustomerId],
                             [InstallDate],
+                            [Notes],
                             [Nozzles],
                             [SerialNumber],
                             [Sold],
@@ -144,6 +145,7 @@ namespace CustomerServiceTracking.Repositories
                             (
                             @customerId,
                             @installDate,
+                            @notes
                             @nozzles,
                             @serialNumber,
                             @sold,

@@ -10,6 +10,7 @@ namespace CustomerServiceTracking.DataModels
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public DateTime InstallDate { get; set; }
+        public string Notes { get; set; }
         public int Nozzles { get; set; }
         public string SerialNumber { get; set; }
         public bool Sold { get; set; }

@@ -47,12 +47,12 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Report')
 		[AmountRemaining] INT not null,
 		[CustomerId] UNIQUEIDENTIFIER not null,
 		[InchesAdded] INT not null,
+		[JobTypeId] UNIQUEIDENTIFIER not null,
 		[Notes] NVARCHAR(255) not null,
 		[ServiceDate] DATETIME not null,
 		[SolutionAdded] INT not null,
 		[SystemId] UNIQUEIDENTIFIER not null,
-		[TechnicianId] UNIQUEIDENTIFIER not null,
-		[JobTypeId] UNIQUEIDENTIFIER not null
+		[TechnicianId] UNIQUEIDENTIFIER not null
 	)
 	END
 ELSE
