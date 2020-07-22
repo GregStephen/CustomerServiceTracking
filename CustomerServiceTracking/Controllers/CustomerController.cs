@@ -74,9 +74,10 @@ namespace CustomerServiceTracking.Controllers
         [HttpPost("addSystem")]
         public IActionResult AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO)
         {
-            if (_repo.AddNewSystemToCustomer(newCustomerSystemDTO))
+            var customerSystemId = _repo.AddNewSystemToCustomer(newCustomerSystemDTO);
+            if (customerSystemId != null)
             {
-                return Created($"customer/addSystem{newCustomerSystemDTO.CustomerId}", newCustomerSystemDTO);
+                return Ok(customerSystemId);
             }
             else
             {

@@ -7,13 +7,16 @@ import {
   ModalHeader,
 } from 'reactstrap';
 
+import CustomerReports from './CustomerReports/CustomerReports';
 import CustomerSystem from './CustomerSystem/CustomerSystem';
 import EditCustomerModal from '../Modals/EditCustomerModal/EditCustomerModal';
 import EditCustomerAddressModal from '../Modals/EditCustomerAddressModal/EditCustomerAddressModal';
 
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
+import ReportRequests from '../../Helpers/Data/ReportRequests';
 
 import './CustomerPage.scss';
+
 
 const defaultCustomer = {
   id: '',
@@ -47,6 +50,21 @@ const defaultCustomer = {
   ],
 };
 
+const defaultReports = [
+  {
+    id: '',
+    amountRemaining: 0,
+    customerId: '',
+    inchesAdded: 0,
+    notes: '',
+    serviceDate: '',
+    solutionAdded: 0,
+    systemId: '',
+    technicianName: '',
+    type: '',
+  },
+];
+
 class CustomerPage extends React.Component {
   static propTypes = {
     userObj: PropTypes.object.isRequired,
@@ -55,6 +73,7 @@ class CustomerPage extends React.Component {
 
   state = {
     customer: defaultCustomer,
+    reports: defaultReports,
     modalOpen: '',
     modalIsOpen: false,
   }
@@ -70,6 +89,9 @@ class CustomerPage extends React.Component {
     const customerId = this.props.match.params.id;
     CustomerRequests.getCustomerFromCustomerId(customerId)
       .then((customerResult) => this.setState({ customer: customerResult }))
+      .catch((err) => console.error(err));
+    ReportRequests.getReportsByCustomerId(customerId)
+      .then((reportResults) => this.setState({ reports: reportResults }))
       .catch((err) => console.error(err));
   }
 
@@ -118,7 +140,7 @@ class CustomerPage extends React.Component {
   }
 
   render() {
-    const { customer, modalOpen } = this.state;
+    const { customer, modalOpen, reports } = this.state;
     const addSystemLink = `/add-system-to-customer/${customer.id}`;
     return (
       <div className="CustomerPage">
@@ -139,6 +161,8 @@ class CustomerPage extends React.Component {
         </div>
 
         <Link className="btn btn-info" tag={Link} to={addSystemLink}>Add System</Link>
+        <CustomerReports
+        reports={reports}/>
         <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
           <ModalHeader toggle={this.modalIsOpen}>
             {modalOpen === 'editCustomer' ? 'Edit Customer'
