@@ -252,21 +252,21 @@ class AddSystemToCustomerPage extends React.Component {
             </div>
             <h1>Initial install report</h1>
             <FormGroup>
-            <Label htmlFor="jobTypeId">What type of job?</Label>
-            <Input
-              type="select"
-              name="jobTypeId"
-              id="jobTypeId"
-              value={newInstallReport.jobTypeId}
-              onChange={this.reportFormFieldStringState}
-              required>
-              <option value="">Select a job</option>
-              {jobTypeOptions.map((object) => (
-                <option key={object.id} value={object.id}>{object.type}</option>
-              ))}
-            </Input>
-          </FormGroup>
-          <div className="form-group">
+              <Label htmlFor="jobTypeId">What type of job?</Label>
+              <Input
+                type="select"
+                name="jobTypeId"
+                id="jobTypeId"
+                value={newInstallReport.jobTypeId}
+                onChange={this.reportFormFieldStringState}
+                required>
+                <option value="">Select a job</option>
+                {jobTypeOptions.map((object) => (
+                  <option key={object.id} value={object.id}>{object.type}</option>
+                ))}
+              </Input>
+            </FormGroup>
+            <div className="form-group">
               <label htmlFor="amountRemaining">Amount Remaining</label>
               <input
                 type="number"
