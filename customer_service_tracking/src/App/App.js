@@ -15,9 +15,10 @@ import HomePage from '../Components/HomePage/HomePage';
 import LandingPage from '../Components/LandingPage/LandingPage';
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
 import NewAccountPage from '../Components/NewAccountPage/NewBusinessAccount/NewAccountPage';
+import NewCustomerPage from '../Components/NewCustomerPage/NewCustomerPage';
 import NewPersonalAccountPage from '../Components/NewAccountPage/NewPersonalAccountPage/NewPersonalAccountPage';
 import NewPersonalAccountCheckPage from '../Components/NewAccountPage/ChooseBusinessForPersonalPage/ChooseBusinessForPersonalPage';
-import NewCustomerPage from '../Components/NewCustomerPage/NewCustomerPage';
+import NewReportPage from '../Components/NewReportPage/NewReportPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
 import TeamPage from '../Components/TeamPage/TeamPage';
@@ -77,21 +78,22 @@ class App extends React.Component {
     return (
       <div className="App">
         <BrowserRouter>
-          <NavigationBar authorized={authorized} userObj={userObj}/>
+          <NavigationBar authorized={authorized} userObj={userObj} />
           <Switch>
-            <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn}/>
-            <PublicRoute path='/new-business-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn}/>
-            <PublicRoute path='/new-personal-account/:id' component={NewPersonalAccountPage} authorized={authorized} logIn={this.logIn}/>
-            <PublicRoute path='/select-business' component={NewPersonalAccountCheckPage} authorized={authorized}/>
-            <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/new-system' component={NewSystemPage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/customers' component={CustomersPage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/add-system-to-customer/:id' component={AddSystemToCustomerPage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/edit-customer-system/:id' component={EditCustomerSystemPage} authorized={authorized} userObj={userObj}/>
-            <PrivateRoute path='/team' component={TeamPage} authorized={authorized} userObj={userObj}/>
+            <PublicRoute path='/landing-page' component={LandingPage} authorized={authorized} logIn={this.logIn} />
+            <PublicRoute path='/new-business-account' component={NewAccountPage} authorized={authorized} logIn={this.logIn} />
+            <PublicRoute path='/new-personal-account/:id' component={NewPersonalAccountPage} authorized={authorized} logIn={this.logIn} />
+            <PublicRoute path='/select-business' component={NewPersonalAccountCheckPage} authorized={authorized} />
+            <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/new-system' component={NewSystemPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/customers' component={CustomersPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/new-report/:id' component={NewReportPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/add-system-to-customer/:id' component={AddSystemToCustomerPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/edit-customer-system/:id' component={EditCustomerSystemPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/team' component={TeamPage} authorized={authorized} userObj={userObj} />
             <Redirect from='*' to='/landing-page' />
           </Switch>
         </BrowserRouter>

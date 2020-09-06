@@ -33,6 +33,7 @@ class CustomerSystem extends React.Component {
   render() {
     const { system } = this.props;
     const editCustomerSystemLink = `/edit-customer-system/${system.id}`;
+    const newReportLink = `/new-report/${system.id}`;
     return (
       <div className='CustomerSystem'>
         <p>Install Date: {moment(system.installDate).format('MM/DD/YY')}</p>
@@ -44,6 +45,7 @@ class CustomerSystem extends React.Component {
         <p>Spray Cycles: {system.sprayCycles}</p>
         <p>Spray Duration: {system.sprayDuration}</p>
         <Link className="btn btn-info" tag={Link} to={editCustomerSystemLink}>Change settings</Link>
+        <Link className="btn btn-info" tag={Link} to={newReportLink}>New Report</Link>
         <button className="btn btn-danger" onClick={this.toggleModalOpen}>DELETE SYSTEM</button>
         <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
           <ModalHeader toggle={this.modalIsOpen}>Delete Customer System</ModalHeader>
