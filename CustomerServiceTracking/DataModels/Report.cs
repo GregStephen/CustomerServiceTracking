@@ -17,5 +17,6 @@ namespace CustomerServiceTracking.DataModels
         public Guid SystemId { get; set; }
         public Guid TechnicianId { get; set; }
         public Guid JobTypeId { get; set; }
+        public DateTime DayTankDepleted { get; set; }
     }
 }

@@ -247,6 +247,7 @@ INSERT INTO [Report]
 (
     [AmountRemaining],
     [CustomerId],
+	[DayTankDepleted],
     [InchesAdded],
 	[JobTypeId],
     [Notes],
@@ -259,6 +260,7 @@ VALUES
 (
 	0,
 	@customer,
+	'2020-10-07 00:00:00.000',
 	20,
 	@jobTypeInstall,
 	'All lines look good',

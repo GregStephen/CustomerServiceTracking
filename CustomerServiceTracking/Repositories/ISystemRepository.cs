@@ -14,6 +14,7 @@ namespace CustomerServiceTracking.Repositories
         bool DeleteSystemFromDatabase(Guid systemId);
         bool UpdateSystem(BusinessSystem updatedSystem);
         IEnumerable<CustomerSystem> GetCustomerSystemsByCustomerId(Guid customerId);
+        CustomerSystem GetCustomerSystemBySystemId(Guid systemId);
         BusinessSystem GetSystemInfoBySystemId(Guid systemId);
 
     }

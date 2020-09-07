@@ -42,6 +42,7 @@ namespace CustomerServiceTracking
             services.AddScoped<IUnregisteredEmployeeRepository, UnregisteredEmployeeRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
             services.AddScoped<IJobTypesRepository, JobTypesRepository>();
+            services.AddScoped<IJobRepository, JobRepository>();
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {

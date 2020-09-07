@@ -59,6 +59,21 @@ namespace CustomerServiceTracking.Repositories
                 return customerSystems;
             }
         }
+
+        public CustomerSystem GetCustomerSystemBySystemId(Guid systemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [CustomerSystem]
+                            WHERE [Id] = @systemId";
+                var parameters = new { systemId };
+                var customerSystem = db.QueryFirst<CustomerSystem>(sql, parameters);
+                customerSystem.SystemInfo = GetSystemInfoBySystemId(customerSystem.SystemId);
+                return customerSystem;
+            }
+        }
+
         private bool ConnectSystemToBusiness(Guid systemId, Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))
