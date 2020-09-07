@@ -46,6 +46,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Report')
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[AmountRemaining] INT not null,
 		[CustomerId] UNIQUEIDENTIFIER not null,
+		[DayTankDepleted] DATETIME not null,
 		[InchesAdded] INT not null,
 		[JobTypeId] UNIQUEIDENTIFIER not null,
 		[Notes] NVARCHAR(255) not null,

@@ -30,7 +30,10 @@ class NewReportPage extends React.Component {
       .then((system) => this.setState({ customerSystem: system }))
       .catch((err) => console.error(err));
     JobTypeRequests.getJobTypes()
-      .then((types) => this.setState({ jobTypeOptions: types }))
+      .then((types) => {
+        const reportTypes = types.filter((x) => x.type !== 'Install');
+        this.setState({ jobTypeOptions: reportTypes });
+      })
       .catch((err) => console.error(err));
   }
 
@@ -57,7 +60,8 @@ class NewReportPage extends React.Component {
   }
 
   render() {
-    const { newReport, jobTypeOptions } = this.state;
+    const { newReport, jobTypeOptions, customerSystem } = this.state;
+    const maxInches = customerSystem.systemInfo.inches;
     const today = moment().format('YYYY-MM-DD');
     return (
       <div className="NewReportPage">
@@ -92,24 +96,26 @@ class NewReportPage extends React.Component {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="amountRemaining">Amount Remaining</label>
+            <label htmlFor="amountRemaining">Inches of Water Remaining</label>
             <input
               type="number"
               className="form-control"
               id="amountRemaining"
               min="0"
+              max={maxInches}
               value={newReport.amountRemaining}
               onChange={this.formFieldStringState}
               required
             />
           </div>
           <div className="form-group">
-            <label htmlFor="inchesAdded">Inches Added</label>
+            <label htmlFor="inchesAdded">Inches of Water Added</label>
             <input
               type="number"
               className="form-control"
               id="inchesAdded"
               min="0"
+              max={maxInches - newReport.amountRemaining}
               value={newReport.inchesAdded}
               onChange={this.formFieldStringState}
               required
@@ -135,7 +141,6 @@ class NewReportPage extends React.Component {
               id="notes"
               value={newReport.notes}
               onChange={this.formFieldStringState}
-              required
             />
           </div>
           <button type="submit" className="btn btn-success">Add New Report</button>

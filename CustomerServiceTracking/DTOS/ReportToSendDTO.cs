@@ -10,6 +10,7 @@ namespace CustomerServiceTracking.DTOS
         public Guid Id { get; set; }
         public int AmountRemaining { get; set; }
         public Guid CustomerId { get; set; }
+        public DateTime DayTankDepleted { get; set; }
         public int InchesAdded { get; set; }
         public string Notes { get; set; }
         public DateTime ServiceDate { get; set; }
