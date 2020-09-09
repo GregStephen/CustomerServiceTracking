@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Table } from 'reactstrap';
 
 //import defaults from '../../Helpers/defaults';
 import SystemNeedingServiceRow from './SystemNeedingServiceRow/SystemNeedingServiceRow';
@@ -37,7 +38,21 @@ class ServiceNeededReport extends React.Component {
       <div className="ServiceNeededReport">
         <h1>Show those needing service here</h1>
         <div>
-          {systemsNeedingService.length > 0 ? showSystemsNeedingService :
+          {systemsNeedingService.length > 0 ?
+            <Table striped size="sm">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Address</th>
+                  <th>Days until Empty</th>
+                  <th>Tech Assigned</th>
+                </tr>
+              </thead>
+              <tbody>
+                {showSystemsNeedingService}
+              </tbody>
+            </Table>
+            :
             <p>No one needs service this week!</p>
           }
         </div>
