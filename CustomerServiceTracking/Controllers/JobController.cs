@@ -23,7 +23,7 @@ namespace CustomerServiceTracking.Controllers
             _repo = repo;
         }
 
-        [HttpGet("systemId/{systemId")]
+        [HttpGet("systemId/{systemId}")]
         public IActionResult GetJobForSystemBySystemId(Guid systemId)
         {
             var job = _repo.GetJobForSystemBySystemId(systemId);
@@ -49,6 +49,19 @@ namespace CustomerServiceTracking.Controllers
             if (_repo.AddJob(newJobDTO))
             {
                 return Created($"job/{newJobDTO.DateAssigned}", newJobDTO);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{jobId}")]
+        public IActionResult DeleteJob(Guid jobId)
+        {
+            if (_repo.DeleteJob(jobId))
+            {
+                return Ok();
             }
             else
             {

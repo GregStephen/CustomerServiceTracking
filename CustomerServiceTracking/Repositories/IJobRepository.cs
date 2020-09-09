@@ -9,9 +9,10 @@ namespace CustomerServiceTracking.Repositories
 {
     public interface IJobRepository
     {
-        Job GetJobForSystemBySystemId(Guid systemId)
+        Job GetJobForSystemBySystemId(Guid systemId);
         List<ServiceNeed> GetJobsNeedingService(Guid businessId);
         bool AddJob(NewJobDTO newJobDTO);
+        bool DeleteJob(Guid jobId);
 
     }
 }

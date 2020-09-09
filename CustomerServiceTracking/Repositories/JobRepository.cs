@@ -31,7 +31,7 @@ namespace CustomerServiceTracking.Repositories
                             FROM [Job]
                             WHERE [CustomerSystemId] = @systemId";
                 var parameters = new { systemId };
-                return db.QueryFirst<Job>(sql, parameters);
+                return db.QueryFirstOrDefault<Job>(sql, parameters);
             }
         }
 
@@ -84,6 +84,17 @@ namespace CustomerServiceTracking.Repositories
                                 @jobTypeId
                             )";
                 return (db.Execute(sql, newJobDTO) == 1);
+            }
+        }
+
+        public bool DeleteJob(Guid jobId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"DELETE [Job]
+                            WHERE Id = @jobId";
+                var parameters = new { jobId };
+                return db.Execute(sql, parameters) == 1;
             }
         }
     }

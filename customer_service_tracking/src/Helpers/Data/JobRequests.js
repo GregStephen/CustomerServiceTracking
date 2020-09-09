@@ -13,4 +13,18 @@ const getJobsNeedingAssignment = (businessId) => new Promise((resolve, reject) =
     .catch((err) => reject(err));
 });
 
-export default { getJobForSystemBySystemId, getJobsNeedingAssignment };
+const createNewJob = (newJob) => new Promise((resolve, reject) => {
+  axios.post(`${baseUrl}`, newJob)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
+const deleteJob = (jobId) => new Promise((resolve, reject) => {
+  axios.delete(`${baseUrl}/${jobId}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => console.error(err));
+});
+
+export default {
+  getJobForSystemBySystemId, getJobsNeedingAssignment, createNewJob, deleteJob,
+};
