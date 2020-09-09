@@ -18,7 +18,8 @@ class HomePage extends React.Component {
         <h1>WELCOME IN {userObj.firstName}</h1>
         <h2>from {userObj.businessName}</h2>
         <div className="systems-needing-service">
-          {<ServiceNeededReport/>}
+          {<ServiceNeededReport
+            businessId={userObj.businessId}/>}
         </div>
       </div>
     );

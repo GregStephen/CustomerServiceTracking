@@ -22,7 +22,7 @@ namespace CustomerServiceTracking.Controllers
             _repo = repo;
         }
 
-        [HttpGet("businessId/{businessId}")]
+        [HttpGet("current-week-jobs/{businessId}")]
         public IActionResult GetJobsNeedingService(Guid businessId)
         {
             return Ok(_repo.GetJobsNeedingService(businessId));

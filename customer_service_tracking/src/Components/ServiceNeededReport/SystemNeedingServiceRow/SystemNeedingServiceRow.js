@@ -10,4 +10,4 @@ class SystemNeedingServiceRow extends React.Component{
   }
 }
 
-export default { SystemNeedingServiceRow };
+export default SystemNeedingServiceRow;

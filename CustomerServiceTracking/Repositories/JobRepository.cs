@@ -47,6 +47,7 @@ namespace CustomerServiceTracking.Repositories
                     SystemNeedingService.DaysUntilEmpty = systemIdAndDate.DaysUntilEmpty;
                     SystemNeedingService.Customer = _customerRepo.GetCustomerByCustomerId(systemIdAndDate.CustomerId);
                     SystemNeedingService.System = _systemRepo.GetCustomerSystemBySystemId(systemIdAndDate.SystemId);
+                    ListOfSystemsNeedingService.Add(SystemNeedingService);
                 }
                 return ListOfSystemsNeedingService;
             }
