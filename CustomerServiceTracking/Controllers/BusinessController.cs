@@ -32,6 +32,13 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetBusinesses());
         }
 
+        [HttpGet("allEmployees/{businessId}")]
+        public IActionResult GetAllEmployess(Guid businessId)
+        {
+            return Ok(_repo.GetAllEmployees(businessId));
+        }
+
+
         [HttpGet("unregisteredEmployees/{businessId}")]
         public IActionResult GetBusinessesUnRegisteredEmployees(Guid businessId)
         {

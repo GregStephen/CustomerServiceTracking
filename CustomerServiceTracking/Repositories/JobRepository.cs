@@ -23,6 +23,18 @@ namespace CustomerServiceTracking.Repositories
             _systemRepo = systemRepo;
         }
 
+        public Job GetJobForSystemBySystemId(Guid systemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [Job]
+                            WHERE [CustomerSystemId] = @systemId";
+                var parameters = new { systemId };
+                return db.QueryFirst<Job>(sql, parameters);
+            }
+        }
+
         public List<ServiceNeed> GetJobsNeedingService(Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))
@@ -50,6 +62,28 @@ namespace CustomerServiceTracking.Repositories
                     ListOfSystemsNeedingService.Add(SystemNeedingService);
                 }
                 return ListOfSystemsNeedingService;
+            }
+        }
+
+        public bool AddJob(NewJobDTO newJobDTO)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [Job]
+                            (
+                                [CustomerSystemId],
+                                [DateAssigned],
+                                [TechnicianId],
+                                [JobTypeId]
+                            )
+                            VALUES
+                            (
+                                @customerSystemId,
+                                @dateAssigned,
+                                @technicianId,
+                                @jobTypeId
+                            )";
+                return (db.Execute(sql, newJobDTO) == 1);
             }
         }
     }

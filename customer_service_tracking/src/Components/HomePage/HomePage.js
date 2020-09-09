@@ -17,10 +17,16 @@ class HomePage extends React.Component {
       <div className="HomePage">
         <h1>WELCOME IN {userObj.firstName}</h1>
         <h2>from {userObj.businessName}</h2>
-        <div className="systems-needing-service">
-          {<ServiceNeededReport
-            businessId={userObj.businessId}/>}
-        </div>
+        {userObj.admin ?
+          <div className="systems-needing-service">
+            {<ServiceNeededReport
+              businessId={userObj.businessId} />}
+          </div>
+          :
+          <div className="jobs-assigned">
+            <p>assigned jobs</p>
+            </div>
+  }
       </div>
     );
   }
