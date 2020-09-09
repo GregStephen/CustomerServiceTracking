@@ -8,6 +8,7 @@ import SystemNeedingServiceRow from './SystemNeedingServiceRow/SystemNeedingServ
 import JobRequests from '../../Helpers/Data/JobRequests';
 
 import './ServiceNeededReport.scss';
+import BusinessRequests from '../../Helpers/Data/BusinessRequests';
 
 class ServiceNeededReport extends React.Component {
   static propTypes = {
@@ -16,6 +17,7 @@ class ServiceNeededReport extends React.Component {
 
   state = {
     systemsNeedingService: [],
+    employeeOptions: []
   }
 
   componentDidMount() {
@@ -23,14 +25,18 @@ class ServiceNeededReport extends React.Component {
     JobRequests.getJobsNeedingAssignment(businessId)
       .then((systems) => this.setState({ systemsNeedingService: systems }))
       .catch((err) => console.error(err));
-    // get customer systems that need service within the next week
+    BusinessRequests.getRegisteredAndUnregisteredEmployees(businessId)
+      .then((employees) => this.setState({ employeeOptions: employees }))
+      .catch((err) => console.error(err));
   }
 
   render() {
-    const { systemsNeedingService } = this.state;
-    const showSystemsNeedingService = systemsNeedingService.map((system) => (
+    const { systemsNeedingService, employeeOptions } = this.state;
+    const showSystemsNeedingService = systemsNeedingService.map((systemNeedingService) => (
       <SystemNeedingServiceRow
-        system={system}
+        systemNeedingService={systemNeedingService}
+        employeeOptions={employeeOptions}
+        key={systemNeedingService.system.id}
       />
     ));
 
@@ -46,6 +52,7 @@ class ServiceNeededReport extends React.Component {
                   <th>Address</th>
                   <th>Days until Empty</th>
                   <th>Tech Assigned</th>
+                  <th>Assign Job</th>
                 </tr>
               </thead>
               <tbody>

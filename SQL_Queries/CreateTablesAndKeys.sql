@@ -163,7 +163,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Job')
 	CREATE TABLE [Job]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-		[CustomerId] UNIQUEIDENTIFIER not null,
+		[CustomerSystemId] UNIQUEIDENTIFIER not null,
 		[DateAssigned] DATETIME not null,
 		[TechnicianId] UNIQUEIDENTIFIER not null,
 		[JobTypeId] UNIQUEIDENTIFIER not null
@@ -241,15 +241,15 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Business_Addres
 ELSE
 	PRINT 'Foreign key FK_Business_Address already exists'
 
-IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_Customer')
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_CustomerSystem')
 	BEGIN
 	ALTER TABLE [Job]
-	ADD CONSTRAINT FK_Job_Customer
-		FOREIGN KEY (CustomerId) 
-		REFERENCES [Customer] (Id)
+	ADD CONSTRAINT FK_Job_CustomerSystem
+		FOREIGN KEY (CustomerSystemId) 
+		REFERENCES [CustomerSystem] (Id)
 	END
 ELSE
-	PRINT 'Foreign key FK_Job_Customer already exists'
+	PRINT 'Foreign key FK_Job_CustomerSystem already exists'
 
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_User')
 	BEGIN

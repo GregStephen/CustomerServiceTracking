@@ -34,15 +34,16 @@ namespace CustomerServiceTracking
 
             services.AddControllers();
 
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IBusinessRepository, BusinessRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
-            services.AddScoped<ISystemRepository, SystemRepository>();
+            services.AddScoped<IBusinessRepository, BusinessRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<IUnregisteredEmployeeRepository, UnregisteredEmployeeRepository>();
-            services.AddScoped<IReportRepository, ReportRepository>();
-            services.AddScoped<IJobTypesRepository, JobTypesRepository>();
             services.AddScoped<IJobRepository, JobRepository>();
+            services.AddScoped<IJobTypesRepository, JobTypesRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<ISystemRepository, SystemRepository>();
+            services.AddScoped<IUnregisteredEmployeeRepository, UnregisteredEmployeeRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
