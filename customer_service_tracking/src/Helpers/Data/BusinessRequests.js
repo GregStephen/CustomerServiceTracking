@@ -14,6 +14,12 @@ const getRegisteredAndUnregisteredEmployees = (businessId) => new Promise((resol
     .catch((err) => reject(err));
 });
 
+const getRegisteredEmployees = (businessId) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/registeredEmployees/${businessId}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 const getUnregisteredEmployees = (businessId) => new Promise((resolve, reject) => {
   axios.get(`${baseUrl}/unregisteredEmployees/${businessId}`)
     .then((results) => resolve(results.data))
@@ -47,6 +53,7 @@ const deleteUnregisteredUser = (unregisteredUserId) => new Promise((resolve, rej
 export default {
   getBusinesses,
   getRegisteredAndUnregisteredEmployees,
+  getRegisteredEmployees,
   getUnregisteredEmployees,
   getUnregisteredEmployeeById,
   addUnregisteredEmployee,

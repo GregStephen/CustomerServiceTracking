@@ -9,6 +9,7 @@ namespace CustomerServiceTracking.Repositories
     public interface IBusinessRepository
     {
         IEnumerable<Business> GetBusinesses();
+        IEnumerable<Employee> GetRegisteredEmployees(Guid businessId);
         List<Employee> GetAllEmployees(Guid businessId);
         Guid AddNewBusinessToDatabase(string businessName, Guid addressId);
         bool AddUserToBusiness(Guid userId, Guid businessId);

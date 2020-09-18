@@ -28,6 +28,19 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public IEnumerable<Employee> GetRegisteredEmployees(Guid businessId) 
+        { 
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT u.Id, u.FirstName + ' ' + u.LastName as FullName
+                            FROM [User] u
+                            JOIN [UserBusiness] ub
+                            ON u.Id = ub.UserId
+                            WHERE ub.BusinessId = @businessId";
+                var parameters = new { businessId };
+                return db.Query<Employee>(sql, parameters);
+            }
+        }
         public List<Employee> GetAllEmployees(Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))

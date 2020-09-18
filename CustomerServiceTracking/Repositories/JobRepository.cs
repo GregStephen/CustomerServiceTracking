@@ -39,23 +39,40 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                List<Guid> customerIds = new List<Guid>();
+                List<Guid> systemIds = new List<Guid>();
+                List<Guid> mostRecentReportIds = new List<Guid>();
                 List<ServiceNeed> ListOfSystemsNeedingService = new List<ServiceNeed>();
-                ServiceNeed SystemNeedingService = new ServiceNeed();
+                
                 // get all customers from businessId
                 IEnumerable<Customer> customers = _customerRepo.GetCustomersByBusinessId(businessId);
                 foreach (var customer in customers)
                 { 
-                    customerIds.Add(customer.Id);
+                    foreach (var customerSystem in customer.Systems)
+                    {
+                        systemIds.Add(customerSystem.Id);
+                    }
                 }
-                //search reports by customer Id and return list of SystemId, customerId and Days leftwhere dayTankDepleted is within the week
+                var sqll = @"SELECT TOP(1) Id 
+                            FROM Report
+                            WHERE SystemId = @systemId
+                            ORDER BY ServiceDate DESC";
+
+                foreach (var systemId in systemIds)
+                {
+                    var parameter = new { systemId };
+                    var reportId = db.QueryFirst<Guid>(sqll, parameter);
+                    mostRecentReportIds.Add(reportId);
+                }
+
+                //search reports and returns list of SystemId, customerId and Days leftwhere dayTankDepleted is within the week and Id is in list of most recent reports
                 var sql = @"SELECT r.[SystemId], DATEDIFF(day, GETDATE(), r.[DayTankDepleted]) as DaysUntilEmpty, r.[CustomerId]
                             FROM [Report] r
-                            WHERE (DATEDIFF(day, GETDATE(), r.[DayTankDepleted]) < 7) AND r.[CustomerId] in @customerIds";
-                var parameters = new { customerIds };
+                            WHERE (DATEDIFF(day, GETDATE(), r.[DayTankDepleted]) < 7) AND r.[Id] in @mostRecentReportIds";
+                var parameters = new { mostRecentReportIds };
                 var systemIdsAndDaysNeedingService =  db.Query<InNeedOfServiceCheckDTO>(sql, parameters);
                 foreach (var systemIdAndDate in systemIdsAndDaysNeedingService)
                 {
+                    ServiceNeed SystemNeedingService = new ServiceNeed();
                     SystemNeedingService.DaysUntilEmpty = systemIdAndDate.DaysUntilEmpty;
                     SystemNeedingService.Customer = _customerRepo.GetCustomerByCustomerId(systemIdAndDate.CustomerId);
                     SystemNeedingService.System = _systemRepo.GetCustomerSystemBySystemId(systemIdAndDate.SystemId);

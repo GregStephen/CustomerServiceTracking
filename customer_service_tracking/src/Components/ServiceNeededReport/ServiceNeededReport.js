@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'reactstrap';
 
-//import defaults from '../../Helpers/defaults';
+// import defaults from '../../Helpers/defaults';
 import SystemNeedingServiceRow from './SystemNeedingServiceRow/SystemNeedingServiceRow';
 
+import BusinessRequests from '../../Helpers/Data/BusinessRequests';
 import JobRequests from '../../Helpers/Data/JobRequests';
 
 import './ServiceNeededReport.scss';
-import BusinessRequests from '../../Helpers/Data/BusinessRequests';
+
 
 class ServiceNeededReport extends React.Component {
   static propTypes = {
@@ -17,7 +18,7 @@ class ServiceNeededReport extends React.Component {
 
   state = {
     systemsNeedingService: [],
-    employeeOptions: []
+    employeeOptions: [],
   }
 
   componentDidMount() {
@@ -25,7 +26,7 @@ class ServiceNeededReport extends React.Component {
     JobRequests.getJobsNeedingAssignment(businessId)
       .then((systems) => this.setState({ systemsNeedingService: systems }))
       .catch((err) => console.error(err));
-    BusinessRequests.getRegisteredAndUnregisteredEmployees(businessId)
+    BusinessRequests.getRegisteredEmployees(businessId)
       .then((employees) => this.setState({ employeeOptions: employees }))
       .catch((err) => console.error(err));
   }
@@ -44,8 +45,8 @@ class ServiceNeededReport extends React.Component {
       <div className="ServiceNeededReport">
         <h1>Show those needing service here</h1>
         <div>
-          {systemsNeedingService.length > 0 ?
-            <Table striped size="sm">
+          {systemsNeedingService.length > 0
+            ? <Table striped size="sm">
               <thead>
                 <tr>
                   <th>Customer</th>
@@ -59,8 +60,7 @@ class ServiceNeededReport extends React.Component {
                 {showSystemsNeedingService}
               </tbody>
             </Table>
-            :
-            <p>No one needs service this week!</p>
+            : <p>No one needs service this week!</p>
           }
         </div>
       </div>
