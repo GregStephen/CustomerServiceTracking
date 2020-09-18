@@ -11,7 +11,7 @@ import JobTypeRequests from '../../../Helpers/Data/JobTypeRequests';
 class systemNeedingServiceNeedingServiceRow extends React.Component {
   static propTypes = {
     systemNeedingService: PropTypes.object.isRequired,
-    employeeOptions: PropTypes.array.isRequired
+    employeeOptions: PropTypes.array.isRequired,
   }
 
   state = {
@@ -28,14 +28,13 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
     JobRequests.getJobForSystemBySystemId(systemNeedingService.system.id)
       .then((results) => this.setState({ job: results }, () => {
         if (results.id == null) {
-          this.setState({ assigned: false })
-        }
-        else {
-          this.setState({ assigned: true })
+          this.setState({ assigned: false });
+        } else {
+          this.setState({ assigned: true });
         }
       }))
-      .catch((err) => console.error(err))
-    // Check to see if there is a job for that systemNeedingService system id 
+      .catch((err) => console.error(err));
+    // Check to see if there is a job for that systemNeedingService system id
     // if there is then this.setState({ assigned: true }) and this.setState({ job: })
     // if there is not then this.setState({ assigned: false }) and this.setState({ job: {} })
   }
@@ -43,7 +42,7 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
   componentDidMount() {
     this.checkIfAssigned();
     JobTypeRequests.getJobTypes()
-      .then((jobTypes) => this.setState({ jobTypes: jobTypes }))
+      .then((jobTypes) => this.setState({ jobTypes }))
       .catch((err) => console.error(err));
   }
 
@@ -62,19 +61,21 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
     }
 
     const assignJob = () => {
-      const { technicianAssignedId, jobTypes } = this.state;
-      const serviceType = jobTypes.filter((x) => x.type === 'Service');
-      // create the job
-      const newJob = {
-        customerSystemId: systemNeedingService.system.id,
-        dateAssigned: moment().format('YYYY-MM-DD'),
-        technicianId: technicianAssignedId,
-        jobTypeId: serviceType[0].id,
-      };
-      JobRequests.createNewJob(newJob)
-        .then(() => this.checkIfAssigned())
-        .catch((err) => console.error(err));
-    }
+      const { jobTypes } = this.state;
+      if (technicianAssignedId !== '') {
+        const serviceType = jobTypes.filter((x) => x.type === 'Service');
+        // create the job
+        const newJob = {
+          customerSystemId: systemNeedingService.system.id,
+          dateAssigned: moment().format('YYYY-MM-DD'),
+          technicianId: technicianAssignedId,
+          jobTypeId: serviceType[0].id,
+        };
+        JobRequests.createNewJob(newJob)
+          .then(() => this.checkIfAssigned())
+          .catch((err) => console.error(err));
+      }
+    };
 
     const unassignJob = () => {
       JobRequests.deleteJob(job.id)
@@ -82,22 +83,20 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
           this.setState({ assigned: false }, () => {
             this.checkIfAssigned();
           });
-
         })
-        .catch((err) => console.error(err))
-    }
+        .catch((err) => console.error(err));
+    };
 
     return (
       <tr>
-        <td>{systemNeedingService.customer.firstName + " " + systemNeedingService.customer.lastName}</td>
+        <td>{`${systemNeedingService.customer.firstName} ${systemNeedingService.customer.lastName}`}</td>
         <td>{systemNeedingService.customer.address.addressLine1}</td>
         <td>{systemNeedingService.daysUntilEmpty}</td>
-        {assigned ?
-          <td>
+        {assigned
+          ? <td>
            {assignedTech.fullName}
           </td>
-          :
-          <td>
+          : <td>
             <FormGroup>
               <Input
                 type="select"
@@ -114,14 +113,13 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
             </FormGroup>
           </td>
         }
-        {assigned ?
-          <td><button className='btn btn-info' onClick={unassignJob}>Unassign</button></td>
-          :
-          <td><button className='btn btn-success' onClick={assignJob}>Assign</button></td>
+        {assigned
+          ? <td><button className='btn btn-info' onClick={unassignJob}>Unassign</button></td>
+          : <td><button className='btn btn-success' onClick={assignJob}>Assign</button></td>
         }
 
       </tr>
-    )
+    );
   }
 }
 
