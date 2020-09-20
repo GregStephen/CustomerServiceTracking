@@ -10,61 +10,11 @@ import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
 import ReportRequests from '../../Helpers/Data/ReportRequests';
 import SystemRequests from '../../Helpers/Data/SystemRequests';
 
-const defaultCustomer = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  officePhone: '',
-  homePhone: '',
-  address: {
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-  },
-  systems: [
-    {
-      id: '',
-      systemId: '',
-      installDate: '',
-      nozzles: 0,
-      serialNumber: '',
-      sold: false,
-      sprayCycles: 0,
-      sprayDuration: 0,
-      systemInfo: {
-        id: '',
-        type: '',
-        gallons: '',
-        inches: '',
-      },
-    },
-  ],
-};
+import defaults from '../../Helpers/defaults';
 
-const defaultCustomerSystem = {
-  customerId: '',
-  systemId: '',
-  installDate: '',
-  nozzles: 0,
-  serialNumber: '',
-  sold: false,
-  sprayCycles: 0,
-  sprayDuration: 0,
-};
-
-const defaultReport = {
-  amountRemaining: 0,
-  customerId: '',
-  inchesAdded: 0,
-  notes: '',
-  serviceDate: '',
-  solutionAdded: 0,
-  systemId: '',
-  technicianId: '',
-  jobTypeId: '',
-};
+const { defaultCustomer } = defaults;
+const { defaultCustomerSystem } = defaults;
+const { defaultReport } = defaults;
 
 class AddSystemToCustomerPage extends React.Component {
   static propTypes = {
@@ -80,7 +30,6 @@ class AddSystemToCustomerPage extends React.Component {
     newInstallReport: defaultReport,
   }
 
-
   loadPage() {
     const { userObj } = this.props;
     const customerId = this.props.match.params.id;
@@ -91,7 +40,10 @@ class AddSystemToCustomerPage extends React.Component {
       .then((systemOptions) => this.setState({ systemOptions }))
       .catch((err) => console.error(err));
     JobTypeRequests.getJobTypes()
-      .then((types) => this.setState({ jobTypeOptions: types }))
+      .then((types) => {
+        const reportType = types.find((x) => x.type === 'Install');
+        this.setState({ jobTypeOptions: reportType.id });
+      })
       .catch((err) => console.error(err));
   }
 
@@ -101,7 +53,7 @@ class AddSystemToCustomerPage extends React.Component {
 
   createNewCustomerSystem = (e) => {
     e.preventDefault();
-    const { newCustomerSystem, newInstallReport } = this.state;
+    const { newCustomerSystem, newInstallReport, jobTypeOptions } = this.state;
     const { userObj } = this.props;
     const customerId = this.props.match.params.id;
     newCustomerSystem.customerId = customerId;
@@ -113,7 +65,8 @@ class AddSystemToCustomerPage extends React.Component {
       .then((newCustomerSystemId) => {
         newInstallReport.customerId = customerId;
         newInstallReport.systemId = newCustomerSystemId;
-        newInstallReport.amountRemaining = parseInt(newInstallReport.amountRemaining, 10);
+        newInstallReport.jobTypeId = jobTypeOptions;
+        newInstallReport.amountRemaining = 0;
         newInstallReport.inchesAdded = parseInt(newInstallReport.inchesAdded, 10);
         newInstallReport.serviceDate = newCustomerSystem.installDate;
         newInstallReport.solutionAdded = parseInt(newInstallReport.solutionAdded, 10);
@@ -147,8 +100,29 @@ class AddSystemToCustomerPage extends React.Component {
 
   render() {
     const {
-      newCustomerSystem, systemOptions, jobTypeOptions, newInstallReport,
+      newCustomerSystem, systemOptions, newInstallReport,
     } = this.state;
+    const today = moment().format('YYYY-MM-DD');
+
+    const showInchesAdded = () => {
+      const system = systemOptions.find((x) => x.id === newCustomerSystem.systemId);
+      const maxInches = system.inches;
+      return (
+        <div className="form-group">
+          <label htmlFor="inchesAdded">Inches Added</label>
+          <input
+            type="number"
+            className="form-control"
+            id="inchesAdded"
+            min="0"
+            max={maxInches}
+            value={newInstallReport.inchesAdded}
+            onChange={this.reportFormFieldStringState}
+            required
+          />
+        </div>
+      );
+    };
     return (
       <div className='AddSystemToCustomerPage'>
         <h1>add system to customer page</h1>
@@ -175,6 +149,7 @@ class AddSystemToCustomerPage extends React.Component {
               type="date"
               className="form-control"
               id="installDate"
+              max={today}
               value={newCustomerSystem.installDate}
               onChange={this.formFieldStringState}
               required
@@ -250,46 +225,21 @@ class AddSystemToCustomerPage extends React.Component {
                 required
               />
             </div>
+            <div className="form-group">
+              <label htmlFor="notes">Notes For System</label>
+              <input
+                type="input"
+                className="form-control"
+                id="notes"
+                value={newCustomerSystem.notes}
+                onChange={this.formFieldStringState}
+              />
+            </div>
             <h1>Initial install report</h1>
-            <FormGroup>
-              <Label htmlFor="jobTypeId">What type of job?</Label>
-              <Input
-                type="select"
-                name="jobTypeId"
-                id="jobTypeId"
-                value={newInstallReport.jobTypeId}
-                onChange={this.reportFormFieldStringState}
-                required>
-                <option value="">Select a job</option>
-                {jobTypeOptions.map((object) => (
-                  <option key={object.id} value={object.id}>{object.type}</option>
-                ))}
-              </Input>
-            </FormGroup>
-            <div className="form-group">
-              <label htmlFor="amountRemaining">Amount Remaining</label>
-              <input
-                type="number"
-                className="form-control"
-                id="amountRemaining"
-                min="0"
-                value={newInstallReport.amountRemaining}
-                onChange={this.reportFormFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="inchesAdded">Inches Added</label>
-              <input
-                type="number"
-                className="form-control"
-                id="inchesAdded"
-                min="0"
-                value={newInstallReport.inchesAdded}
-                onChange={this.reportFormFieldStringState}
-                required
-              />
-            </div>
+            {newCustomerSystem.systemId !== ''
+              ? showInchesAdded()
+              : ''
+                 }
             <div className="form-group">
               <label htmlFor="solutionAdded">Solution Added</label>
               <input
@@ -298,17 +248,6 @@ class AddSystemToCustomerPage extends React.Component {
                 id="solutionAdded"
                 min="0"
                 value={newInstallReport.solutionAdded}
-                onChange={this.reportFormFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="notes">Notes</label>
-              <input
-                type="input"
-                className="form-control"
-                id="notes"
-                value={newInstallReport.notes}
                 onChange={this.reportFormFieldStringState}
                 required
               />
