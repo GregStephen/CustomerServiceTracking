@@ -235,7 +235,6 @@ class AddSystemToCustomerPage extends React.Component {
                 onChange={this.formFieldStringState}
               />
             </div>
-            <h1>Initial install report</h1>
             {newCustomerSystem.systemId !== ''
               ? showInchesAdded()
               : ''

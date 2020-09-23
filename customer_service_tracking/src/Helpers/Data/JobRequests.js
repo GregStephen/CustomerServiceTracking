@@ -13,6 +13,12 @@ const getJobsNeedingAssignment = (businessId) => new Promise((resolve, reject) =
     .catch((err) => reject(err));
 });
 
+const getJobsAssignedTo = (employeeId) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/employeeId/${employeeId}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 const createNewJob = (newJob) => new Promise((resolve, reject) => {
   axios.post(`${baseUrl}`, newJob)
     .then((results) => resolve(results.data))
@@ -26,5 +32,5 @@ const deleteJob = (jobId) => new Promise((resolve, reject) => {
 });
 
 export default {
-  getJobForSystemBySystemId, getJobsNeedingAssignment, createNewJob, deleteJob,
+  getJobForSystemBySystemId, getJobsNeedingAssignment, getJobsAssignedTo, createNewJob, deleteJob,
 };
