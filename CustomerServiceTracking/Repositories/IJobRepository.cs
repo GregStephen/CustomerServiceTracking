@@ -11,6 +11,7 @@ namespace CustomerServiceTracking.Repositories
     {
         Job GetJobForSystemBySystemId(Guid systemId);
         List<ServiceNeed> GetJobsNeedingService(Guid businessId);
+        IEnumerable<Job> GetJobsAssignedTo(Guid employeeId);
         bool AddJob(NewJobDTO newJobDTO);
         bool DeleteJob(Guid jobId);
 

@@ -82,6 +82,18 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public IEnumerable<Job> GetJobsAssignedTo(Guid employeeId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [Job]
+                            WHERE [TechnicianId] = @employeeId";
+                var parameters = new { employeeId };
+                return db.Query<Job>(sql, parameters);
+            }
+        }
+
         public bool AddJob(NewJobDTO newJobDTO)
         {
             using (var db = new SqlConnection(_connectionString))

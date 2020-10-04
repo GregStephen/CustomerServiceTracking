@@ -41,4 +41,4 @@ class AssignedJobs extends React.Component {
   }
 }
 
-export default { AssignedJobs };
+export default AssignedJobs;

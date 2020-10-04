@@ -43,6 +43,12 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetJobsNeedingService(businessId));
         }
 
+        [HttpGet("employeeId/{employeeId}")]
+        public IActionResult GetJobsAssignedTo(Guid employeeId)
+        {
+            return Ok(_repo.GetJobsAssignedTo(employeeId));
+        }
+
         [HttpPost]
         public IActionResult AddNewJobToDatabase(NewJobDTO newJobDTO)
         {
