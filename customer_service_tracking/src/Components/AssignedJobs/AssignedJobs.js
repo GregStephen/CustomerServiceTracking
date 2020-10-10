@@ -5,8 +5,6 @@ import { Table } from 'reactstrap';
 import AssignedJob from './AssignedJob';
 
 import JobRequests from '../../Helpers/Data/JobRequests';
-import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
-
 
 class AssignedJobs extends React.Component {
   static propTypes = {
@@ -15,7 +13,6 @@ class AssignedJobs extends React.Component {
 
   state = {
     jobsAssigned: [],
-    jobTypeOptions: [],
   }
 
   componentDidMount() {
@@ -23,19 +20,13 @@ class AssignedJobs extends React.Component {
     JobRequests.getJobsAssignedTo(userId)
       .then((jobs) => this.setState({ jobsAssigned: jobs }))
       .catch((err) => console.error(err));
-    JobTypeRequests.getJobTypes()
-      .then((jobResults) => {
-        this.setState({ jobTypeOptions: jobResults });
-      })
-      .catch();
   }
 
   render() {
-    const { jobsAssigned, jobTypeOptions } = this.state;
+    const { jobsAssigned } = this.state;
     const showAssignedJobs = jobsAssigned.map((job) => (
       <AssignedJob
         job={job}
-        jobTypeOptions={jobTypeOptions}
         key={job.id}
       />
     ));

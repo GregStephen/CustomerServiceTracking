@@ -15,12 +15,13 @@ namespace CustomerServiceTracking.Repositories
         string _connectionString;
         private ICustomerRepository _customerRepo;
         private ISystemRepository _systemRepo;
-
-        public JobRepository(IConfiguration configuration, ICustomerRepository customerRepo, ISystemRepository systemRepo)
+        private IJobTypesRepository _jobTypeRepo;
+        public JobRepository(IConfiguration configuration, ICustomerRepository customerRepo, ISystemRepository systemRepo, IJobTypesRepository jobTypeRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _customerRepo = customerRepo;
             _systemRepo = systemRepo;
+            _jobTypeRepo = jobTypeRepo;
         }
 
         public Job GetJobForSystemBySystemId(Guid systemId)
@@ -82,7 +83,7 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        public IEnumerable<Job> GetJobsAssignedTo(Guid employeeId)
+        public IEnumerable<JobToShow> GetJobsAssignedTo(Guid employeeId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -90,7 +91,14 @@ namespace CustomerServiceTracking.Repositories
                             FROM [Job]
                             WHERE [TechnicianId] = @employeeId";
                 var parameters = new { employeeId };
-                return db.Query<Job>(sql, parameters);
+                var jobs = db.Query<JobToShow>(sql, parameters);
+                foreach (var job in jobs)
+                {
+                    job.JobType = _jobTypeRepo.GetJobTypeById(job.JobTypeId);
+                    job.CustomerSystem = _customerRepo.GetCustomerSystemByCustomerSystemId(job.CustomerSystemId);
+                    job.Customer = _customerRepo.GetCustomerByCustomerId(job.CustomerSystem.CustomerId);
+                }
+                return jobs;
             }
         }
 
@@ -100,7 +108,7 @@ namespace CustomerServiceTracking.Repositories
             {
                 var sql = @"INSERT INTO [Job]
                             (
-                                [CustomerSystemId],
+                                [CustomerSystemId], 
                                 [DateAssigned],
                                 [TechnicianId],
                                 [JobTypeId]
