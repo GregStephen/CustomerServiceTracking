@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   FormGroup, Input,
 } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 import JobRequests from '../../../Helpers/Data/JobRequests';
@@ -52,9 +53,22 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
     this.setState({ technicianAssignedId: tempTechId });
   };
 
+  formatThisAddress = (addressObj) => {
+    let addressStringToReturn = '';
+    const addressString1 = addressObj.addressLine1?.replace(/\s/g, '+');
+    const city = addressObj.city?.replace(/\s/g, '+');
+    const state = addressObj.state?.replace(/\s/g, '+');
+    const zip = addressObj.zipCode?.replace(/\s/g, '+');
+    addressStringToReturn = `${addressString1}+${city}+${state}+${zip}`;
+    return addressStringToReturn;
+  }
+
   render() {
     const { systemNeedingService, employeeOptions } = this.props;
     const { technicianAssignedId, assigned, job } = this.state;
+    const customerLink = `/customer/${systemNeedingService.customer.id}`;
+    const formattedAddressString = this.formatThisAddress(systemNeedingService.customer.address);
+    const directionLink = `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${formattedAddressString}`;
     let assignedTech;
     if (job.id !== null) {
       assignedTech = employeeOptions.find((x) => x.id === job.technicianId);
@@ -89,8 +103,8 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
 
     return (
       <tr>
-        <td>{`${systemNeedingService.customer.firstName} ${systemNeedingService.customer.lastName}`}</td>
-        <td>{systemNeedingService.customer.address.addressLine1}</td>
+        <td><Link to={{ pathname: customerLink }}>{`${systemNeedingService.customer.firstName} ${systemNeedingService.customer.lastName}`}</Link></td>
+        <td><a rel="noopener noreferrer" target="_blank" href={directionLink}>{systemNeedingService.customer.address.addressLine1}</a></td>
         <td>{systemNeedingService.daysUntilEmpty}</td>
         {assigned
           ? <td>
