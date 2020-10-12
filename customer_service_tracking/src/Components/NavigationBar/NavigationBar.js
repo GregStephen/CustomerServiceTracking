@@ -49,16 +49,19 @@ class NavigationBar extends React.Component {
   render() {
     const { authorized, userObj } = this.props;
     const buildAdminNavbar = () => (
-        <Nav className="ml-auto" navbar>
-            <NavItem>
-              <NavLink tag={RRNavLink} to='/team'>Team</NavLink>
-            </NavItem>
-            <NavItem>
-                <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={RRNavLink} to='/customers'>Customers</NavLink>
-            </NavItem>
+      <Nav className="ml-auto" navbar>
+        <NavItem>
+          <NavLink tag={RRNavLink} to='/team'>Team</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink tag={RRNavLink} to='/reports'>Reports</NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink tag={RRNavLink} to='/customers'>Customers</NavLink>
+        </NavItem>
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret className="navbar-user-button">
           </DropdownToggle>
@@ -67,7 +70,7 @@ class NavigationBar extends React.Component {
               User Profile
             </DropdownItem>
             <DropdownItem onClick={this.logMeOut}>
-                Log Out
+              Log Out
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -76,32 +79,32 @@ class NavigationBar extends React.Component {
 
     const buildRegularNavbar = () => (
       <Nav className="ml-auto" navbar>
-      <UncontrolledDropdown nav inNavbar>
-        <DropdownToggle nav caret className="navbar-user-button">
-        </DropdownToggle>
-        <DropdownMenu right>
-          <DropdownItem tag={Link} to='/profile'>
-            User Profile
+        <UncontrolledDropdown nav inNavbar>
+          <DropdownToggle nav caret className="navbar-user-button">
+          </DropdownToggle>
+          <DropdownMenu right>
+            <DropdownItem tag={Link} to='/profile'>
+              User Profile
           </DropdownItem>
-          <DropdownItem onClick={this.logMeOut}>
+            <DropdownItem onClick={this.logMeOut}>
               Log Out
           </DropdownItem>
-        </DropdownMenu>
-      </UncontrolledDropdown>
-    </Nav>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      </Nav>
     );
 
     return (
       <div className="NavigationBar">
-          <Navbar dark color="dark" expand="md">
-            <NavbarBrand className="navbar-brand" tag={RRNavLink} to='/home'>Home</NavbarBrand>
-            <NavbarToggler onClick={this.toggle} />
-            <Collapse isOpen={this.state.isOpen} navbar>
-              {authorized && userObj.admin ? buildAdminNavbar()
-                : authorized && !userObj.admin ? buildRegularNavbar()
-                  : ''}
-            </Collapse>
-          </Navbar>
+        <Navbar dark color="dark" expand="md">
+          <NavbarBrand className="navbar-brand" tag={RRNavLink} to='/home'>Home</NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            {authorized && userObj.admin ? buildAdminNavbar()
+              : authorized && !userObj.admin ? buildRegularNavbar()
+                : ''}
+          </Collapse>
+        </Navbar>
       </div>
     );
   }

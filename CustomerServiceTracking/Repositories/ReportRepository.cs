@@ -20,8 +20,25 @@ namespace CustomerServiceTracking.Repositories
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _systemRepo = systemRepo;
         }
+        public IEnumerable<ReportToSendDTO> GetAllReportsByBusinessId(Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.CustomerId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, r.DayTankDepleted, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                            FROM [Report] r
+                            JOIN [User] u
+							ON r.TechnicianId = u.Id
+							Join [UserBusiness] ub
+							On u.Id = ub.UserId
+							JOIN [JobType] jt
+							ON r.JobTypeId = jt.Id
+                            WHERE ub.BusinessId = @businessId";
+                var parameters = new { businessId };
+                return db.Query<ReportToSendDTO>(sql, parameters);
+            }
+        }
 
-        public IEnumerable<ReportToSendDTO> GetReportsByCustomerId(Guid customerId)
+            public IEnumerable<ReportToSendDTO> GetReportsByCustomerId(Guid customerId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -31,7 +48,7 @@ namespace CustomerServiceTracking.Repositories
 							ON r.TechnicianId = u.Id
 							JOIN [JobType] jt
 							ON r.JobTypeId = jt.Id
-                            WHERE [CustomerId] = @customerId";
+                            WHERE r.[CustomerId] = @customerId";
                 var parameters = new { customerId };
                 return db.Query<ReportToSendDTO>(sql, parameters);
             }
@@ -70,6 +87,7 @@ namespace CustomerServiceTracking.Repositories
 
 
         }
+
         public bool AddReport(NewReportDTO newReportDTO)
         {
             using (var db = new SqlConnection(_connectionString))

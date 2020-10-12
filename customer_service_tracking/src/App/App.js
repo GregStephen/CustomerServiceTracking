@@ -20,6 +20,7 @@ import NewPersonalAccountPage from '../Components/NewAccountPage/NewPersonalAcco
 import NewPersonalAccountCheckPage from '../Components/NewAccountPage/ChooseBusinessForPersonalPage/ChooseBusinessForPersonalPage';
 import NewReportPage from '../Components/NewReportPage/NewReportPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
+import ReportsPage from '../Components/ReportsPage/ReportsPage';
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
 import TeamPage from '../Components/TeamPage/TeamPage';
 
@@ -90,6 +91,7 @@ class App extends React.Component {
             <PrivateRoute path='/customers' component={CustomersPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/reports' component={ReportsPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/new-report/:id' component={NewReportPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/add-system-to-customer/:id' component={AddSystemToCustomerPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/edit-customer-system/:id' component={EditCustomerSystemPage} authorized={authorized} userObj={userObj} />

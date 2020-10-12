@@ -25,6 +25,12 @@ namespace CustomerServiceTracking.Controllers
             _repo = repo;
         }
 
+        [HttpGet("businessId/{businessId}")]
+        public IActionResult GetAllReportsByBusinessId(Guid businessId)
+        {
+            return Ok(_repo.GetAllReportsByBusinessId(businessId));
+        }
+
         [HttpGet("customerId/{customerId}")]
         public IActionResult GetReportsByCustomerId(Guid customerId)
         {
