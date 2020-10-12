@@ -27,5 +27,17 @@ namespace CustomerServiceTracking.Repositories
                 return db.Query<JobType>(sql);
             }
         }
+
+        public JobType GetJobTypeById(Guid id)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [JobType]
+                            WHERE [Id] = @id";
+                var parameters = new { id };
+                return db.QueryFirst<JobType>(sql, parameters);
+            }
+        }
     }
 }

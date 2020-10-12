@@ -12,6 +12,8 @@ const defaultUser = {
   firstName: '',
   lastName: '',
   admin: false,
+  businessId: '',
+  unregisteredUserId: '',
 };
 
 class NewPersonalAccountPage extends React.Component {
@@ -72,6 +74,7 @@ class NewPersonalAccountPage extends React.Component {
         saveMe.firebaseUid = firebase.auth().currentUser.uid;
         saveMe.businessId = businessId;
         saveMe.unregisteredUserId = unregisteredUserId;
+        console.log(saveMe);
         UserRequests.addNewPersonalUser(saveMe)
           .then(() => {
             logIn(email, password);

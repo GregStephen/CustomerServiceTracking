@@ -6,9 +6,16 @@ const getJobForSystemBySystemId = (systemId) => new Promise((resolve, reject) =>
   axios.get(`${baseUrl}/systemId/${systemId}`)
     .then((results) => resolve(results.data))
     .catch((err) => reject(err));
-})
+});
+
 const getJobsNeedingAssignment = (businessId) => new Promise((resolve, reject) => {
   axios.get(`${baseUrl}/current-week-jobs/${businessId}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
+const getJobsAssignedTo = (employeeId) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/employeeId/${employeeId}`)
     .then((results) => resolve(results.data))
     .catch((err) => reject(err));
 });
@@ -26,5 +33,5 @@ const deleteJob = (jobId) => new Promise((resolve, reject) => {
 });
 
 export default {
-  getJobForSystemBySystemId, getJobsNeedingAssignment, createNewJob, deleteJob,
+  getJobForSystemBySystemId, getJobsNeedingAssignment, getJobsAssignedTo, createNewJob, deleteJob,
 };

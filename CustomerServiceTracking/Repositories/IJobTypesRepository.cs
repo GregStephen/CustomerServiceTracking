@@ -9,6 +9,7 @@ namespace CustomerServiceTracking.Repositories
     public interface IJobTypesRepository
     {
         IEnumerable<JobType> GetJobTypes();
+        JobType GetJobTypeById(Guid id);
 
     }
 }

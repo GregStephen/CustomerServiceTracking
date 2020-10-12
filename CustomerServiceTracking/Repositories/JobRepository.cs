@@ -15,12 +15,13 @@ namespace CustomerServiceTracking.Repositories
         string _connectionString;
         private ICustomerRepository _customerRepo;
         private ISystemRepository _systemRepo;
-
-        public JobRepository(IConfiguration configuration, ICustomerRepository customerRepo, ISystemRepository systemRepo)
+        private IJobTypesRepository _jobTypeRepo;
+        public JobRepository(IConfiguration configuration, ICustomerRepository customerRepo, ISystemRepository systemRepo, IJobTypesRepository jobTypeRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _customerRepo = customerRepo;
             _systemRepo = systemRepo;
+            _jobTypeRepo = jobTypeRepo;
         }
 
         public Job GetJobForSystemBySystemId(Guid systemId)
@@ -82,13 +83,32 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public IEnumerable<JobToShow> GetJobsAssignedTo(Guid employeeId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [Job]
+                            WHERE [TechnicianId] = @employeeId";
+                var parameters = new { employeeId };
+                var jobs = db.Query<JobToShow>(sql, parameters);
+                foreach (var job in jobs)
+                {
+                    job.JobType = _jobTypeRepo.GetJobTypeById(job.JobTypeId);
+                    job.CustomerSystem = _customerRepo.GetCustomerSystemByCustomerSystemId(job.CustomerSystemId);
+                    job.Customer = _customerRepo.GetCustomerByCustomerId(job.CustomerSystem.CustomerId);
+                }
+                return jobs;
+            }
+        }
+
         public bool AddJob(NewJobDTO newJobDTO)
         {
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"INSERT INTO [Job]
                             (
-                                [CustomerSystemId],
+                                [CustomerSystemId], 
                                 [DateAssigned],
                                 [TechnicianId],
                                 [JobTypeId]
