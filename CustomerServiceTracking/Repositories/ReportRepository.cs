@@ -14,11 +14,13 @@ namespace CustomerServiceTracking.Repositories
     {
         string _connectionString;
         ISystemRepository _systemRepo;
+        ICustomerRepository _customerRepo;
 
-        public ReportRepository(IConfiguration configuration, ISystemRepository systemRepo)
+        public ReportRepository(IConfiguration configuration, ISystemRepository systemRepo, ICustomerRepository customerRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _systemRepo = systemRepo;
+            _customerRepo = customerRepo;
         }
         public IEnumerable<ReportToSendDTO> GetAllReportsByBusinessId(Guid businessId)
         {
@@ -34,7 +36,12 @@ namespace CustomerServiceTracking.Repositories
 							ON r.JobTypeId = jt.Id
                             WHERE ub.BusinessId = @businessId";
                 var parameters = new { businessId };
-                return db.Query<ReportToSendDTO>(sql, parameters);
+                var reports = db.Query<ReportToSendDTO>(sql, parameters);
+                foreach (var report in reports)
+                {
+                    report.Customer = _customerRepo.GetCustomerByCustomerId(report.CustomerId);
+                }
+                return reports;
             }
         }
 
