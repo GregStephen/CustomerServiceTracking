@@ -37,8 +37,15 @@ const addNewPersonalUser = (userObj) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
+const addUnregisteredEmployee = (unregisteredEmployeeObject) => new Promise((resolve, reject) => {
+  axios.post(`${baseUrl}/unregisteredEmployee`, unregisteredEmployeeObject)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 export default {
   getUserByFirebaseUid,
   addNewUser,
   addNewPersonalUser,
+  addUnregisteredEmployee,
 };

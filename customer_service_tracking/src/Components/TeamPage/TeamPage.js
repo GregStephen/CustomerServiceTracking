@@ -9,6 +9,7 @@ import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal'
 import UnregisteredTeamMemberWidget from './UnregisteredTeamMemberWidget/UnregisteredTeamMemberWidget';
 
 import BusinessRequests from '../../Helpers/Data/BusinessRequests';
+import UserRequests from '../../Helpers/Data/UserRequests';
 
 import './TeamPage.scss';
 
@@ -42,7 +43,7 @@ class TeamPage extends React.Component {
   }
 
   addTeamMember = (teamMember) => {
-    BusinessRequests.addUnregisteredEmployee(teamMember)
+    UserRequests.addUnregisteredEmployee(teamMember)
       .then(this.pageLoad())
       .catch((err) => console.error(err));
   }

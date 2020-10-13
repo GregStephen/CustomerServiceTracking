@@ -57,10 +57,10 @@ VALUES
 	'37013'
 ),
 (
-	'321 Easy Street',
+	'719 Long Hunter Ct',
 	'Nashville',
 	'TN',
-	'32189'
+	'37013'
 )
 
 SELECT @businessAddress = [Id]
@@ -69,7 +69,7 @@ WHERE [AddressLine1] = '123 Fake Street'
 
 SELECT @customerAddress = [Id]
 FROM [Address]
-WHERE [AddressLine1] = '321 Easy Street'
+WHERE [AddressLine1] = '719 Long Hunter Ct'
 
 /* Creates the business */
 INSERT INTO [Business]
@@ -198,21 +198,6 @@ SELECT @customerSystem = [Id]
 FROM [CustomerSystem]
 WHERE [SerialNumber] = '1239129123'
 
-/* Creates an unregistered Employee */
-INSERT INTO [UnregisteredEmployee]
-(
-    [FirstName],
-    [LastName],
-    [BusinessId],
-    [Email]
-)
-VALUES
-(
-	'Jean',
-	'DeHean',
-	@business,
-	'Jean@deHean.com'
-)
 
 /* Creates new Job Types */
 INSERT INTO [JobType]

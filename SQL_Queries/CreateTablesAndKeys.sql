@@ -6,7 +6,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'User')
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[Admin] BIT not null,
-		[FirebaseUid] NVARCHAR (255) not null,
+		[FirebaseUid] NVARCHAR (255) null,
 		[FirstName] NVARCHAR(255) not null,
 		[LastName] NVARCHAR(255) not null
 	)
@@ -212,6 +212,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'UnregisteredEmployee')
 	CREATE TABLE [UnregisteredEmployee]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[UserId] UNIQUEIDENTIFIER not null,
 		[BusinessId] UNIQUEIDENTIFIER not null,
 		[Email] NVARCHAR(255) not null,
 		[FirstName] NVARCHAR(255) not null,
@@ -441,3 +442,13 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UnregisteredEmp
 	END
 ELSE
 	PRINT 'Foreign key FK_UnregisteredEmployee_Business already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UnregisteredEmployee_User')
+	BEGIN
+	ALTER TABLE [UnregisteredEmployee]
+	ADD CONSTRAINT FK_UnregisteredEmployee_User
+		FOREIGN KEY (UserId) 
+		REFERENCES [User] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_UnregisteredEmployee_User already exists'
