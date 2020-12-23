@@ -7,6 +7,8 @@ import {
 
 import BusinessRequests from '../../../Helpers/Data/BusinessRequests';
 
+import './ChooseBusinessForPersonalPage.scss';
+
 class ChooseBusinessForPersonalPage extends React.Component {
   static propTypes = {
     authorized: PropTypes.bool.isRequired,
@@ -54,9 +56,8 @@ class ChooseBusinessForPersonalPage extends React.Component {
   render() {
     const { businessOptions, newAccount, error } = this.state;
     return (
-      <div>
-        <h1>Choose business then enter email</h1>
-        <form onSubmit={this.checkBusinessForEmail}>
+      <div className="row d-flex justify-content-center">
+        <form onSubmit={this.checkBusinessForEmail} className="ChooseBusiness col-8">
           <FormGroup>
             <Label htmlFor="chosenBusiness">Which business do you work for?</Label>
             <Input
@@ -73,7 +74,7 @@ class ChooseBusinessForPersonalPage extends React.Component {
             </Input>
           </FormGroup>
           <FormGroup>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">What is your Email address?</Label>
             <Input
               type="email"
               className="form-control"
@@ -85,7 +86,7 @@ class ChooseBusinessForPersonalPage extends React.Component {
             />
           </FormGroup>
               {<p className="error">{error}</p>}
-          <button type="submit" className="btn btn-success">Continue</button>
+          <button type="submit" className="btn btn-info">Continue</button>
         </form>
       </div>
     );

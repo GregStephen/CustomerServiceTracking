@@ -1,14 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Modal, ModalHeader } from 'reactstrap';
+
+import PasswordResetModal from '../../Modals/PasswordResetModal/PasswordResetModal';
+
+import './LogInForm.scss';
 
 class LogInForm extends React.Component {
   static propTypes = {
     loggingIn: PropTypes.func.isRequired,
+    error: PropTypes.string,
   }
 
   state = {
     email: '',
     password: '',
+    errorMessage: '',
+    passwordResetModal: false,
+  }
+
+  componentDidUpdate({ error }) {
+    if (this.props.error !== error) {
+      this.setState({ errorMessage: this.props.error });
+    }
   }
 
   logInFromLandingPage = (e) => {
@@ -24,11 +38,17 @@ class LogInForm extends React.Component {
     });
   };
 
+  toggleResetPasswordModal = () => {
+    this.setState((prevState) => ({
+      passwordResetModal: !prevState.passwordResetModal,
+    }));
+  }
+
   render() {
-    const { email, password } = this.state;
+    const { email, password, errorMessage } = this.state;
     return (
-      <div>
-        <form className="col-12 col-md-8 col-lg-4 sign-in-form" onSubmit={this.logInFromLandingPage}>
+      <div className="LogInForm col-12 col-md-8 col-lg-4">
+        <form className="sign-in-form" onSubmit={this.logInFromLandingPage}>
           <h3 className="sign-in-header">Log In</h3>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -52,9 +72,19 @@ class LogInForm extends React.Component {
               onChange={this.handleChange}
               required
             />
+            <small className="form-text text-muted">
+              <button type="button" className="forgotPasswordBtn" onClick={this.toggleResetPasswordModal}>Forgot Password</button>
+            </small>
           </div>
-          <button type="submit" className="btn btn-success">Log In</button>
+          <button type="submit" className="btn btn-info">Log In</button>
+          <p className="error">{errorMessage}</p>
         </form>
+        <Modal isOpen={this.state.passwordResetModal} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleResetPasswordModal}>Reset Password</ModalHeader>
+          <PasswordResetModal
+            toggleResetPasswordModal={this.toggleResetPasswordModal}
+          />
+        </Modal>
       </div>
     );
   }

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 
 import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
 import UnregisteredTeamMemberWidget from './UnregisteredTeamMemberWidget/UnregisteredTeamMemberWidget';
+import RegisteredTeamMemberWidget from './RegisteredTeamMemberWidget/RegisteredTeamMemberWidget';
 
 import BusinessRequests from '../../Helpers/Data/BusinessRequests';
 import UserRequests from '../../Helpers/Data/UserRequests';
@@ -20,14 +21,18 @@ class TeamPage extends React.Component {
   }
 
   state = {
-    teamMembers: [],
+    unregisteredTeamMembers: [],
+    registeredTeamMembers: [],
     modalIsOpen: false,
   }
 
   pageLoad = () => {
     const { userObj } = this.props;
     BusinessRequests.getUnregisteredEmployees(userObj.businessId)
-      .then((teamMembers) => this.setState({ teamMembers }))
+      .then((unregisteredTeamMembers) => this.setState({ unregisteredTeamMembers }))
+      .catch((err) => console.error(err));
+    BusinessRequests.getRegisteredEmployees(userObj.businessId)
+      .then((registeredTeamMembers) => this.setState({ registeredTeamMembers }))
       .catch((err) => console.error(err));
   }
 
@@ -49,38 +54,33 @@ class TeamPage extends React.Component {
   }
 
   render() {
-    const { teamMembers } = this.state;
+    const { unregisteredTeamMembers, registeredTeamMembers } = this.state;
     const { userObj } = this.props;
     const { businessId } = userObj;
-    const showTeamMembers = () => {
-      if (teamMembers.length > 0) {
-        return (
-          teamMembers.map((teamMember) => (
-            <UnregisteredTeamMemberWidget
-            key={teamMember.id}
-            unregisteredTeamMember={teamMember}
-            />
-          ))
-        );
-      }
-      return <p>No team members to display, add some!</p>;
-    };
 
     return (
-      <div className="TeamPage">
-        <h1>Team Page</h1>
-        {showTeamMembers()}
-
-        <button className="btn btn-info" onClick={this.toggleModalOpen}>Add a Team Member</button>
+      <div className="TeamPage container">
+        <div className="row">
+          <h1 className="col-6">Team Page</h1>
+          <div className="col-6 justify-content-end">
+            <button className="btn btn-info mt-3" onClick={this.toggleModalOpen}>Add a Team Member</button>
+          </div>
+        </div>
+        { registeredTeamMembers.length > 0
+          && <RegisteredTeamMemberWidget
+            registeredTeamMembers={registeredTeamMembers} />}
+        { unregisteredTeamMembers.legnth > 0
+          && <UnregisteredTeamMemberWidget
+            unregisteredTeamMembers={unregisteredTeamMembers} />}
         <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
           <ModalHeader toggle={this.modalIsOpen}>
             Add Team Member
           </ModalHeader>
-            <AddTeamMemberModal
-              toggleModalOpen={this.toggleModalOpen}
-              businessId={businessId}
-              addTeamMember={this.addTeamMember}
-            />
+          <AddTeamMemberModal
+            toggleModalOpen={this.toggleModalOpen}
+            businessId={businessId}
+            addTeamMember={this.addTeamMember}
+          />
         </Modal>
       </div>
     );

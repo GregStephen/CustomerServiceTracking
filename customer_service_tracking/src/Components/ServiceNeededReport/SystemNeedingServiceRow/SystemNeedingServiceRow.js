@@ -69,6 +69,8 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
     const customerLink = `/customer/${systemNeedingService.customer.id}`;
     const formattedAddressString = this.formatThisAddress(systemNeedingService.customer.address);
     const directionLink = `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${formattedAddressString}`;
+    const daysLeft = systemNeedingService.daysUntilEmpty > 0 ? <p>{systemNeedingService.daysUntilEmpty}</p>
+      : <p className="text-danger">Past Due</p>;
     let assignedTech;
     if (job.id !== null) {
       assignedTech = employeeOptions.find((x) => x.id === job.technicianId);
@@ -105,7 +107,7 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
       <tr>
         <td><Link to={{ pathname: customerLink }}>{`${systemNeedingService.customer.firstName} ${systemNeedingService.customer.lastName}`}</Link></td>
         <td><a rel="noopener noreferrer" target="_blank" href={directionLink}>{systemNeedingService.customer.address.addressLine1}</a></td>
-        <td>{systemNeedingService.daysUntilEmpty}</td>
+        <td>{daysLeft}</td>
         {assigned
           ? <td>
            {assignedTech.fullName}
@@ -120,7 +122,7 @@ class systemNeedingServiceNeedingServiceRow extends React.Component {
                 onChange={this.formFieldStringState}
                 required>
                 <option value="">Select a technician</option>
-                {employeeOptions.map((employee) => (
+                {employeeOptions?.map((employee) => (
                   <option key={employee.id} value={employee.id}>{employee.fullName}</option>
                 ))}
               </Input>

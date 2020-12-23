@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-// import ReportRow from './ReportRow/ReportRow';
 import ReportsTable from './ReportsTable/ReportsTable';
 import './ReportsPage.scss';
 import ReportRequests from '../../Helpers/Data/ReportRequests';
 
-function ReportsPage({ userObj, authorized }) {
+function ReportsPage({ userObj }) {
   const [reports, getReports] = useState();
 
   useEffect(() => {
@@ -27,7 +25,7 @@ function ReportsPage({ userObj, authorized }) {
     },
     {
       Header: 'Customer',
-      accessor: (r) => r.fullName,
+      accessor: (r) => r.customer.firstName,
     },
     {
       Header: 'Type',
@@ -37,12 +35,12 @@ function ReportsPage({ userObj, authorized }) {
   return (
     <div className="ReportsPage">
       <h1>Reports Page</h1>
-      <div className="row justify-content-around">
+      <div className="col-10">
         <ReportsTable
           columns={tableColumns}
           data={tableData}
-          />
-      </div>
+        />
+        </div>
     </div>
   );
 }
