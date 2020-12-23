@@ -42,10 +42,12 @@ class NewSystemPage extends React.Component {
   render() {
     const { newSystem } = this.state;
     return (
-      <div className="NewSystemPage">
-        <h1>Systems</h1>
-        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewSystem}>
-          <h3>New System</h3>
+      <div className="NewSystemPage row d-flex">
+        <div className="col-12">
+          <h1>New Systems</h1>
+        </div>
+        <div className="widget col-12 col-md-8 col-lg-4">
+        <form className="log-in-form" onSubmit={this.createNewSystem}>
           <div className="form-group">
             <label htmlFor="type">Type</label>
             <input
@@ -82,7 +84,8 @@ class NewSystemPage extends React.Component {
             </div>
           </div>
           <button type="submit" className="btn btn-success">Add New System</button>
-        </form>
+          </form>
+          </div>
       </div>
     );
   }

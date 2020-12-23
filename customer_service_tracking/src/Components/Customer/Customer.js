@@ -13,7 +13,7 @@ class Customer extends React.Component {
     const { customer } = this.props;
     const customerLink = `/customer/${customer.id}`;
     return (
-      <div className="Customer">
+      <div className="Customer widget">
         <h1>Customer</h1>
         <Link to={{ pathname: customerLink }}>{customer.firstName} {customer.lastName}</Link>
     <p>{customer.address.addressLine1}</p>

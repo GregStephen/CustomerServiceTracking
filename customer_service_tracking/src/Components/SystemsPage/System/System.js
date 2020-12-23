@@ -39,7 +39,7 @@ class System extends React.Component {
   render() {
     const { system } = this.props;
     return (
-      <div className="System">
+      <div className="System col-5 widget">
         <h1>{system.type}</h1>
         <p>Gallons: {system.gallons}</p>
         <p>Inches: {system.inches}</p>

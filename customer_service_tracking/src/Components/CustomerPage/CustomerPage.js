@@ -16,7 +16,7 @@ import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import ReportRequests from '../../Helpers/Data/ReportRequests';
 
 import './CustomerPage.scss';
-
+import Formatting from '../../Helpers/Functions/Formatting';
 
 const defaultCustomer = {
   id: '',
@@ -144,9 +144,9 @@ class CustomerPage extends React.Component {
     const addSystemLink = `/add-system-to-customer/${customer.id}`;
     return (
       <div className="CustomerPage">
-        <h1>Customer {customer.firstName} {customer.lastName}</h1>
-        {customer.homePhone !== '' ? <p>{customer.homePhone}</p> : ''}
-        {customer.officePhone !== '' ? <p>{customer.officePhone}</p> : ''}
+        <h1>{customer.firstName} {customer.lastName}</h1>
+        {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
+        {customer.officePhone !== '' ? <p>Office Phone:{Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
         <p> Address</p>
         <p>{customer.address.addressLine1}</p>
         {customer.address.addressLine2 !== '' ? <p>{customer.address.addressLine2}</p> : ''}

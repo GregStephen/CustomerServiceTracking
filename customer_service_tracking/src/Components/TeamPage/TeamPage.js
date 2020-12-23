@@ -59,8 +59,8 @@ class TeamPage extends React.Component {
     const { businessId } = userObj;
 
     return (
-      <div className="TeamPage container">
-        <div className="row">
+      <div className="TeamPage row d-flex">
+        <div className="Header mb-4 col-12 row">
           <h1 className="col-6">Team Page</h1>
           <div className="col-6 justify-content-end">
             <button className="btn btn-info mt-3" onClick={this.toggleModalOpen}>Add a Team Member</button>
