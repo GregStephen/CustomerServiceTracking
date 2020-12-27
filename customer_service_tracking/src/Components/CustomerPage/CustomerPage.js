@@ -6,6 +6,7 @@ import {
   Modal,
   ModalHeader,
 } from 'reactstrap';
+import Header from '../Global/Header';
 
 import CustomerReports from './CustomerReports/CustomerReports';
 import CustomerSystem from './CustomerSystem/CustomerSystem';
@@ -142,25 +143,27 @@ class CustomerPage extends React.Component {
   render() {
     const { customer, modalOpen, reports } = this.state;
     const addSystemLink = `/add-system-to-customer/${customer.id}`;
+    const customerName = `${customer.firstName} ${customer.lastName}`;
     return (
       <div className="CustomerPage">
-        <h1>{customer.firstName} {customer.lastName}</h1>
-        {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
-        {customer.officePhone !== '' ? <p>Office Phone:{Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
-        <p> Address</p>
-        <p>{customer.address.addressLine1}</p>
-        {customer.address.addressLine2 !== '' ? <p>{customer.address.addressLine2}</p> : ''}
-        <p>{customer.address.city}</p>
-        <p>{customer.address.state}</p>
-        <p>{customer.address.zipCode}</p>
-        <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
-        <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
-        <div>
-          <h1>Systems</h1>
-          {this.showSystems()}
+        <div className="customer-info widget col-10 mb-4">
+          <Header header={customerName}/>
+          {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
+          {customer.officePhone !== '' ? <p>Office Phone: {Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
+          <p> Address</p>
+          <p>{customer.address.addressLine1}</p>
+          {customer.address.addressLine2 !== '' ? <p>{customer.address.addressLine2}</p> : ''}
+          <p>{customer.address.city}</p>
+          <p>{customer.address.state}</p>
+          <p>{customer.address.zipCode}</p>
+          <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
+          <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
         </div>
-
-        <Link className="btn btn-info" tag={Link} to={addSystemLink}>Add System</Link>
+        <div className="Customer-Systems widget col-10 mb-4">
+          <Header header={'Systems'} />
+          {this.showSystems()}
+          <Link className="btn btn-info" tag={Link} to={addSystemLink}>Add System</Link>
+        </div>
         <CustomerReports
         reports={reports}/>
         <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>

@@ -20,7 +20,7 @@ class CustomerReports extends React.Component {
     );
 
     return (
-      <div className="CustomerReports">
+      <div className="CustomerReports widget col-10">
         <h1>Customer Reports</h1>
         { reports.length === 0
           ? <p>Customer has no reports.</p>

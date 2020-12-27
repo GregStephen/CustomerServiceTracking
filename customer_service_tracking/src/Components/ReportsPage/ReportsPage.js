@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import moment from 'moment';
 import ReportsTable from './ReportsTable/ReportsTable';
 import './ReportsPage.scss';
 import ReportRequests from '../../Helpers/Data/ReportRequests';
+
 
 function ReportsPage({ userObj }) {
   const [reports, getReports] = useState();
@@ -17,7 +19,7 @@ function ReportsPage({ userObj }) {
   const tableColumns = useMemo(() => [
     {
       Header: 'Service Date',
-      accessor: (r) => r.serviceDate,
+      accessor: (r) => moment(r.serviceDate).format('L'),
     },
     {
       Header: 'Technician',
@@ -35,7 +37,7 @@ function ReportsPage({ userObj }) {
   return (
     <div className="ReportsPage">
       <h1>Reports Page</h1>
-      <div className="col-10">
+      <div className="widget col-10">
         <ReportsTable
           columns={tableColumns}
           data={tableData}

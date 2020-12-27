@@ -33,6 +33,7 @@ function ReportsTable({ columns, data }) {
 
   return (
     <>
+      <div className="col-12">
     <table {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (
@@ -69,8 +70,9 @@ function ReportsTable({ columns, data }) {
           },
         )}
       </tbody>
-    </table>
-    <div className="pagination">
+        </table>
+        </div>
+    <div className="pagination col-12">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}

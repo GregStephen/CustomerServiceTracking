@@ -96,15 +96,16 @@ class NavigationBar extends React.Component {
     );
 
     return (
-      <div className="NavigationBar">
+      authorized
+      && <div className="NavigationBar">
         <Navbar dark color="dark" expand="md">
           <NavbarBrand className="navbar-brand" tag={RRNavLink} to='/home'>Home</NavbarBrand>
           {authorized && <NavbarText>{userObj.businessName}</NavbarText>}
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
-            {authorized && userObj.admin ? buildAdminNavbar()
-              : authorized && !userObj.admin ? buildRegularNavbar()
-                : ''}
+            {userObj.admin ? buildAdminNavbar()
+              : buildRegularNavbar()
+            }
           </Collapse>
         </Navbar>
       </div>

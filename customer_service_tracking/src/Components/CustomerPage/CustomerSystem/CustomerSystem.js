@@ -35,7 +35,7 @@ class CustomerSystem extends React.Component {
     const editCustomerSystemLink = `/edit-customer-system/${system.id}`;
     const newReportLink = `/new-report/${system.id}`;
     return (
-      <div className='CustomerSystem'>
+      <div className="CustomerSystem">
         <p>Install Date: {moment(system.installDate).format('MM/DD/YY')}</p>
         <p>Serial Number: {system.serialNumber}</p>
         {system.sold

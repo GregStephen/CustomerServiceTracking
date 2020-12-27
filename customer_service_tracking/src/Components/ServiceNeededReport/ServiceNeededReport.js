@@ -42,8 +42,8 @@ class ServiceNeededReport extends React.Component {
     ));
 
     return (
-      <div className="ServiceNeededReport">
-        <h1>Show those needing service here</h1>
+      <div className="ServiceNeededReport widget col-8">
+        <h3>Customers needing service in the next 7 days</h3>
         <div>
           {systemsNeedingService.length > 0
             ? <Table striped size="sm">
