@@ -1,3 +1,5 @@
+import React from 'react';
+
 const formatPhoneNumber = (phoneNumberString) => {
   const cleaned = (`${phoneNumberString}`).replace(/\D/g, '');
   const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
@@ -17,4 +19,14 @@ const directionLink = (addressObj) => {
   return `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${addressStringToReturn}`;
 };
 
-export default { formatPhoneNumber, directionLink };
+const formatAddressObj = (addressObj) => (
+    <div>
+    <p>{addressObj.addressLine1}</p>
+    {addressObj.addressLine2
+      && <p>{addressObj.addressLine2}</p>
+    }
+    <p>{addressObj.city}, {addressObj.state} {addressObj.zipCode}</p>
+    </div>
+);
+
+export default { formatPhoneNumber, directionLink, formatAddressObj };

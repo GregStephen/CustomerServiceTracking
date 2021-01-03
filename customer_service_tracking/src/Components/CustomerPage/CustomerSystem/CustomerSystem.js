@@ -36,7 +36,7 @@ class CustomerSystem extends React.Component {
     const newReportLink = `/new-report/${system.id}`;
     return (
       <div className="CustomerSystem">
-        <p>Install Date: {moment(system.installDate).format('MM/DD/YY')}</p>
+        <p>Install Date: {moment(system.installDate).format('L')}</p>
         <p>Serial Number: {system.serialNumber}</p>
         {system.sold
           ? <p>Sold</p>

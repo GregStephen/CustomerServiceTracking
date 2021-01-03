@@ -9,5 +9,6 @@ namespace CustomerServiceTracking.DataModels
     {
         public Guid Id { get; set; }
         public string FullName { get; set; }
+        public bool Registered { get; set; }
     }
 }

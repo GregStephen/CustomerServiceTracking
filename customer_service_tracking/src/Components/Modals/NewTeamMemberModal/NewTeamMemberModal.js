@@ -16,15 +16,16 @@ class NewTeamMemberModal extends React.Component {
     businessId: PropTypes.string.isRequired,
     toggleModalOpen: PropTypes.func.isRequired,
     addTeamMember: PropTypes.func.isRequired,
+    modalIsOpen: PropTypes.bool.isRequired,
   }
 
   state = {
     newTeamMember: defaultTeamMember,
   }
 
-  toggleModal = (e) => {
-    const { toggleModalOpen } = this.props;
-    toggleModalOpen(e);
+  toggleModal = () => {
+    const { toggleModalOpen, modalIsOpen } = this.props;
+    toggleModalOpen(!modalIsOpen);
   };
 
   formSubmit = (e) => {

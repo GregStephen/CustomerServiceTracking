@@ -148,21 +148,18 @@ class CustomerPage extends React.Component {
       <Page>
         <div className="CustomerPage">
         <Header title={customerName}/>
-        <div className="customer-info widget col-10 mb-4">
-
+        <div className="customer-info widget col-10 mb-4 pt-0">
+          <Header title="Info" icon="fas fa-address-card"/>
           {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
-          {customer.officePhone !== '' ? <p>Office Phone: {Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
-          <p> Address</p>
-          <p>{customer.address.addressLine1}</p>
-          {customer.address.addressLine2 !== '' ? <p>{customer.address.addressLine2}</p> : ''}
-          <p>{customer.address.city}</p>
-          <p>{customer.address.state}</p>
-          <p>{customer.address.zipCode}</p>
+            {customer.officePhone !== '' ? <p>Office Phone: {Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
+
+            <p> Address</p>
+            {Formatting.formatAddressObj(customer.address)}
           <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
           <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
         </div>
-        <div className="Customer-Systems widget col-10 mb-4">
-          <Header header={'Systems'} />
+        <div className="Customer-Systems widget col-10 mb-4 pt-0">
+          <Header title="Systems" />
           {this.showSystems()}
           <Link className="btn btn-info" tag={Link} to={addSystemLink}>Add System</Link>
         </div>

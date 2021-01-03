@@ -38,6 +38,9 @@ function CustomersPage({ userObj }) {
     {
       Header: 'Address',
       accessor: (r) => r.address.addressLine1,
+      Cell: ({ row: { original } }) => (
+        Formatting.formatAddressObj(original.address)
+      ),
     },
   ], []);
   return (

@@ -15,6 +15,7 @@ class EditSystemModal extends React.Component {
   static propTypes = {
     system: PropTypes.object.isRequired,
     toggleModalOpen: PropTypes.func.isRequired,
+    modalIsOpen: PropTypes.bool.isRequired,
     editSystem: PropTypes.func.isRequired,
     deleteSystem: PropTypes.func.isRequired,
   }
@@ -29,8 +30,8 @@ class EditSystemModal extends React.Component {
   }
 
   toggleModal = (e) => {
-    const { toggleModalOpen } = this.props;
-    toggleModalOpen(e);
+    const { toggleModalOpen, modalIsOpen } = this.props;
+    toggleModalOpen(!modalIsOpen);
   };
 
   formSubmit = (e) => {

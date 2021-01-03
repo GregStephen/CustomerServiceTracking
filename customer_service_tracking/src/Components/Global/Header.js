@@ -9,7 +9,7 @@ function Header({
 }) {
   return (
     <div className="Header">
-      <h1 className="header-title font-weight-bold">
+      <h1 className="header-title font-weight-bold mt-4">
         <i className={`header-icon fas mr-3 ${icon}`} />
         {title}
         {subTitle && <span className="fw-300">{subTitle}</span>}

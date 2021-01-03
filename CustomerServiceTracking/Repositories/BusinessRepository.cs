@@ -45,27 +45,29 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                List<Employee> employees = new List<Employee>();
-                var sql = @"SELECT u.Id, u.FirstName + ' ' + u.LastName as FullName
+                //List<Employee> employees = new List<Employee>();
+                var sql = @"SELECT u.Id, u.FirstName + ' ' + u.LastName as FullName, 
+                            CASE WHEN u.FirebaseUid IS NULL THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT)
+                            END as Registered
                             FROM [User] u
                             JOIN [UserBusiness] ub
                             ON u.Id = ub.UserId
                             WHERE ub.BusinessId = @businessId";
                 var parameters = new { businessId };
-                var registeredUsers = db.Query<Employee>(sql, parameters);
-                sql = @"SELECT ue.Id, ue.FirstName + ' ' + ue.LastName as FullName
-                        FROM [UnregisteredEmployee] ue
-                        WHERE ue.BusinessId = @businessId";
-                var unregisteredUsers = db.Query<Employee>(sql, parameters);
-                foreach (var registeredEmployee in registeredUsers)
-                {
-                    employees.Add(registeredEmployee);
-                }
-                foreach (var unregisteredEmployee in unregisteredUsers)
-                {
-                    employees.Add(unregisteredEmployee);
-                }
-                return employees;
+                var registeredUsers = db.Query<Employee>(sql, parameters).ToList();
+                //sql = @"SELECT ue.Id, ue.FirstName + ' ' + ue.LastName as FullName
+                //        FROM [UnregisteredEmployee] ue
+                //        WHERE ue.BusinessId = @businessId";
+                //var unregisteredUsers = db.Query<Employee>(sql, parameters);
+                //foreach (var registeredEmployee in registeredUsers)
+                //{
+                //    employees.Add(registeredEmployee);
+                //}
+                //foreach (var unregisteredEmployee in unregisteredUsers)
+                //{
+                //    employees.Add(unregisteredEmployee);
+                //}
+                return registeredUsers;
             }
         }
         public Guid AddNewBusinessToDatabase(string businessName, Guid addressId)
