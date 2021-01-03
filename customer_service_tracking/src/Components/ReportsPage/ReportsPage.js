@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
-import ReportsTable from './ReportsTable/ReportsTable';
+
+import { Page, Header, GlobalTable } from '../Global';
+
 import './ReportsPage.scss';
+
 import ReportRequests from '../../Helpers/Data/ReportRequests';
 
 
@@ -35,15 +38,17 @@ function ReportsPage({ userObj }) {
     },
   ], []);
   return (
-    <div className="ReportsPage">
-      <h1>Reports Page</h1>
-      <div className="widget col-10">
-        <ReportsTable
-          columns={tableColumns}
-          data={tableData}
-        />
+    <Page>
+      <div className="ReportsPage">
+        <Header title="Reports" icon="fa-file-signature" />
+        <div className="widget col-10">
+          <GlobalTable
+            columns={tableColumns}
+            data={tableData}
+          />
         </div>
-    </div>
+      </div>
+    </Page>
   );
 }
 

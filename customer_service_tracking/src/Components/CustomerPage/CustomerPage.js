@@ -6,7 +6,7 @@ import {
   Modal,
   ModalHeader,
 } from 'reactstrap';
-import Header from '../Global/Header';
+import { Page, Header } from '../Global';
 
 import CustomerReports from './CustomerReports/CustomerReports';
 import CustomerSystem from './CustomerSystem/CustomerSystem';
@@ -145,9 +145,11 @@ class CustomerPage extends React.Component {
     const addSystemLink = `/add-system-to-customer/${customer.id}`;
     const customerName = `${customer.firstName} ${customer.lastName}`;
     return (
-      <div className="CustomerPage">
+      <Page>
+        <div className="CustomerPage">
+        <Header title={customerName}/>
         <div className="customer-info widget col-10 mb-4">
-          <Header header={customerName}/>
+
           {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
           {customer.officePhone !== '' ? <p>Office Phone: {Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
           <p> Address</p>
@@ -187,7 +189,8 @@ class CustomerPage extends React.Component {
               : ''
           }
         </Modal>
-      </div>
+        </div>
+        </Page>
     );
   }
 }

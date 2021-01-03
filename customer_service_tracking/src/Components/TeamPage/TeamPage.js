@@ -5,6 +5,7 @@ import {
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+import { Page, Header } from '../Global';
 import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
 import UnregisteredTeamMemberWidget from './UnregisteredTeamMemberWidget/UnregisteredTeamMemberWidget';
 import RegisteredTeamMemberWidget from './RegisteredTeamMemberWidget/RegisteredTeamMemberWidget';
@@ -59,30 +60,30 @@ class TeamPage extends React.Component {
     const { businessId } = userObj;
 
     return (
-      <div className="TeamPage row d-flex">
-        <div className="Header mb-4 col-12 row">
-          <h1 className="col-6">Team Page</h1>
-          <div className="col-6 justify-content-end">
-            <button className="btn btn-info mt-3" onClick={this.toggleModalOpen}>Add a Team Member</button>
+      <Page>
+        <div className="TeamPage">
+          <Header title='Team' icon='fa-users' />
+          <div className="d-flex row justify-content-end">
+            <button className="btn btn-info mr-4 mb-4" onClick={this.toggleModalOpen}><i className="fa fa-user-plus"/>Add a Team Member</button>
           </div>
-        </div>
-        { registeredTeamMembers.length > 0
-          && <RegisteredTeamMemberWidget
-            registeredTeamMembers={registeredTeamMembers} />}
-        { unregisteredTeamMembers.legnth > 0
-          && <UnregisteredTeamMemberWidget
-            unregisteredTeamMembers={unregisteredTeamMembers} />}
-        <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
-          <ModalHeader toggle={this.modalIsOpen}>
-            Add Team Member
+          {registeredTeamMembers.length > 0
+            && <RegisteredTeamMemberWidget
+              registeredTeamMembers={registeredTeamMembers} />}
+          {unregisteredTeamMembers.length > 0
+            && <UnregisteredTeamMemberWidget
+              unregisteredTeamMembers={unregisteredTeamMembers} />}
+          <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
+            <ModalHeader toggle={this.modalIsOpen}>
+              Add Team Member
           </ModalHeader>
-          <AddTeamMemberModal
-            toggleModalOpen={this.toggleModalOpen}
-            businessId={businessId}
-            addTeamMember={this.addTeamMember}
-          />
-        </Modal>
-      </div>
+            <AddTeamMemberModal
+              toggleModalOpen={this.toggleModalOpen}
+              businessId={businessId}
+              addTeamMember={this.addTeamMember}
+            />
+          </Modal>
+        </div>
+      </Page>
     );
   }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import { Page, Header } from '../Global';
 import System from './System/System';
 
 import SystemsRequests from '../../Helpers/Data/SystemRequests';
@@ -54,18 +55,16 @@ class SystemsPage extends React.Component {
       />
     ));
     return (
-      <div className="SystemsPage row d-flex">
-        <div className="Header mb-4 col-12 row">
-          <h1 className="col-6">Systems</h1>
-          <div className="col-6 justify-content-end">
-            <Link className="btn btn-info col-8 mt-3" to={'/new-system'}>Create a New System</Link>
+      <Page>
+        <div className="SystemsPage">
+          <Header title="Systems"/>
+          <Link className="btn btn-info col-8 mt-3" to={'/new-system'}>Create a New System</Link>
+          <div className="col-12 row justify-content-around">
+            {systems.length > 0 ? showSystems
+              : <p className="no-systems">You have no systems to show! Try adding some first</p>}
           </div>
         </div>
-        <div className="col-12 row justify-content-around">
-          {systems.length > 0 ? showSystems
-            : <p className="no-systems">You have no systems to show! Try adding some first</p>}
-        </div>
-      </div>
+      </Page>
     );
   }
 }

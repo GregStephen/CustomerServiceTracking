@@ -2,13 +2,26 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
 @import 'variables';
 
+.page-content {
+  flex: 1 1 auto;
+  order: 3;
+  
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
 body {
   background-color: $favColor;
+  direction: ltr;
+  text-rendering: optimizeLegibility;
 }
 
 .widget {
   margin: auto;
   padding: 0;
+  padding-top: 1em;
+  padding-bottom: 1em;
   background-color: $background-color-transparent;
   border: 3px solid black;
   border-radius: .5em;
@@ -16,11 +29,56 @@ body {
 }
 
 .Header{
+ margin-bottom: calc(1.5rem + 0.625rem);
+ position: relative;
+ padding-bottom: 1rem;
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+
  background-color: $background-color-header;
  border-bottom: 2px solid black;
- border-top-right-radius: .5em;
- border-top-left-radius: .5em;
- margin: 0;
+}
+
+.header-icon {
+  margin-right: 0.25rem;
+}
+/*
+@include media-breakpoint-up(md) {
+  .header-title {
+    font-size: 2rem;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .Header {
+    flex-wrap: wrap;
+  }
+  .header-title-wrapper {
+    width: 100%;
+  }
+}
+
+.header-block {
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+}
+
+*/
+.header-title {
+  font-size: 2rem;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+  flex: 1;
+
+  .header-description {
+    font-weight: 400;
+    margin-bottom: 0;
+    font-size: 0.875rem;
+    display: block;
+  }
 }
 
 table {

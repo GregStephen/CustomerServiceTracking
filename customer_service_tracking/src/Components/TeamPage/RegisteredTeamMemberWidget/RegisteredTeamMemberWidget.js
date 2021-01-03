@@ -9,7 +9,7 @@ class RegisteredTeamMemberWidget extends React.Component {
   render() {
     const { registeredTeamMembers } = this.props;
     return (
-      <div className="RegisteredTeamMemberWidget widget col-8">
+      <div className="RegisteredTeamMemberWidget widget col-8 mb-4">
         <h2>Registered Team</h2>
         {registeredTeamMembers.map((teamMember) => (
           <p>{teamMember.fullName}</p>

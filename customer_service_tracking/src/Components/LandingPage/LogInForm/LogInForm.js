@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader } from 'reactstrap';
-
+import Button from '../../Global/Button';
 import PasswordResetModal from '../../Modals/PasswordResetModal/PasswordResetModal';
 
 import './LogInForm.scss';
@@ -76,7 +76,7 @@ class LogInForm extends React.Component {
               <button type="button" className="forgotPasswordBtn" onClick={this.toggleResetPasswordModal}>Forgot Password</button>
             </small>
           </div>
-          <button type="submit" className="btn btn-info">Log In</button>
+          <Button type="submit" color="info" title="Log In"/>
           <p className="error">{errorMessage}</p>
         </form>
         <Modal isOpen={this.state.passwordResetModal} toggle={this.toggleModal}>

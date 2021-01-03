@@ -23,7 +23,7 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT *
+                var sql = @"SELECT *, FirstName + ' ' + LastName as FullName
                             FROM [UnregisteredEmployee]
                             WHERE [BusinessId] = @businessId";
                 var parameters = new { businessId };

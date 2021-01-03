@@ -36,7 +36,7 @@ namespace CustomerServiceTracking.Repositories
                             FROM [User] u
                             JOIN [UserBusiness] ub
                             ON u.Id = ub.UserId
-                            WHERE ub.BusinessId = @businessId";
+                            WHERE ub.BusinessId = @businessId AND u.FirebaseUId IS NOT NULL";
                 var parameters = new { businessId };
                 return db.Query<Employee>(sql, parameters);
             }

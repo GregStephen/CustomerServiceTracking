@@ -7,4 +7,14 @@ const formatPhoneNumber = (phoneNumberString) => {
   return null;
 };
 
-export default { formatPhoneNumber };
+const directionLink = (addressObj) => {
+  let addressStringToReturn = '';
+  const addressString1 = addressObj?.addressLine1?.replace(/\s/g, '+');
+  const city = addressObj?.city?.replace(/\s/g, '+');
+  const state = addressObj?.state?.replace(/\s/g, '+');
+  const zip = addressObj?.zipCode?.replace(/\s/g, '+');
+  addressStringToReturn = `${addressString1}+${city}+${state}+${zip}`;
+  return `https://www.google.com/maps/dir/?api=1&origin=Current+Location&destination=${addressStringToReturn}`;
+};
+
+export default { formatPhoneNumber, directionLink };

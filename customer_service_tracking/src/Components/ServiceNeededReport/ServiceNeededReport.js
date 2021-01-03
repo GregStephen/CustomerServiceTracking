@@ -68,4 +68,67 @@ class ServiceNeededReport extends React.Component {
   }
 }
 
+// import React, { useEffect, useMemo, useState } from 'react';
+// import { Link } from 'react-router-dom';
+
+// import ReportsTable from '../ReportsPage/ReportsTable/ReportsTable';
+
+// import BusinessRequests from '../../Helpers/Data/BusinessRequests';
+// import JobRequests from '../../Helpers/Data/JobRequests';
+// import Formatting from '../../Helpers/Functions/Formatting';
+
+// import './ServiceNeededReport.scss';
+
+// function ServiceNeededReport({ businessId }) {
+//   const [systemsNeedingService, getSystemsNeedingService] = useState();
+//   const [employeeOptions, getEmployeeOptions] = useState();
+
+//   useEffect(() => {
+//     JobRequests.getJobsNeedingAssignment(businessId)
+//       .then((systems) => getSystemsNeedingService(systems))
+//       .catch((err) => console.error(err));
+//     BusinessRequests.getRegisteredEmployees(businessId)
+//       .then((employees) => getEmployeeOptions(employees))
+//       .catch((err) => console.error(err));
+//   });
+
+//   const tableData = useMemo(() => (systemsNeedingService || []), [systemsNeedingService]);
+
+//   const tableColumns = useMemo(() => [
+//     {
+//       Header: 'Customer',
+//       accessor: (r) => r.customer,
+//       Cell: (r) => <Link to={{ pathname: `/customer/${r.customer?.id}` }}>{`${r.customer?.firstName} ${r.customer?.lastName}`}</Link>,
+//     },
+//     {
+//       Header: 'Address',
+//       accessor: (r) => r.customer.address,
+//       Cell: (r) => <a rel="noopener noreferrer" target="_blank" href={Formatting.directionLink(r.customer?.address)}>{r.customer?.address?.addressLine1}</a>,
+//     },
+//     {
+//       Header: 'Days Until Empty',
+//       accessor: (r) => r.customer.firstName,
+//     },
+//     {
+//       Header: 'Tech Assigned',
+//       accessor: (r) => r.type,
+//     },
+//     {
+//       Header: 'Assign Job',
+//       accessor: (r) => r.type,
+//     },
+//   ], []);
+//   return (
+//     <div className="ServiceNeededReport widget col-8">
+//       <h3>Customers needing service in the next 7 days</h3>
+//       <div className="col-10">
+//         <ReportsTable
+//           columns={tableColumns}
+//           data={tableData}
+//         />
+//         </div>
+//     </div>
+//   );
+// }
+
 export default ServiceNeededReport;
