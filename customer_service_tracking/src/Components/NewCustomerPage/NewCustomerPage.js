@@ -66,260 +66,106 @@ function NewCustomerPage({ userObj }) {
     <Page>
       <Header title="New Customer" icon="fa-user-plus" />
       <div className="widget col-6 d-flex justify-content-center">
-            <Form className="col-8" onSubmit={formik.handleSubmit}>
-              <Row form>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label for="firstName">First Name</Label>
-                    <Input
-                      type="text"
-                      name="firstName"
-                      id="firstName"
-                      {...formik.getFieldProps('firstName')} />
-                    <FormFeedback className="d-block">{formik.errors?.firstName}</FormFeedback>
-                  </FormGroup>
-                </Col>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label for="lastName">Last Name</Label>
-                    <Input
-                      type="text"
-                      name="lastName"
-                      id="lastName"
-                      {...formik.getFieldProps('lastName')} />
-                    <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>
-                  </FormGroup>
-                </Col>
-              </Row>
+        <Form className="col-8" onSubmit={formik.handleSubmit}>
+          <Row form>
+            <Col md={6}>
               <FormGroup>
-                <Label for="addressLine1">Address Line</Label>
+                <Label for="firstName">First Name</Label>
                 <Input
                   type="text"
-                  name="addressLine1"
-                  id="addressLine1"
-                  {...formik.getFieldProps('newCustomerAddress.addressLine1')} />
-                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine1}</FormFeedback>
+                  name="firstName"
+                  id="firstName"
+                  {...formik.getFieldProps('firstName')} />
+                <FormFeedback className="d-block">{formik.errors?.firstName}</FormFeedback>
               </FormGroup>
+            </Col>
+            <Col md={6}>
               <FormGroup>
-                <Label for="addressLine2">Address Line 2</Label>
+                <Label for="lastName">Last Name</Label>
                 <Input
                   type="text"
-                  name="addressLine2"
-                  id="addressLine2"
-                  {...formik.getFieldProps('newCustomerAddress.addressLine2')} />
-                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine2}</FormFeedback>
+                  name="lastName"
+                  id="lastName"
+                  {...formik.getFieldProps('lastName')} />
+                <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>
               </FormGroup>
-              <Row form>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label for="city">City</Label>
-                    <Input
-                      type="text"
-                      name="city"
-                      id="city"
-                      {...formik.getFieldProps('newCustomerAddress.city')} />
-                    <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.city}</FormFeedback>
-                  </FormGroup>
-                </Col>
-                <Col md={4}>
-                  <FormGroup>
-                    <Label for="state">State</Label>
-                    <Input
-                      type="text"
-                      name="state"
-                      id="state"
-                      {...formik.getFieldProps('newCustomerAddress.state')} />
-                    <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.state}</FormFeedback>
-                  </FormGroup>
-                </Col>
-                <Col md={2}>
-                  <FormGroup>
-                    <Label for="zipCode">Zip</Label>
-                    <Input
-                      type="text"
-                      name="zipCode"
-                      id="zipCode"
-                      {...formik.getFieldProps('newCustomerAddress.zipCode')} />
-                    <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.zipCode}</FormFeedback>
-                  </FormGroup>
-                </Col>
-              </Row>
-              <div className="form-group">
-                <label htmlFor="homePhone">Home Phone</label>
-                <input
-                  type="input"
-                  className="form-control"
-                  {...formik.getFieldProps('homePhone')} />
-                <FormFeedback className="d-block">{formik.errors?.homePhone}</FormFeedback>
-              </div>
-              <div className="form-group">
-                <label htmlFor="officePhone">Office Phone</label>
-                <input
-                  type="input"
-                  className="form-control"
-                  id="officePhone"
-                  {...formik.getFieldProps('officePhone')} />
-                <FormFeedback className="d-block">{formik.errors?.officePhone}</FormFeedback>
-              </div>
-              <button type="submit" className="btn btn-success">Add New Customer</button>
-            </Form>
+            </Col>
+          </Row>
+          <FormGroup>
+            <Label for="addressLine1">Address Line</Label>
+            <Input
+              type="text"
+              name="addressLine1"
+              id="addressLine1"
+              {...formik.getFieldProps('newCustomerAddress.addressLine1')} />
+            <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine1}</FormFeedback>
+          </FormGroup>
+          <FormGroup>
+            <Label for="addressLine2">Address Line 2</Label>
+            <Input
+              type="text"
+              name="addressLine2"
+              id="addressLine2"
+              {...formik.getFieldProps('newCustomerAddress.addressLine2')} />
+            <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine2}</FormFeedback>
+          </FormGroup>
+          <Row form>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="city">City</Label>
+                <Input
+                  type="text"
+                  name="city"
+                  id="city"
+                  {...formik.getFieldProps('newCustomerAddress.city')} />
+                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.city}</FormFeedback>
+              </FormGroup>
+            </Col>
+            <Col md={4}>
+              <FormGroup>
+                <Label for="state">State</Label>
+                <Input
+                  type="text"
+                  name="state"
+                  id="state"
+                  {...formik.getFieldProps('newCustomerAddress.state')} />
+                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.state}</FormFeedback>
+              </FormGroup>
+            </Col>
+            <Col md={2}>
+              <FormGroup>
+                <Label for="zipCode">Zip</Label>
+                <Input
+                  type="text"
+                  name="zipCode"
+                  id="zipCode"
+                  {...formik.getFieldProps('newCustomerAddress.zipCode')} />
+                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.zipCode}</FormFeedback>
+              </FormGroup>
+            </Col>
+          </Row>
+          <div className="form-group">
+            <label htmlFor="homePhone">Home Phone</label>
+            <input
+              type="input"
+              className="form-control"
+              {...formik.getFieldProps('homePhone')} />
+            <FormFeedback className="d-block">{formik.errors?.homePhone}</FormFeedback>
+          </div>
+          <div className="form-group">
+            <label htmlFor="officePhone">Office Phone</label>
+            <input
+              type="input"
+              className="form-control"
+              id="officePhone"
+              {...formik.getFieldProps('officePhone')} />
+            <FormFeedback className="d-block">{formik.errors?.officePhone}</FormFeedback>
+          </div>
+          <button type="submit" className="btn btn-success">Add New Customer</button>
+        </Form>
       </div>
     </Page>
   );
 }
-// class NewCustomerPage extends React.Component {
-//   static propTypes = {
-//     userObj: PropTypes.object.isRequired,
-//     authorized: PropTypes.bool.isRequired,
-//   }
-
-//   state = {
-//     newCustomer: defaultCustomer,
-//     newCustomerAddress: defaultCustomerAddress,
-//   }
-
-//   formFieldStringState = (e) => {
-//     const tempCustomer = { ...this.state.newCustomer };
-//     tempCustomer[e.target.id] = e.target.value;
-//     this.setState({ newCustomer: tempCustomer });
-//   };
-
-//   customerAddressFormFieldStringState = (e) => {
-//     const tempCustomerAddress = { ...this.state.newCustomerAddress };
-//     tempCustomerAddress[e.target.id] = e.target.value;
-//     this.setState({ newCustomerAddress: tempCustomerAddress });
-//   };
-
-//   createNewCustomer = (e) => {
-//     e.preventDefault();
-//     const { newCustomer, newCustomerAddress } = this.state;
-//     const { userObj } = this.props;
-//     newCustomer.businessId = userObj.businessId;
-//     newCustomer.newCustomerAddress = newCustomerAddress;
-//     CustomerRequests.addNewCustomer(newCustomer)
-//       .then(() => this.props.history.push('/customers'))
-//       .catch((err) => console.error(err));
-//   }
-
-//   render() {
-//     const { newCustomer, newCustomerAddress } = this.state;
-//     return (
-//       <Page>
-//         <div className="NewCustomerPage">
-//           <Header title="New Customer" icon="fa-user-plus" />
-//           <div className="widget col-6 d-flex justify-content-center">
-//             <Form className="log-in-form col-10" onSubmit={this.createNewCustomer}>
-//               <Row form>
-//                 <Col md={6}>
-//                   <FormGroup>
-//                     <Label for="firstName">First Name</Label>
-//                     <Input
-//                       type="text"
-//                       name="firstName"
-//                       id="firstName"
-//                       value={newCustomer.firstName}
-//                       onChange={this.formFieldStringState}
-//                       required />
-//                   </FormGroup>
-//                 </Col>
-//                 <Col md={6}>
-//                   <FormGroup>
-//                     <Label for="lastName">Last Name</Label>
-//                     <Input
-//                       type="text"
-//                       name="lastName"
-//                       id="lastName"
-//                       value={newCustomer.lastName}
-//                       onChange={this.formFieldStringState}
-//                       required />
-//                   </FormGroup>
-//                 </Col>
-//               </Row>
-//               <FormGroup>
-//                 <Label for="addressLine1">Address Line</Label>
-//                 <Input
-//                   type="text"
-//                   name="addressLine1"
-//                   id="addressLine1"
-//                   value={newCustomerAddress.addressLine1}
-//                   onChange={this.customerAddressFormFieldStringState}
-//                   required />
-//               </FormGroup>
-//               <FormGroup>
-//                 <Label for="addressLine2">Address Line 2</Label>
-//                 <Input
-//                   type="text"
-//                   name="addressLine2"
-//                   id="addressLine2"
-//                   value={newCustomerAddress.addressLine2}
-//                   onChange={this.customerAddressFormFieldStringState}
-//                   required />
-//               </FormGroup>
-//               <Row form>
-//                 <Col md={6}>
-//                   <FormGroup>
-//                     <Label for="city">City</Label>
-//                     <Input
-//                       type="text"
-//                       name="city"
-//                       id="city"
-//                       value={newCustomerAddress.city}
-//                       onChange={this.customerAddressFormFieldStringState}
-//                       required />
-//                   </FormGroup>
-//                 </Col>
-//                 <Col md={4}>
-//                   <FormGroup>
-//                     <Label for="state">State</Label>
-//                     <Input
-//                       type="text"
-//                       name="state"
-//                       id="state"
-//                       value={newCustomerAddress.state}
-//                       onChange={this.customerAddressFormFieldStringState}
-//                       required />
-//                   </FormGroup>
-//                 </Col>
-//                 <Col md={2}>
-//                   <FormGroup>
-//                     <Label for="zipCode">Zip</Label>
-//                     <Input
-//                       type="text"
-//                       name="zipCode"
-//                       id="zipCode"
-//                       value={newCustomerAddress.zipCode}
-//                       onChange={this.customerAddressFormFieldStringState}
-//                       required />
-//                   </FormGroup>
-//                 </Col>
-//               </Row>
-//               <div className="form-group">
-//                 <label htmlFor="homePhone">Home Phone</label>
-//                 <input
-//                   type="input"
-//                   className="form-control"
-//                   id="homePhone"
-//                   value={newCustomer.homePhone}
-//                   onChange={this.formFieldStringState}
-//                 />
-//               </div>
-//               <div className="form-group">
-//                 <label htmlFor="officePhone">Office Phone</label>
-//                 <input
-//                   type="input"
-//                   className="form-control"
-//                   id="officePhone"
-//                   value={newCustomer.officePhone}
-//                   onChange={this.formFieldStringState}
-//                 />
-//               </div>
-//               <button type="submit" className="btn btn-success">Add New Customer</button>
-//             </Form>
-//           </div>
-//         </div>
-//       </Page>
-//     );
-//   }
-// }
 
 export default NewCustomerPage;
