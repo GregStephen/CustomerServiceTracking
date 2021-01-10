@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import {
   Modal,
   ModalHeader,
@@ -9,10 +8,9 @@ import {
 import { Page, Header } from '../Global';
 
 import CustomerReports from './CustomerReports/CustomerReports';
-import CustomerSystem from './CustomerSystem/CustomerSystem';
 import EditCustomerModal from '../Modals/EditCustomerModal/EditCustomerModal';
 import EditCustomerAddressModal from '../Modals/EditCustomerAddressModal/EditCustomerAddressModal';
-
+import CustomerSystems from './CustomerSystems';
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import ReportRequests from '../../Helpers/Data/ReportRequests';
 
@@ -125,69 +123,47 @@ class CustomerPage extends React.Component {
     this.loadPage();
   }
 
-  showSystems = () => {
-    const { customer } = this.state;
-    if (customer.systems.length === 0) {
-      return (<p>Customer has no systems. You should add some!</p>);
-    }
-    return (
-      customer.systems.map((system) => (
-          <CustomerSystem
-          key={ system.id }
-          system={ system }
-          deleteThisCustomerSystem={ this.deleteThisCustomerSystem }/>
-      ))
-    );
-  }
-
   render() {
     const { customer, modalOpen, reports } = this.state;
-    const addSystemLink = `/add-system-to-customer/${customer.id}`;
     const customerName = `${customer.firstName} ${customer.lastName}`;
     return (
       <Page>
         <div className="CustomerPage">
-        <Header title={customerName}/>
-        <div className="customer-info widget col-10 mb-4 pt-0">
-          <Header title="Info" icon="fas fa-address-card"/>
-          {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
+          <Header title={customerName} />
+          <div className="customer-info widget col-10 mb-4 pt-0">
+            <Header title="Info" icon="fas fa-address-card" />
+            {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
             {customer.officePhone !== '' ? <p>Office Phone: {Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
-
-            <p> Address</p>
             {Formatting.formatAddressObj(customer.address)}
-          <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
-          <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
-        </div>
-        <div className="Customer-Systems widget col-10 mb-4 pt-0">
-          <Header title="Systems" />
-          {this.showSystems()}
-          <Link className="btn btn-info" tag={Link} to={addSystemLink}>Add System</Link>
-        </div>
-        <CustomerReports
-        reports={reports}/>
-        <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
-          <ModalHeader toggle={this.modalIsOpen}>
-            {modalOpen === 'editCustomer' ? 'Edit Customer'
-              : modalOpen === 'editAddress' ? 'Edit Address' : ''}
-          </ModalHeader>
-          {modalOpen === 'editCustomer'
-            ? <EditCustomerModal
-              toggleModalOpen={this.toggleModalOpen}
-              customer={customer}
-              updateCustomer={this.customerUpdated}
-              customerDeleted={this.customerDeleted}
-            />
-            : modalOpen === 'editAddress'
-              ? <EditCustomerAddressModal
+            <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
+            <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
+          </div>
+          <CustomerSystems customer={customer} deleteThisCustomerSystem={this.deleteThisCustomerSystem} />
+          <CustomerReports
+            reports={reports} />
+          <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
+            <ModalHeader toggle={this.modalIsOpen}>
+              {modalOpen === 'editCustomer' ? 'Edit Customer'
+                : modalOpen === 'editAddress' ? 'Edit Address' : ''}
+            </ModalHeader>
+            {modalOpen === 'editCustomer'
+              ? <EditCustomerModal
                 toggleModalOpen={this.toggleModalOpen}
                 customer={customer}
-                updateCustomerAddress={this.customerAddressUpdated}
+                updateCustomer={this.customerUpdated}
+                customerDeleted={this.customerDeleted}
               />
-              : ''
-          }
-        </Modal>
+              : modalOpen === 'editAddress'
+                ? <EditCustomerAddressModal
+                  toggleModalOpen={this.toggleModalOpen}
+                  customer={customer}
+                  updateCustomerAddress={this.customerAddressUpdated}
+                />
+                : ''
+            }
+          </Modal>
         </div>
-        </Page>
+      </Page>
     );
   }
 }

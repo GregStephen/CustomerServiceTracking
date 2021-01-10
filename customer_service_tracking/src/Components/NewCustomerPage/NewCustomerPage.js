@@ -65,7 +65,7 @@ function NewCustomerPage({ userObj }) {
   return (
     <Page>
       <Header title="New Customer" icon="fa-user-plus" />
-      <div className="widget col-6 d-flex justify-content-center">
+      <div className="widget col-6 d-flex justify-content-center mb-4">
         <Form className="col-8" onSubmit={formik.handleSubmit}>
           <Row form>
             <Col md={6}>
@@ -76,7 +76,8 @@ function NewCustomerPage({ userObj }) {
                   name="firstName"
                   id="firstName"
                   {...formik.getFieldProps('firstName')} />
-                <FormFeedback className="d-block">{formik.errors?.firstName}</FormFeedback>
+                {formik.touched.firstName
+                  && <FormFeedback className="d-block">{formik.errors?.firstName}</FormFeedback>}
               </FormGroup>
             </Col>
             <Col md={6}>
@@ -87,7 +88,8 @@ function NewCustomerPage({ userObj }) {
                   name="lastName"
                   id="lastName"
                   {...formik.getFieldProps('lastName')} />
-                <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>
+                {formik.touched.lastName
+                  && <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>}
               </FormGroup>
             </Col>
           </Row>
@@ -98,7 +100,8 @@ function NewCustomerPage({ userObj }) {
               name="addressLine1"
               id="addressLine1"
               {...formik.getFieldProps('newCustomerAddress.addressLine1')} />
-            <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine1}</FormFeedback>
+            {formik.touched.newCustomerAddress?.addressLine1
+              && <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine1}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label for="addressLine2">Address Line 2</Label>
@@ -107,7 +110,8 @@ function NewCustomerPage({ userObj }) {
               name="addressLine2"
               id="addressLine2"
               {...formik.getFieldProps('newCustomerAddress.addressLine2')} />
-            <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine2}</FormFeedback>
+            {formik.touched.newCustomerAddress?.addressLine2
+              && <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.addressLine2}</FormFeedback>}
           </FormGroup>
           <Row form>
             <Col md={6}>
@@ -118,7 +122,8 @@ function NewCustomerPage({ userObj }) {
                   name="city"
                   id="city"
                   {...formik.getFieldProps('newCustomerAddress.city')} />
-                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.city}</FormFeedback>
+                {formik.touched.newCustomerAddress?.city
+                  && <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.city}</FormFeedback>}
               </FormGroup>
             </Col>
             <Col md={4}>
@@ -129,7 +134,8 @@ function NewCustomerPage({ userObj }) {
                   name="state"
                   id="state"
                   {...formik.getFieldProps('newCustomerAddress.state')} />
-                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.state}</FormFeedback>
+                {formik.touched.newCustomerAddress?.state
+                  && <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.state}</FormFeedback>}
               </FormGroup>
             </Col>
             <Col md={2}>
@@ -140,7 +146,8 @@ function NewCustomerPage({ userObj }) {
                   name="zipCode"
                   id="zipCode"
                   {...formik.getFieldProps('newCustomerAddress.zipCode')} />
-                <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.zipCode}</FormFeedback>
+                {formik.touched.newCustomerAddress?.zipCode
+                  && <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.zipCode}</FormFeedback>}
               </FormGroup>
             </Col>
           </Row>
@@ -150,7 +157,8 @@ function NewCustomerPage({ userObj }) {
               type="input"
               className="form-control"
               {...formik.getFieldProps('homePhone')} />
-            <FormFeedback className="d-block">{formik.errors?.homePhone}</FormFeedback>
+            {formik.touched.homePhone
+              && <FormFeedback className="d-block">{formik.errors?.homePhone}</FormFeedback>}
           </div>
           <div className="form-group">
             <label htmlFor="officePhone">Office Phone</label>
@@ -159,7 +167,8 @@ function NewCustomerPage({ userObj }) {
               className="form-control"
               id="officePhone"
               {...formik.getFieldProps('officePhone')} />
-            <FormFeedback className="d-block">{formik.errors?.officePhone}</FormFeedback>
+            {formik.touched.officePhone
+              && <FormFeedback className="d-block">{formik.errors?.officePhone}</FormFeedback>}
           </div>
           <button type="submit" className="btn btn-success">Add New Customer</button>
         </Form>

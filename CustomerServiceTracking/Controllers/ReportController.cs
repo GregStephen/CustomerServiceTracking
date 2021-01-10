@@ -37,6 +37,12 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetReportsByCustomerId(customerId));
         }
 
+        [HttpGet("reportId/{reportId}")]
+        public IActionResult GetReportById(Guid reportId)
+        {
+            return Ok(_repo.GetReportById(reportId));
+        }
+
         [HttpPost]
         public IActionResult AddNewReportForCustomer(NewReportDTO report)
         {

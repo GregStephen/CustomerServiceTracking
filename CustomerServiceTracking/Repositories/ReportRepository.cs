@@ -60,6 +60,21 @@ namespace CustomerServiceTracking.Repositories
                 return db.Query<ReportToSendDTO>(sql, parameters);
             }
         }
+        public ReportToSendDTO GetReportById(Guid reportId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.CustomerId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, r.DayTankDepleted, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                            FROM [Report] r
+                            JOIN [User] u
+							ON r.TechnicianId = u.Id
+							JOIN [JobType] jt
+							ON r.JobTypeId = jt.Id
+                            WHERE r.[Id] = @reportId";
+                var parameters = new { reportId };
+                return db.QueryFirst<ReportToSendDTO>(sql, parameters);
+            }
+        }
 
         private DateTime GetTheDateTheTankWillBeDepleted(NewReportDTO newReportDTO)
         {

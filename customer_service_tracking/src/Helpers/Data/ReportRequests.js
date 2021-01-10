@@ -14,11 +14,21 @@ const getReportsByCustomerId = (customerId) => new Promise((resolve, reject) => 
     .catch((err) => reject(err));
 });
 
+const getReportById = (reportId) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/reportId/${reportId}`)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 const addNewReport = (newReport) => new Promise((resolve, reject) => {
   axios.post(`${baseUrl}`, newReport)
     .then((results) => resolve(results.data))
     .catch((err) => reject(err));
 });
 
-
-export default { getAllReportsByBusinessId, getReportsByCustomerId, addNewReport };
+export default {
+  getAllReportsByBusinessId,
+  getReportsByCustomerId,
+  getReportById,
+  addNewReport,
+};

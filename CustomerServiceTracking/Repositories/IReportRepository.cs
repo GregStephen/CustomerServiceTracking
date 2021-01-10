@@ -11,6 +11,7 @@ namespace CustomerServiceTracking.Repositories
     {
         IEnumerable<ReportToSendDTO> GetAllReportsByBusinessId(Guid businessId);
         IEnumerable<ReportToSendDTO> GetReportsByCustomerId(Guid customerId);
+        ReportToSendDTO GetReportById(Guid reportId);
         bool AddReport(NewReportDTO newReport);
     }
 }

@@ -7,17 +7,18 @@ import PropTypes from 'prop-types';
 class DeleteCustomerSystemModal extends React.Component {
   static propTypes = {
     toggleModalOpen: PropTypes.func.isRequired,
+    modalIsOpen: PropTypes.bool.isRequired,
     deleteCustomerSystem: PropTypes.func.isRequired,
   }
 
   toggleModal = (e) => {
-    const { toggleModalOpen } = this.props;
-    toggleModalOpen(e);
+    const { toggleModalOpen, modalIsOpen } = this.props;
+    toggleModalOpen(!modalIsOpen);
   };
 
   confirmDeletion = () => {
-    const { deleteCustomerSystem } = this.props;
-    deleteCustomerSystem();
+    const { deleteCustomerSystem, systemId } = this.props;
+    deleteCustomerSystem(systemId);
   }
 
   render() {

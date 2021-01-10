@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import PropTypes from 'prop-types';
+import {
+  Col,
+  Row,
+  FormGroup,
+  Form,
+  FormFeedback,
+  Label,
+  Input,
+} from 'reactstrap';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Header, Page } from '../../Global';
 
 import './NewAccountPage.scss';
 
 import UserRequests from '../../../Helpers/Data/UserRequests';
-
-const defaultUser = {
-  businessName: '',
-  firstName: '',
-  lastName: '',
-  admin: true,
-};
 
 const defaultBusinessAddress = {
   city: '',
@@ -22,208 +26,209 @@ const defaultBusinessAddress = {
   addressLine2: '',
 };
 
-class NewAccountPage extends React.Component {
-  static propTypes = {
-    authorized: PropTypes.bool.isRequired,
-    logIn: PropTypes.func.isRequired,
-  }
+const defaultUser = {
+  email: '',
+  password: '',
+  confirmPassword: '',
+  businessName: '',
+  firstName: '',
+  lastName: '',
+  admin: true,
+  businessAddress: defaultBusinessAddress,
+};
 
-  state = {
-    newUser: defaultUser,
-    businessAddress: defaultBusinessAddress,
-    email: '',
-    password: '',
-    confirmPassword: '',
-    error: '',
-  }
+const newAccountValidationSchema = Yup.object().shape({
+  email: Yup.string().email().required('An email is required'),
+  password: Yup.string().required('Password is required'),
+  confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('Password confirmation is required'),
+  firstName: Yup.string().required('First Name is required'),
+  lastName: Yup.string().required('Last Name is required'),
+  businessName: Yup.string().required('Business Name is required'),
+  businessAddress: Yup.object().shape({
+    city: Yup.string().required('City is required'),
+    state: Yup.string().length(2, 'Please use 2 letter state abbreviation').required('State is required'),
+    zipCode: Yup.string().length(5, 'Zip Code must be only 5 digits long').required('Zip Code is required'),
+    addressLine1: Yup.string().required('Address line is required'),
+    addressLine2: Yup.string().notRequired(),
+  }),
+});
 
-  formFieldStringState = (e) => {
-    const tempUser = { ...this.state.newUser };
-    tempUser[e.target.id] = e.target.value;
-    this.setState({ newUser: tempUser });
-  };
+function NewAccountPage({ logIn }) {
+  const formik = useFormik({
+    initialValues: defaultUser,
+    enableReinitialize: true,
+    validationSchema: newAccountValidationSchema,
+    onSubmit: (formValues, { setSubmitting }) => {
+      const submission = { ...formValues };
+      const { email } = submission;
+      const { password } = submission;
+      delete submission.confirmPassword;
+      delete submission.password;
+      delete submission.email;
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((cred) => {
+          cred.user.getIdToken()
+            .then((token) => sessionStorage.setItem('token', token));
+          submission.firebaseUid = firebase.auth().currentUser.uid;
+          UserRequests.addNewUser(submission)
+            .then(() => logIn(email, password))
+            .catch((err) => console.error(err));
+        })
+        .catch((err) => setErrorMessage(err.message));
+      setSubmitting(false);
+    },
+  });
 
-  businessAddressFormFieldStringState = (e) => {
-    const tempBusinessAddress = { ...this.state.businessAddress };
-    tempBusinessAddress[e.target.id] = e.target.value;
-    this.setState({ businessAddress: tempBusinessAddress });
-  };
+  const [errorMessage, setErrorMessage] = useState();
 
-  // sets state for firebase info
-  handleChange = (e) => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    });
-  };
-
-  createAccount = (e) => {
-    e.preventDefault();
-    const {
-      email, password, confirmPassword, businessAddress,
-    } = this.state;
-    const { logIn } = this.props;
-    if (password !== confirmPassword) {
-      this.setState({ error: 'Passwords must match' });
-      return;
-    }
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((cred) => {
-        cred.user.getIdToken()
-          .then((token) => sessionStorage.setItem('token', token));
-        const saveMe = { ...this.state.newUser };
-        saveMe.firebaseUid = firebase.auth().currentUser.uid;
-        saveMe.businessAddress = businessAddress;
-        UserRequests.addNewUser(saveMe)
-          .then(() => logIn(email, password))
-          .catch((err) => console.error(err));
-      })
-      .catch((err) => this.setState({ error: err.message }));
-  }
-
-  render() {
-    const {
-      email, password, confirmPassword, businessName, firstName, lastName, error, businessAddress,
-    } = this.state;
-
-    return (
+  return (
+    <Page>
+      <Header title="Create Business Account" />
       <div className="NewAccountPage">
-        <h1 className="mb-3">Create an account for your business</h1>
-        <form className="col-12 log-in-business-form row justify-content-around" onSubmit={this.createAccount}>
-          <div className="col-4">
+        <div className="widget col-8 d-flex justify-content-center">
+          <Form className="col-10" onSubmit={formik.handleSubmit}>
             <h3 className="sign-in-header">Personal Info</h3>
-            <div className="form-group">
-              <label htmlFor="firstName">First Name</label>
-              <input
-                type="input"
-                className="form-control"
-                id="firstName"
-                value={firstName}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                type="input"
-                className="form-control"
-                id="lastName"
-                value={lastName}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                className="form-control"
+            <Row form>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="firstName">First Name</Label>
+                  <Input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    {...formik.getFieldProps('firstName')} />
+                  {formik.touched.firstName
+                    && <FormFeedback className="d-block">{formik.errors?.firstName}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="lastName">Last Name</Label>
+                  <Input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    {...formik.getFieldProps('lastName')} />
+                  {formik.touched.lastName
+                    && <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>}
+                </FormGroup>
+              </Col>
+            </Row>
+            <FormGroup>
+              <Label for="email">Email</Label>
+              <Input
+                type="text"
+                name="email"
                 id="email"
-                value={email}
-                onChange={this.handleChange}
                 placeholder="Tom@ExampleEmail.com"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                value={password}
-                onChange={this.handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={this.handleChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="businessName">Business Name</label>
-              <input
-                type="input"
-                className="form-control"
+                {...formik.getFieldProps('email')} />
+              {formik.touched.email
+                && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
+            </FormGroup>
+            <Row form>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="password">Password</Label>
+                  <Input
+                    type="password"
+                    name="password"
+                    id="password"
+                    {...formik.getFieldProps('password')} />
+                  {formik.touched.password
+                    && <FormFeedback className="d-block">{formik.errors?.password}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="confirmPassword">Confirm Password</Label>
+                  <Input
+                    type="password"
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    {...formik.getFieldProps('confirmPassword')} />
+                  {formik.touched.confirmPassword
+                    && <FormFeedback className="d-block">{formik.errors?.confirmPassword}</FormFeedback>}
+                </FormGroup>
+              </Col>
+            </Row>
+            <h3 className="sign-in-header">Business Info</h3>
+            <FormGroup>
+              <Label for="businessName">Business Name</Label>
+              <Input
+                type="text"
+                name="businessName"
                 id="businessName"
-                value={businessName}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-          </div>
-          <div className="col-4">
-            <h2>Business Address</h2>
-            <div className="form-group">
-              <label htmlFor="addressLine1">Address Line</label>
-              <input
-                type="input"
-                className="form-control"
+                {...formik.getFieldProps('businessName')} />
+              {formik.touched.businessName
+                && <FormFeedback className="d-block">{formik.errors?.businessName}</FormFeedback>}
+            </FormGroup>
+            <FormGroup>
+              <Label for="addressLine1">Address Line</Label>
+              <Input
+                type="text"
+                name="addressLine1"
                 id="addressLine1"
-                value={businessAddress.addressLine1}
-                onChange={this.businessAddressFormFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="addressLine2">Address Line 2</label>
-              <input
-                type="input"
-                className="form-control"
+                {...formik.getFieldProps('businessAddress.addressLine1')} />
+              {formik.touched.businessAddress?.addressLine1
+                && <FormFeedback className="d-block">{formik.errors?.businessAddress?.addressLine1}</FormFeedback>}
+            </FormGroup>
+            <FormGroup>
+              <Label for="addressLine2">Address Line 2</Label>
+              <Input
+                type="text"
+                name="addressLine2"
                 id="addressLine2"
-                value={businessAddress.addressLine2}
-                onChange={this.businessAddressFormFieldStringState}
-              />
+                {...formik.getFieldProps('businessAddress.addressLine2')} />
+              {formik.touched.businessAddress?.addressLine2
+                && <FormFeedback className="d-block">{formik.errors?.businessAddress?.addressLine2}</FormFeedback>}
+            </FormGroup>
+            <Row form>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="city">City</Label>
+                  <Input
+                    type="text"
+                    name="city"
+                    id="city"
+                    {...formik.getFieldProps('businessAddress.city')} />
+                  {formik.touched.businessAddress?.city
+                    && <FormFeedback className="d-block">{formik.errors?.businessAddress?.city}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={4}>
+                <FormGroup>
+                  <Label for="state">State</Label>
+                  <Input
+                    type="text"
+                    name="state"
+                    id="state"
+                    {...formik.getFieldProps('businessAddress.state')} />
+                  {formik.touched.businessAddress?.state
+                    && <FormFeedback className="d-block">{formik.errors?.businessAddress?.state}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={2}>
+                <FormGroup>
+                  <Label for="zipCode">Zip</Label>
+                  <Input
+                    type="text"
+                    name="zipCode"
+                    id="zipCode"
+                    {...formik.getFieldProps('businessAddress.zipCode')} />
+                  {formik.touched.businessAddress?.zipCode
+                    && <FormFeedback className="d-block">{formik.errors?.businessAddress?.zipCode}</FormFeedback>}
+                </FormGroup>
+              </Col>
+            </Row>
+            <div className="row col-12 mb-4 justify-content-center">
+              <h3 className="error col-12">{errorMessage}</h3>
+              <button type="submit" className="btn btn-success col-6">Create Account</button>
             </div>
-            <div className="form-group">
-              <label htmlFor="city">City</label>
-              <input
-                type="input"
-                className="form-control"
-                id="city"
-                value={businessAddress.city}
-                onChange={this.businessAddressFormFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="state">State</label>
-              <input
-                type="input"
-                className="form-control"
-                id="state"
-                value={businessAddress.state}
-                onChange={this.businessAddressFormFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="zipCode">Zip Code</label>
-              <input
-                type="input"
-                className="form-control"
-                id="zipCode"
-                value={businessAddress.zipCode}
-                onChange={this.businessAddressFormFieldStringState}
-                required
-              />
-            </div>
-          </div>
-          <div className="row col-12 mb-4 justify-content-center">
-            <h2 className="error col-12">{error}</h2>
-            <button type="submit" className="btn btn-success col-6">Create Account</button>
-          </div>
-        </form>
+          </Form>
+        </div>
       </div>
-    );
-  }
+    </Page>
+  );
 }
 
 export default NewAccountPage;

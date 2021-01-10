@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
+
 import { Header, GlobalTable } from '../../Global';
 
 function CustomerReports({ reports }) {
@@ -16,6 +18,13 @@ function CustomerReports({ reports }) {
     {
       Header: 'Type',
       accessor: (r) => r.type,
+    },
+    {
+      Header: 'Inspect',
+      accessor: (r) => r.id,
+      Cell: ({ row: { original } }) => (
+        <Link className="btn btn-info" tag={Link} to={`/report/${original.id}`}>Inspect</Link>
+      ),
     },
   ], []);
   return (
