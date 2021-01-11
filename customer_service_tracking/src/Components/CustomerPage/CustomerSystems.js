@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import {
-  Modal,
-  ModalHeader,
-} from 'reactstrap';
+// import {
+//   Modal,
+//   ModalHeader,
+// } from 'reactstrap';
 
 import { Header, GlobalTable } from '../Global';
-import DeleteCustomerSystemModal from '../Modals/DeleteCustomerSystemModal/DeleteCustomerSystemModal';
+// import DeleteCustomerSystemModal from '../Modals/DeleteCustomerSystemModal/DeleteCustomerSystemModal';
 
 function CustomerSystems({ customer, deleteThisCustomerSystem }) {
   const [systems, getSystems] = useState();
-  const [deleteCustomerSystemModalIsOpen, getDeleteCustomerSystemModalIsOpen] = useState();
+  // const [deleteCustomerSystemModalIsOpen, getDeleteCustomerSystemModalIsOpen] = useState();
   const addSystemLink = `/add-system-to-customer/${customer.id}`;
 
   useEffect(() => {
     getSystems(customer.systems);
   }, [customer.systems]);
 
-  const deleteTheSystem = (systemId) => {
-    deleteThisCustomerSystem(systemId);
-  };
+  // const deleteTheSystem = (systemId) => {
+  //   deleteThisCustomerSystem(systemId);
+  // };
 
   const tableData = useMemo(() => (systems || []), [systems]);
 
@@ -66,25 +66,25 @@ function CustomerSystems({ customer, deleteThisCustomerSystem }) {
         <Link className="btn btn-info" tag={Link} to={`/new-report/${original.id}`}>New Report</Link>
       ),
     },
-    {
-      Header: 'Delete',
-      accessor: (s) => s.id,
-      Cell: ({ row: { original } }) => (
-        <>
-          <button className="btn btn-danger" onClick={() => getDeleteCustomerSystemModalIsOpen(!deleteCustomerSystemModalIsOpen)}>Delete</button>
-          <Modal isOpen={deleteCustomerSystemModalIsOpen} toggle={() => getDeleteCustomerSystemModalIsOpen(!deleteCustomerSystemModalIsOpen)}>
-          <ModalHeader toggle={() => getDeleteCustomerSystemModalIsOpen(!deleteCustomerSystemModalIsOpen)}>Delete Customer System</ModalHeader>
-            <DeleteCustomerSystemModal
-              toggleModalOpen={getDeleteCustomerSystemModalIsOpen}
-              modalIsOpen={deleteCustomerSystemModalIsOpen}
-              deleteCustomerSystem={deleteTheSystem}
-              systemId={original.id}
-            />
-        </Modal>
-        </>
-      ),
-    },
-  ], [deleteCustomerSystemModalIsOpen]);
+    // {
+    //   Header: 'Delete',
+    //   accessor: (s) => s.id,
+    //   Cell: ({ row: { original } }) => (
+    //     <>
+    //       <button className="btn btn-danger" onClick={() => getDeleteCustomerSystemModalIsOpen(!deleteCustomerSystemModalIsOpen)}>Delete</button>
+    //       <Modal isOpen={deleteCustomerSystemModalIsOpen} toggle={() => getDeleteCustomerSystemModalIsOpen(!deleteCustomerSystemModalIsOpen)}>
+    //       <ModalHeader toggle={() => getDeleteCustomerSystemModalIsOpen(!deleteCustomerSystemModalIsOpen)}>Delete Customer System</ModalHeader>
+    //         <DeleteCustomerSystemModal
+    //           toggleModalOpen={getDeleteCustomerSystemModalIsOpen}
+    //           modalIsOpen={deleteCustomerSystemModalIsOpen}
+    //           deleteCustomerSystem={deleteTheSystem}
+    //           systemId={original.id}
+    //         />
+    //     </Modal>
+    //     </>
+    //   ),
+    // },
+  ], []);
   return (
       <div className="widget col-10 mb-4 pt-0">
         <Header title="Systems" />

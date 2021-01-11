@@ -26,9 +26,9 @@ VALUES
 	1
 ),
 (
-	'John',
+	'Greg',
 	'Worker',
-	'aKyHTatDy7WJSL30tXy3whavr8p1',
+	'Yk3pvshTbMSKOlhNyhOUveXvBXf1',
 	0
 )
 
@@ -38,7 +38,7 @@ WHERE FirstName = 'Ben'
 
 SELECT @user2 = [Id]
 FROM [User]
-WHERE FirstName = 'John'
+WHERE FirstName = 'Greg'
 
 /* Creates an address for the business
 	and an address for the customer */
@@ -184,7 +184,7 @@ INSERT INTO [CustomerSystem]
 VALUES
 (
 	@customer,
-	'2020-07-07 00:00:00.000',
+	'2020-12-12 00:00:00.000',
 	'Around back near the gate',
 	10,
 	'1239129123',
@@ -245,11 +245,11 @@ VALUES
 (
 	0,
 	@customer,
-	'2020-10-07 00:00:00.000',
+	'2021-01-10 00:00:00.000',
 	20,
 	@jobTypeInstall,
 	'All lines look good',
-	'2020-07-07 00:00:00.000',
+	'2020-12-12 00:00:00.000',
 	5,
 	@customerSystem,
 	@user2

@@ -20,11 +20,11 @@ function TeamPage({ userObj }) {
     BusinessRequests.getRegisteredAndUnregisteredEmployees(userObj.businessId)
       .then((teamMembersReturned) => getTeamMembers(teamMembersReturned))
       .catch((err) => console.error(err));
-  });
+  }, [userObj.businessId]);
 
   const addTeamMember = (teamMember) => {
     UserRequests.addUnregisteredEmployee(teamMember)
-      .then(this.pageLoad())
+      .then()
       .catch((err) => console.error(err));
   };
   const tableData = useMemo(() => (teamMembers || []), [teamMembers]);

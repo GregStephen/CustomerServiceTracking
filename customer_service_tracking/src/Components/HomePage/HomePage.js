@@ -28,7 +28,6 @@ class HomePage extends React.Component {
                 businessId={userObj.businessId} />}
             </div>
             : <div className="jobs-assigned">
-              <h1>Works</h1>
               {
                 <AssignedJobs
                   userId={userObj.id} />

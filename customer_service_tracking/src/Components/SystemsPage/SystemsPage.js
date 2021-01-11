@@ -20,7 +20,7 @@ function SystemsPage({ userObj }) {
     SystemsRequests.getSystemsForBusiness(userObj.businessId)
       .then((systemsReturned) => getSystems(systemsReturned))
       .catch((err) => console.error(err));
-  });
+  }, [userObj.businessId]);
 
   const editTheSystem = (updatedSystem) => {
     SystemsRequests.editSystem(updatedSystem)

@@ -15,7 +15,7 @@ function CustomersPage({ userObj }) {
     CustomerRequests.getCustomersForBusiness(userObj.businessId)
       .then((customersReturned) => getCustomers(customersReturned))
       .catch((err) => console.error(err));
-  });
+  }, [userObj.businessId]);
 
   const tableData = useMemo(() => (customers || []), [customers]);
 
@@ -54,6 +54,7 @@ function CustomersPage({ userObj }) {
           <GlobalTable
             columns={tableColumns}
             data={tableData}
+            hidePagination={tableData.length < 10}
           />
         </div>
       </div>

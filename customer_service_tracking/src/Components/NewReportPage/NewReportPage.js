@@ -28,7 +28,7 @@ const newReportValidationSchema = Yup.object().shape({
   inchesAdded: Yup.number().required('Inches added is required'),
   solutionAdded: Yup.number().required('Solution Added is required'),
   notes: Yup.string().notRequired(),
-  jobTypeId: Yup.string().required('Job type is required'),
+  jobTypeId: Yup.string().notRequired('Job type is required'),
   serviceDate: Yup.date().required('Service date is required'),
 });
 
@@ -46,7 +46,7 @@ function NewReportPage({ userObj }) {
     validationSchema: newReportValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
-      if (job) {
+      if (job !== '') {
         submission.jobTypeId = job.jobTypeId;
       }
       submission.technicianId = userObj.id;
@@ -58,9 +58,14 @@ function NewReportPage({ userObj }) {
       submission.solutionAdded = parseInt(submission.solutionAdded, 10);
       setValues(submission);
       ReportRequests.addNewReport(submission)
-        .then(() => JobRequests.deleteJob(job.id)
-          .then(() => history.push('/home')))
-        .catch((err) => console.error(err));
+        .then(() => {
+          if (job !== '') {
+            JobRequests.deleteJob(job.id)
+              .then(() => history.push('/home'));
+          } else {
+            history.push('/home');
+          }
+        });
       setSubmitting(false);
     },
   });
@@ -79,12 +84,6 @@ function NewReportPage({ userObj }) {
       .then((jobForSystem) => getJob(jobForSystem))
       .catch((err) => console.error(err));
   }, [id]);
-
-  useEffect(() => {
-    if (job) {
-      formik.setValues('jobTypeId', job.jobTypeId);
-    }
-  }, [job, formik]);
 
   useEffect(() => {
     if (customerSystem) {
@@ -110,7 +109,7 @@ function NewReportPage({ userObj }) {
               <p>{customerSystem?.notes}</p>
             </div>
             : ''}
-          {job
+          {job !== ''
             ? <p className="typeOfJob">Type of Job: {jobTypeOptions?.find((x) => x.id === job?.jobTypeId)?.type}</p>
             : <FormGroup>
               <Label htmlFor="jobTypeId">What type of job?</Label>

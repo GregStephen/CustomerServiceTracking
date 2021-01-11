@@ -27,10 +27,10 @@ class LandingPage extends React.Component {
               <h2 className="welcome-header">Service Tracker</h2>
               <p className="welcome-text">Start doing the things</p>
               <div className="col-8 mb-3">
-                <Link className="btn btn-info" to={'/new-business-account'}>Create a Business Account!</Link>
+                <Link className="btn btn-info" to={'/new-business-account'}>Create a Business Account</Link>
               </div>
               <div className="col-8">
-                <Link className="btn btn-info" to={'/select-business'}>Create a Personal Account!</Link>
+                <Link className="btn btn-info" to={'/select-business'}>Create a Personal Account</Link>
               </div>
             </div>
             <LogInForm
@@ -39,8 +39,6 @@ class LandingPage extends React.Component {
             />
           </div>
         </div>
-
-
       </div>
     );
   }

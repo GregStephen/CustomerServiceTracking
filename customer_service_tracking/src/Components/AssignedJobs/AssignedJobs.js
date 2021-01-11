@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'reactstrap';
 
+import { Header } from '../Global';
 import AssignedJob from './AssignedJob';
 
 import JobRequests from '../../Helpers/Data/JobRequests';
@@ -31,7 +32,8 @@ class AssignedJobs extends React.Component {
       />
     ));
     return (
-      <div className="AssignedJobs">
+      <div className="AssignedJobs widget col-10 pt-0">
+        <Header title="Jobs" />
         {jobsAssigned.length > 0
           ? <Table striped size="sm">
             <thead>
