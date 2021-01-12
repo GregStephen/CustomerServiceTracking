@@ -15,12 +15,16 @@ namespace CustomerServiceTracking.Repositories
         string _connectionString;
         private IAddressRepository _addressRepo;
         private ISystemRepository _systemRepo;
+        private IEmailRepository _emailRepo;
+        private IPhoneNumberRepository _phoneRepo;
 
-        public CustomerRepository(IConfiguration configuration, IAddressRepository addressRepo, ISystemRepository systemRepo)
+        public CustomerRepository(IConfiguration configuration, IAddressRepository addressRepo, ISystemRepository systemRepo, IEmailRepository emailRepo, IPhoneNumberRepository phoneRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _addressRepo = addressRepo;
             _systemRepo = systemRepo;
+            _emailRepo = emailRepo;
+            _phoneRepo = phoneRepo;
         }
 
         public IEnumerable<Customer> GetCustomersByBusinessId(Guid businessId)
@@ -38,6 +42,8 @@ namespace CustomerServiceTracking.Repositories
                 {
                     customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
                     customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
+                    customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customer.Id).ToList();
+                    customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
                 }
                 return customers;
             }
@@ -54,6 +60,8 @@ namespace CustomerServiceTracking.Repositories
                 var customer = db.QueryFirstOrDefault<Customer>(sql, parameters);
                 customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
                 customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
+                customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customerId).ToList();
+                customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
                 return customer;
             }
         }
@@ -107,8 +115,6 @@ namespace CustomerServiceTracking.Repositories
                             (
                              [FirstName],
                              [LastName],
-                             [HomePhone],
-                             [OfficePhone],
                              [AddressId]
                             )
                             OUTPUT INSERTED.Id
@@ -116,11 +122,28 @@ namespace CustomerServiceTracking.Repositories
                             (
                             @firstName,
                             @lastName,
-                            @homePhone,
-                            @officePhone,
                             @addressId
                             )";
                 var customerId = db.QueryFirst<Guid>(sql, newCustomerDTO);
+                foreach (var phoneNumber in newCustomerDTO.PhoneNumbers)
+                {
+                    var newPhoneDto = new NewPhoneNumberDTO()
+                    {
+                        Number = phoneNumber.Number,
+                        Type = phoneNumber.Type,
+                        CustomerId = customerId
+                    };
+                    _phoneRepo.AddNewPhoneNumberToDatabase(newPhoneDto);
+                }
+                foreach (var email in newCustomerDTO.Emails)
+                {
+                    var newEmailDTO = new NewEmailDTO()
+                    {
+                        Email = email,
+                        CustomerId = customerId
+                    };
+                    _emailRepo.AddNewEmailToDatabase(newEmailDTO);
+                }
                 return AddCustomerToBusiness(customerId, newCustomerDTO.BusinessId);
             }
         }
@@ -165,8 +188,6 @@ namespace CustomerServiceTracking.Repositories
                             SET 
                                 [FirstName] = @firstName,
                                 [LastName] = @lastName,
-                                [HomePhone] = @homePhone,
-                                [OfficePhone] = @officePhone
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedCustomer) == 1);
             }

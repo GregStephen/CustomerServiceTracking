@@ -80,6 +80,7 @@ function SystemsPage({ userObj }) {
           <GlobalTable
             columns={tableColumns}
             data={tableData}
+            hidePagination={tableData.length < 10}
           />
         </div>
       </div>

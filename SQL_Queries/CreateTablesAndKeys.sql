@@ -84,14 +84,38 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Customer')
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[FirstName] NVARCHAR(255) not null,
-		[HomePhone] NVARCHAR(10) null,
 		[LastName] NVARCHAR(255) not null,
-		[OfficePhone] NVARCHAR(10) null,
 		[AddressId] UNIQUEIDENTIFIER not null,
 	)
 	END
 ELSE
 	PRINT 'Customer table already exists'
+
+
+If not exists (SELECT * FROM sys.tables WHERE [name] = 'PhoneNumbers')
+	BEGIN
+	CREATE TABLE [PhoneNumbers]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[CustomerId] UNIQUEIDENTIFIER not null, 
+		[PhoneNumber] NVARCHAR(10) not null,
+		[Type] SMALLINT not null,
+	)
+	END
+ELSE
+	PRINT 'PhoneNumbers table already exists'
+
+If not exists (SELECT * FROM sys.tables WHERE [name] = 'Emails')
+	BEGIN
+	CREATE TABLE [Emails]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[CustomerId] UNIQUEIDENTIFIER not null, 
+		[Email] NVARCHAR(255) not null,
+	)
+	END
+ELSE
+	PRINT 'Emails table already exists'
 
 IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Address')
 	BEGIN

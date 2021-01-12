@@ -29,14 +29,17 @@ const defaultCustomer = {
   lastName: '',
   officePhone: '',
   homePhone: '',
+  cellPhone: '',
   newCustomerAddress: defaultCustomerAddress,
 };
 
 const newCustomerValidationSchema = Yup.object().shape({
   firstName: Yup.string().required('First Name is required'),
   lastName: Yup.string().required('Last Name is required'),
-  officePhone: Yup.string().notRequired(),
-  homePhone: Yup.string().notRequired(),
+  officePhone: Yup.string().length(10).notRequired(),
+  homePhone: Yup.string().length(10).notRequired(),
+  cellPhone: Yup.string().length(10).notRequired(),
+  email: Yup.string().notRequired(),
   newCustomerAddress: Yup.object().shape({
     city: Yup.string().required('City is required'),
     state: Yup.string().length(2, 'Please use 2 letter state abbreviation').required('State is required'),
@@ -54,6 +57,22 @@ function NewCustomerPage({ userObj }) {
     validationSchema: newCustomerValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const stuff = { ...formValues };
+      stuff.emails = [];
+      stuff.emails.push(stuff.email);
+      stuff.phoneNumbers = [];
+      const newHomeNumber = {
+        type: 1,
+        number: stuff.homePhone,
+      };
+      const newCellNumber = {
+        type: 2,
+        number: stuff.cellPhone,
+      };
+      const newOfficeNumber = {
+        type: 3,
+        number: stuff.officePhone,
+      };
+      stuff.phoneNumbers.push(newCellNumber, newHomeNumber, newOfficeNumber);
       stuff.businessId = userObj.businessId;
       setValues(stuff);
       CustomerRequests.addNewCustomer(stuff)
@@ -151,25 +170,50 @@ function NewCustomerPage({ userObj }) {
               </FormGroup>
             </Col>
           </Row>
-          <div className="form-group">
-            <label htmlFor="homePhone">Home Phone</label>
-            <input
-              type="input"
-              className="form-control"
+          <FormGroup>
+            <Label for="homePhone">Home Phone</Label>
+            <Input
+              type="text"
+              name="homePhone"
+              id="homePhone"
               {...formik.getFieldProps('homePhone')} />
+
             {formik.touched.homePhone
               && <FormFeedback className="d-block">{formik.errors?.homePhone}</FormFeedback>}
-          </div>
-          <div className="form-group">
-            <label htmlFor="officePhone">Office Phone</label>
-            <input
-              type="input"
-              className="form-control"
+          </FormGroup>
+          <FormGroup>
+            <Label for="cellPhone">Cell Phone</Label>
+            <Input
+              type="text"
+              name="cellPhone"
+              id="cellPhone"
+              {...formik.getFieldProps('cellPhone')} />
+
+            {formik.touched.cellPhone
+              && <FormFeedback className="d-block">{formik.errors?.cellPhone}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label for="officePhone">Office Phone</Label>
+            <Input
+              type="text"
+              name="officePhone"
               id="officePhone"
               {...formik.getFieldProps('officePhone')} />
+
             {formik.touched.officePhone
               && <FormFeedback className="d-block">{formik.errors?.officePhone}</FormFeedback>}
-          </div>
+          </FormGroup>
+          <FormGroup>
+            <Label for="email">Email</Label>
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              {...formik.getFieldProps('email')} />
+
+            {formik.touched.email
+              && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
+          </FormGroup>
           <button type="submit" className="btn btn-success">Add New Customer</button>
         </Form>
       </div>

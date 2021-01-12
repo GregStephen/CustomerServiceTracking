@@ -138,8 +138,6 @@ INSERT INTO [Customer]
 (
     [FirstName],
     [LastName],
-    [HomePhone],
-    [OfficePhone],
     [AddressId]
 )
 
@@ -147,14 +145,46 @@ VALUES
 (
 	'Frank',
 	'Customer',
-	'6150950598',
-	'1234567890',
 	@customerAddress
 )
 
 SELECT @customer = [Id]
 FROM [Customer]
 WHERE FirstName = 'Frank'
+
+INSERT INTO [Emails]
+(
+	[CustomerId],
+	[Email]	
+)
+VALUES
+(
+	@customer,
+	'FrankCustomer@gmail.com'
+)
+
+INSERT INTO [PhoneNumbers]
+(
+	[CustomerId],
+	[PhoneNumber],
+	[Type]
+)
+VALUES
+(
+	@customer,
+	'1234567890',
+	1
+),
+(
+	@customer,
+	'6154955196',
+	2
+),
+(
+	@customer,
+	'3211234321',
+	3
+)
 
 /* Links the business with the customer */
 INSERT INTO [BusinessCustomer]

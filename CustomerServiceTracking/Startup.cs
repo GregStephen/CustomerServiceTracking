@@ -43,6 +43,8 @@ namespace CustomerServiceTracking
             services.AddScoped<ISystemRepository, SystemRepository>();
             services.AddScoped<IUnregisteredEmployeeRepository, UnregisteredEmployeeRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IEmailRepository, EmailRepository>();
+            services.AddScoped<IPhoneNumberRepository, PhoneNumberRepository>();
 
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

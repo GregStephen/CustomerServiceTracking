@@ -28,12 +28,11 @@ function CustomersPage({ userObj }) {
       ),
     },
     {
-      Header: 'Home Phone',
-      accessor: (r) => Formatting.formatPhoneNumber(r.homePhone),
-    },
-    {
-      Header: 'Office Phone',
-      accessor: (r) => Formatting.formatPhoneNumber(r.officePhone),
+      Header: 'Contact Info',
+      accessor: (r) => r.id,
+      Cell: ({ row: { original } }) => (
+        Formatting.formatContactInfo(original)
+      ),
     },
     {
       Header: 'Address',

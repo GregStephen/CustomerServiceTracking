@@ -29,4 +29,34 @@ const formatAddressObj = (addressObj) => (
     </div>
 );
 
-export default { formatPhoneNumber, directionLink, formatAddressObj };
+const formatContactInfo = (customerObj) => {
+  const createEmails = () => {
+    if (customerObj.emails) {
+      return customerObj.emails.map((email) => (
+      <p>{email}</p>
+      ));
+    }
+    return '';
+  };
+  const createPhoneNumbers = () => {
+    if (customerObj.phoneNumbers) {
+      return customerObj.phoneNumbers.map((number) => (
+        <p>{formatPhoneNumber(number.number)}</p>
+      ));
+    }
+    return '';
+  };
+  return (
+  <div>
+      {createEmails()}
+      {createPhoneNumbers()}
+  </div>
+  );
+};
+
+export default {
+  formatPhoneNumber,
+  directionLink,
+  formatAddressObj,
+  formatContactInfo,
+};
