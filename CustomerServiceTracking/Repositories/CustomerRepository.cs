@@ -48,7 +48,29 @@ namespace CustomerServiceTracking.Repositories
                 return customers;
             }
         }
-        
+
+        public IEnumerable<Customer> GetActiveCustomersByBusinessId(Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT c.*
+                            FROM [BusinessCustomer] bc
+                            JOIN [Customer] c
+                            ON bc.[CustomerId] = c.[Id]
+                            WHERE bc.[BusinessId] = @businessId AND c.Enabled = 1";
+                var parameters = new { businessId };
+                var customers = db.Query<Customer>(sql, parameters);
+                foreach (var customer in customers)
+                {
+                    customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
+                    customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
+                    customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customer.Id).ToList();
+                    customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
+                }
+                return customers;
+            }
+        }
+
         public Customer GetCustomerByCustomerId(Guid customerId)
         {
             using (var db = new SqlConnection(_connectionString))
@@ -115,6 +137,7 @@ namespace CustomerServiceTracking.Repositories
                             (
                              [FirstName],
                              [LastName],
+                             [Enabled],
                              [AddressId]
                             )
                             OUTPUT INSERTED.Id
@@ -122,28 +145,35 @@ namespace CustomerServiceTracking.Repositories
                             (
                             @firstName,
                             @lastName,
+                            1,
                             @addressId
                             )";
                 var customerId = db.QueryFirst<Guid>(sql, newCustomerDTO);
-                foreach (var phoneNumber in newCustomerDTO.PhoneNumbers)
-                {
-                    var newPhoneDto = new NewPhoneNumberDTO()
+                foreach (var phoneNumber in newCustomerDTO.PhoneNumbers) { 
+                    if (phoneNumber.Number != "" ) 
                     {
-                        Number = phoneNumber.Number,
-                        Type = phoneNumber.Type,
-                        CustomerId = customerId
-                    };
-                    _phoneRepo.AddNewPhoneNumberToDatabase(newPhoneDto);
+                        var newPhoneDto = new NewPhoneNumberDTO()
+                        {
+                            Number = phoneNumber.Number,
+                            Type = phoneNumber.Type,
+                            CustomerId = customerId
+                        };
+                        _phoneRepo.AddNewPhoneNumberToDatabase(newPhoneDto);
+                    }
                 }
                 foreach (var email in newCustomerDTO.Emails)
-                {
-                    var newEmailDTO = new NewEmailDTO()
                     {
-                        Email = email,
-                        CustomerId = customerId
-                    };
-                    _emailRepo.AddNewEmailToDatabase(newEmailDTO);
+                    if (!String.IsNullOrEmpty(email)) {
+                        var newEmailDTO = new NewEmailDTO()
+                        {
+                            Email = email,
+                            CustomerId = customerId
+                        };
+                        _emailRepo.AddNewEmailToDatabase(newEmailDTO);
+                    }
+
                 }
+
                 return AddCustomerToBusiness(customerId, newCustomerDTO.BusinessId);
             }
         }
@@ -187,7 +217,19 @@ namespace CustomerServiceTracking.Repositories
                 var sql = @"UPDATE [Customer]
                             SET 
                                 [FirstName] = @firstName,
-                                [LastName] = @lastName,
+                                [LastName] = @lastName
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedCustomer) == 1);
+            }
+        }
+
+        public bool UpdateCustomerEnabledOrDisabled(Customer updatedCustomer)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Customer]
+                            SET
+                                [Enabled] = @enabled
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedCustomer) == 1);
             }

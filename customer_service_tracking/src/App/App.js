@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom';
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import './App.scss';
 
@@ -79,6 +80,7 @@ class App extends React.Component {
     const { authorized, userObj, error } = this.state;
     return (
       <div className="App">
+        <ReactQueryDevtools initialIsOpen={false} />
         <BrowserRouter>
           <NavigationBar authorized={authorized} userObj={userObj} />
           <Switch>

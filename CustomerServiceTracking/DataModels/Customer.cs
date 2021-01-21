@@ -8,6 +8,7 @@ namespace CustomerServiceTracking.DataModels
     public class Customer
     {
         public Guid Id { get; set; }
+        public bool Enabled { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<PhoneNumber> PhoneNumbers {get; set; }

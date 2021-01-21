@@ -11,5 +11,6 @@ namespace CustomerServiceTracking.DTOS
         public DateTime DateAssigned { get; set; }
         public Guid TechnicianId { get; set; }
         public Guid JobTypeId { get; set; }
+        public string Note { get; set; }
     }
 }

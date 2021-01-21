@@ -138,6 +138,7 @@ INSERT INTO [Customer]
 (
     [FirstName],
     [LastName],
+	[Enabled],
     [AddressId]
 )
 
@@ -145,6 +146,7 @@ VALUES
 (
 	'Frank',
 	'Customer',
+	1,
 	@customerAddress
 )
 

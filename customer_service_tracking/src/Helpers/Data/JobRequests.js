@@ -8,8 +8,8 @@ const getJobForSystemBySystemId = (systemId) => new Promise((resolve, reject) =>
     .catch((err) => reject(err));
 });
 
-const getJobsNeedingAssignment = (businessId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/current-week-jobs/${businessId}`)
+const getJobsNeedingAssignment = (businessId, daysOut) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/upcoming-jobs/${businessId}/${daysOut}`)
     .then((results) => resolve(results.data))
     .catch((err) => reject(err));
 });
@@ -26,12 +26,18 @@ const createNewJob = (newJob) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
+const editJob = (job) => new Promise((resolve, reject) => {
+  axios.post(`${baseUrl}/edit`, job)
+    .then((results) => resolve(results.data))
+    .catch((err) => reject(err));
+});
+
 const deleteJob = (jobId) => new Promise((resolve, reject) => {
   axios.delete(`${baseUrl}/${jobId}`)
     .then((results) => resolve(results.data))
-    .catch((err) => console.error(err));
+    .catch((err) => reject(err));
 });
 
 export default {
-  getJobForSystemBySystemId, getJobsNeedingAssignment, getJobsAssignedTo, createNewJob, deleteJob,
+  getJobForSystemBySystemId, getJobsNeedingAssignment, getJobsAssignedTo, createNewJob, editJob, deleteJob,
 };

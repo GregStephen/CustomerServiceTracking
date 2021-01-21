@@ -11,6 +11,8 @@ namespace CustomerServiceTracking.DataModels
         public Guid CustomerSystemId { get; set; }
         public DateTime DateAssigned { get; set; }
         public Guid TechnicianId { get; set; }
+        public string TechnicianName { get; set; }
         public Guid JobTypeId { get; set; }
+        public string Note { get; set; }
     }
 }

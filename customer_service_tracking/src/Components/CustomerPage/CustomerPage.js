@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   Modal,
   ModalHeader,
+  Badge,
 } from 'reactstrap';
 import { Page, Header } from '../Global';
 
@@ -21,6 +22,7 @@ const defaultCustomer = {
   id: '',
   firstName: '',
   lastName: '',
+  enabled: false,
   officePhone: '',
   homePhone: '',
   address: {
@@ -123,20 +125,31 @@ class CustomerPage extends React.Component {
     this.loadPage();
   }
 
+  setCustomerStatus = () => {
+    const { customer } = this.state;
+    const customerUpdated = { ...customer };
+    customerUpdated.enabled = !customer.enabled;
+    CustomerRequests.updateCustomerStatus(customerUpdated)
+      .then(() => this.loadPage())
+      .catch((err) => console.error(err));
+  }
+
   render() {
     const { customer, modalOpen, reports } = this.state;
     const customerName = `${customer.firstName} ${customer.lastName}`;
     return (
       <Page>
         <div className="CustomerPage">
-          <Header title={customerName} />
+          <Header title={customerName} description={<Badge color={customer.enabled ? 'success' : 'danger'}>{ customer.enabled ? 'Active' : 'Inactive'}</Badge>}/>
           <div className="customer-info widget col-10 mb-4 pt-0">
             <Header title="Info" icon="fas fa-address-card" />
             {customer.homePhone !== '' ? <p>Home Phone: {Formatting.formatPhoneNumber(customer.homePhone)}</p> : ''}
             {customer.officePhone !== '' ? <p>Office Phone: {Formatting.formatPhoneNumber(customer.officePhone)}</p> : ''}
             {Formatting.formatAddressObj(customer.address)}
+
             <button className="btn btn-info" onClick={() => this.toggleModalOpen('editCustomer')}>Edit Customer</button>
             <button className="btn btn-info" onClick={() => this.toggleModalOpen('editAddress')}>Edit Address</button>
+            <button className={`btn btn-${customer.enabled ? 'danger' : 'success'}`} onClick={() => this.setCustomerStatus()}>{ customer.enabled ? 'Deactivate' : 'Activate'}</button>
           </div>
           <CustomerSystems customer={customer} deleteThisCustomerSystem={this.deleteThisCustomerSystem} />
           <CustomerReports

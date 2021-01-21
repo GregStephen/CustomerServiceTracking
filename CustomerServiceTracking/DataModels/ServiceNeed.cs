@@ -10,5 +10,7 @@ namespace CustomerServiceTracking.DataModels
         public Customer Customer { get; set; }
         public CustomerSystem System { get; set; }
         public int DaysUntilEmpty { get; set; }
+        public List<Employee> EmployeeOptions { get; set; }
+        public Job Job { get; set; }
     }
 }

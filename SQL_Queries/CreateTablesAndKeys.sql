@@ -85,6 +85,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Customer')
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[FirstName] NVARCHAR(255) not null,
 		[LastName] NVARCHAR(255) not null,
+		[Enabled] BIT not null,
 		[AddressId] UNIQUEIDENTIFIER not null,
 	)
 	END
@@ -190,7 +191,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Job')
 		[CustomerSystemId] UNIQUEIDENTIFIER not null,
 		[DateAssigned] DATETIME not null,
 		[TechnicianId] UNIQUEIDENTIFIER not null,
-		[JobTypeId] UNIQUEIDENTIFIER not null
+		[JobTypeId] UNIQUEIDENTIFIER not null,
+		[Note] NVARCHAR(255) null,
 	)
 	END
 ELSE

@@ -49,30 +49,32 @@ function ReportsPage({ userObj }) {
   ], []);
 
   const hiddenColumns = useMemo(() => ['Search'], []);
+
   const filters = useMemo(
     () => [
       { id: 'Search', value: searchFilter },
     ],
     [searchFilter],
   );
+
   return (
     <Page>
       <div className="ReportsPage">
         <Header title="Reports" icon="fa-file-signature" />
         <div className="widget col-10">
-        <Row className="mb-3">
-      <Col className="d-flex justify-content-between">
-        <div className="ml-4">
-          <Input
-            type="text"
-            value={searchFilter}
-            onChange={(e) => setSearchFilter(e.target.value)}
-            placeholder="Search Reports"
-            style={{ maxWidth: '100%', width: '300px' }}
-          />
-        </div>
-      </Col>
-    </Row>
+          <Row className="mb-3">
+            <Col className="d-flex justify-content-between">
+              <div className="ml-4">
+                <Input
+                  type="text"
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  placeholder="Search Reports"
+                  style={{ maxWidth: '100%', width: '300px' }}
+                />
+              </div>
+            </Col>
+          </Row>
           <GlobalTable
             columns={tableColumns}
             data={tableData}

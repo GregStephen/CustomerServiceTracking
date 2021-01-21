@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CustomerServiceTracking.DataModels;
 using CustomerServiceTracking.DTOS;
 using CustomerServiceTracking.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -37,10 +34,10 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpGet("current-week-jobs/{businessId}")]
-        public IActionResult GetJobsNeedingService(Guid businessId)
+        [HttpGet("upcoming-jobs/{businessId}/{daysOut}")]
+        public IActionResult GetJobsNeedingService(Guid businessId, int daysOut)
         {
-            return Ok(_repo.GetJobsNeedingService(businessId));
+            return Ok(_repo.GetJobsNeedingService(businessId, daysOut));
         }
 
         [HttpGet("employeeId/{employeeId}")]
@@ -55,6 +52,19 @@ namespace CustomerServiceTracking.Controllers
             if (_repo.AddJob(newJobDTO))
             {
                 return Created($"job/{newJobDTO.DateAssigned}", newJobDTO);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("edit")]
+        public IActionResult EditJob(Job UpdatedJob)
+        {
+            if (_repo.EditJob(UpdatedJob))
+            {
+                return Ok();
             }
             else
             {

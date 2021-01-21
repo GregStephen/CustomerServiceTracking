@@ -84,8 +84,8 @@ function NewCustomerPage({ userObj }) {
   return (
     <Page>
       <Header title="New Customer" icon="fa-user-plus" />
-      <div className="widget col-6 d-flex justify-content-center mb-4">
-        <Form className="col-8" onSubmit={formik.handleSubmit}>
+      <div className="widget col-8 d-flex justify-content-center mb-4">
+        <Form className="col-10" onSubmit={formik.handleSubmit}>
           <Row form>
             <Col md={6}>
               <FormGroup>
@@ -145,7 +145,7 @@ function NewCustomerPage({ userObj }) {
                   && <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.city}</FormFeedback>}
               </FormGroup>
             </Col>
-            <Col md={4}>
+            <Col md={2}>
               <FormGroup>
                 <Label for="state">State</Label>
                 <Input
@@ -157,7 +157,7 @@ function NewCustomerPage({ userObj }) {
                   && <FormFeedback className="d-block">{formik.errors?.newCustomerAddress?.state}</FormFeedback>}
               </FormGroup>
             </Col>
-            <Col md={2}>
+            <Col md={4}>
               <FormGroup>
                 <Label for="zipCode">Zip</Label>
                 <Input
