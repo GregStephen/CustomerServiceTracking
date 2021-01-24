@@ -4,52 +4,37 @@ import {
   FormGroup,
   Label,
   Input,
-  Modal,
-  ModalHeader,
 } from 'reactstrap';
 import { GlobalTable } from '../Global';
 import EditJobModal from '../Modals/EditJobModal/EditJobModal';
 
 import Formatting from '../../Helpers/Functions/Formatting';
 
-import JobRequests from '../../Helpers/Data/JobRequests';
+import {
+  useJobsNeedingAssignment,
+  useCreateNewJob,
+  useDeleteJob,
+  useEditJob,
+} from '../../Helpers/Data/JobRequests';
 import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
 
 import './ServiceNeededReport.scss';
 
 function ServiceNeededReport({ businessId }) {
-  const [systemsNeedingService, getSystemsNeedingService] = useState();
   const [daysOut, getDaysOut] = useState(7);
+  const systemsNeedingService = useJobsNeedingAssignment(businessId, daysOut);
   const [jobTypeOptions, getJobTypeOptions] = useState();
+  const deleteJob = useDeleteJob();
+  const createNewJob = useCreateNewJob();
+  const editTheJob = useEditJob();
 
   useEffect(() => {
-    JobRequests.getJobsNeedingAssignment(businessId, daysOut)
-      .then((systems) => getSystemsNeedingService(systems))
-      .catch((err) => console.error(err));
     JobTypeRequests.getJobTypes()
       .then((types) => getJobTypeOptions(types))
       .catch((err) => console.error(err));
-  }, [businessId, daysOut]);
+  }, []);
 
-  const createTheJob = (newJob) => {
-    JobRequests.createNewJob(newJob)
-      .then()
-      .catch();
-  };
-
-  const editTheJob = (updatedJob) => {
-    JobRequests.editJob(updatedJob)
-      .then(() => this.getAllSystems())
-      .catch((err) => console.error(err));
-  };
-
-  const deleteTheJob = (jobId) => {
-    JobRequests.deleteJob(jobId)
-      .then(() => this.getAllSystems())
-      .catch((err) => console.error(err));
-  };
-
-  const tableData = useMemo(() => (systemsNeedingService || []), [systemsNeedingService]);
+  const tableData = useMemo(() => (systemsNeedingService.data?.data ? systemsNeedingService.data.data : []), [systemsNeedingService.data]);
 
   const tableColumns = useMemo(() => [
     {
@@ -83,13 +68,13 @@ function ServiceNeededReport({ businessId }) {
         <EditJobModal
           systemNeedingService={original}
           editJob={editTheJob}
-          deleteJob={deleteTheJob}
-          createJob={createTheJob}
+          deleteJob={deleteJob}
+          createJob={createNewJob}
           jobTypeOptions={jobTypeOptions}
         />
       ),
     },
-  ], [jobTypeOptions]);
+  ], [jobTypeOptions, deleteJob, createNewJob, editTheJob]);
 
   return (
     <div className="ServiceNeededReport widget col-10">

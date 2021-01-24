@@ -17,7 +17,7 @@ import { Header, Page } from '../Global';
 
 import defaults from '../../Helpers/defaults';
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
-import JobRequests from '../../Helpers/Data/JobRequests';
+import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
 import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
 import ReportRequests from '../../Helpers/Data/ReportRequests';
 
@@ -39,6 +39,8 @@ function NewReportPage({ userObj }) {
   const [jobTypeOptions, getJobTypeOptions] = useState();
   const [job, getJob] = useState();
   const history = useHistory();
+  const deleteJob = useDeleteJob();
+  const getJobForSystemBySystemId = useJobForSystemBySystemId();
 
   const formik = useFormik({
     initialValues: defaults.defaultReport,
@@ -60,7 +62,7 @@ function NewReportPage({ userObj }) {
       ReportRequests.addNewReport(submission)
         .then(() => {
           if (job !== '') {
-            JobRequests.deleteJob(job.id)
+            deleteJob(job.id)
               .then(() => history.push('/home'));
           } else {
             history.push('/home');
@@ -80,7 +82,7 @@ function NewReportPage({ userObj }) {
         getJobTypeOptions(reportTypes);
       })
       .catch((err) => console.error(err));
-    JobRequests.getJobForSystemBySystemId(id)
+    getJobForSystemBySystemId(id)
       .then((jobForSystem) => getJob(jobForSystem))
       .catch((err) => console.error(err));
   }, [id]);

@@ -32,6 +32,7 @@ function EditJobModal({
   const [isToggled, setIsToggled] = useState(false);
 
   const defaultJob = useMemo(() => ({
+    id: systemNeedingService?.job?.id ?? '',
     customerSystemId: systemNeedingService?.job?.customerSystemId ?? systemNeedingService?.system?.id,
     dateAssigned: systemNeedingService?.job?.dateAssigned ?? '',
     technicianId: systemNeedingService?.job?.technicianId ?? '',
@@ -53,9 +54,9 @@ function EditJobModal({
       submission.dateAssigned = moment();
       setValues(submission);
       if (newJob) {
-        createJob(submission);
+        createJob.mutate(submission);
       } else {
-        editJob(submission);
+        editJob.mutate(submission);
       }
       setSubmitting(false);
       setIsToggled(false);
@@ -63,7 +64,7 @@ function EditJobModal({
   });
 
   const deleteThisJob = (JobId) => {
-    deleteJob(JobId);
+    deleteJob.mutate(JobId);
     setIsToggled(false);
   };
 
@@ -105,7 +106,8 @@ function EditJobModal({
               Create job for Customers other systems?
             </Label>
           </FormGroup>
-          {// check to see if includeOtherSystems is true}
+          {// check to see if includeOtherSystems is true
+          }
           <FormGroup>
             <Label check>
               <Input
@@ -127,5 +129,6 @@ function EditJobModal({
     </Modal>
     </>
   );
-};
+}
+
 export default EditJobModal;

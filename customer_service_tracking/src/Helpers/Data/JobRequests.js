@@ -1,43 +1,64 @@
 import axios from 'axios';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 const baseUrl = 'https://localhost:44324/api/job';
 
-const getJobForSystemBySystemId = (systemId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/systemId/${systemId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useJobForSystemBySystemId(systemId) {
+  const url = `${baseUrl}/systemId/${systemId}`;
+  return useQuery([url], () => axios.get(url));
+}
 
-const getJobsNeedingAssignment = (businessId, daysOut) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/upcoming-jobs/${businessId}/${daysOut}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useJobsNeedingAssignment(businessId, daysOut) {
+  const url = `${baseUrl}/upcoming-jobs/${businessId}/${daysOut}`;
+  return useQuery([url], () => axios.get(url));
+}
 
-const getJobsAssignedTo = (employeeId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/employeeId/${employeeId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useJobsAssignedTo(employeeId) {
+  const url = `${baseUrl}/employeeId/${employeeId}`;
+  return useQuery([url], () => axios.get(url));
+}
 
-const createNewJob = (newJob) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}`, newJob)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useCreateNewJob() {
+  const url = `${baseUrl}`;
+  const queryClient = useQueryClient();
+  return useMutation((newJob) => axios.post(url, newJob), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}/upcoming-jobs`);
+        },
+      });
+    },
+  });
+}
 
-const editJob = (job) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}/edit`, job)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useEditJob() {
+  const url = `${baseUrl}/edit`;
+  const queryClient = useQueryClient();
+  return useMutation((job) => axios.post(url, job), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}/upcoming-jobs`);
+        },
+      });
+    },
+  });
+}
 
-const deleteJob = (jobId) => new Promise((resolve, reject) => {
-  axios.delete(`${baseUrl}/${jobId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
-
-export default {
-  getJobForSystemBySystemId, getJobsNeedingAssignment, getJobsAssignedTo, createNewJob, editJob, deleteJob,
-};
+export function useDeleteJob() {
+  const url = `${baseUrl}/`;
+  const queryClient = useQueryClient();
+  return useMutation((jobId) => axios.delete(`${url}${jobId}`), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}/upcoming-jobs`);
+        },
+      });
+    },
+  });
+}

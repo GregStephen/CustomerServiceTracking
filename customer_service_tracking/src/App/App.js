@@ -5,7 +5,7 @@ import {
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import { ReactQueryDevtools } from 'react-query/devtools';
-
+import { QueryClient, QueryClientProvider } from 'react-query';
 import './App.scss';
 
 import AddSystemToCustomerPage from '../Components/AddSystemToCustomerPage/AddSystemToCustomerPage';
@@ -30,8 +30,17 @@ import UserRequests from '../Helpers/Data/UserRequests';
 
 import fbConnect from '../Helpers/Data/fbConnection';
 
-
 fbConnect();
+
+const reactQueryConfig = {
+  queries: {
+    refetchOnWindowFocus: false,
+  },
+};
+
+const queryClient = new QueryClient({
+  defaultOptions: reactQueryConfig,
+});
 
 const PublicRoute = ({ component: Component, authorized, ...rest }) => {
   // props contains Location, Match, and History
@@ -80,6 +89,7 @@ class App extends React.Component {
     const { authorized, userObj, error } = this.state;
     return (
       <div className="App">
+        <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         <BrowserRouter>
           <NavigationBar authorized={authorized} userObj={userObj} />
@@ -102,7 +112,8 @@ class App extends React.Component {
             <PrivateRoute path='/team' component={TeamPage} authorized={authorized} userObj={userObj} />
             <Redirect from='*' to='/landing-page' />
           </Switch>
-        </BrowserRouter>
+          </BrowserRouter>
+          </QueryClientProvider>
       </div>
     );
   }

@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Header, GlobalTable } from '../Global';
 import Formatting from '../../Helpers/Functions/Formatting';
 
-import JobRequests from '../../Helpers/Data/JobRequests';
+import { useJobsAssignedTo } from '../../Helpers/Data/JobRequests';
 
 function AssignedJobs({ userId }) {
-  const [jobsAssigned, getJobsAssigned] = useState();
-
-  useEffect(() => {
-    JobRequests.getJobsAssignedTo(userId)
-      .then((jobs) => getJobsAssigned(jobs))
-      .catch((err) => console.error(err));
-  }, [userId]);
+  const jobsAssigned = useJobsAssignedTo(userId);
 
   const tableData = useMemo(() => (jobsAssigned || []), [jobsAssigned]);
 
