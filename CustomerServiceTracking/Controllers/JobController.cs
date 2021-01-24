@@ -49,6 +49,29 @@ namespace CustomerServiceTracking.Controllers
         [HttpPost]
         public IActionResult AddNewJobToDatabase(NewJobDTO newJobDTO)
         {
+            if (newJobDTO.IncludeOtherSystems == true)
+            {
+                foreach (var systemId in newJobDTO.OtherSystemIds)
+                {
+                    var newJob = new NewJobDTO()
+                    {
+                        DateAssigned = newJobDTO.DateAssigned,
+                        CustomerSystemId = systemId,
+                        JobTypeId = newJobDTO.JobTypeId,
+                        TechnicianId = newJobDTO.TechnicianId,
+                    };
+
+                    if (newJobDTO.IncludeNotes == true)
+                    {
+                        newJob.Note = newJobDTO.Note;
+                    };
+
+                    if (!_repo.AddJob(newJob))
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
             if (_repo.AddJob(newJobDTO))
             {
                 return Created($"job/{newJobDTO.DateAssigned}", newJobDTO);

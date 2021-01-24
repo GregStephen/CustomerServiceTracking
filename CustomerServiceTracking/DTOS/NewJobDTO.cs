@@ -12,5 +12,8 @@ namespace CustomerServiceTracking.DTOS
         public Guid TechnicianId { get; set; }
         public Guid JobTypeId { get; set; }
         public string Note { get; set; }
+        public bool IncludeOtherSystems { get; set; }
+        public bool IncludeNotes { get; set; }
+        public List<Guid> OtherSystemIds { get; set; }
     }
 }

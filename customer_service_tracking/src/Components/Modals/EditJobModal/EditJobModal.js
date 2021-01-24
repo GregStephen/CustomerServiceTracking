@@ -18,8 +18,8 @@ import moment from 'moment';
 const editJobValidationSchema = Yup.object().shape({
   technicianId: Yup.string().required('Technician is required'),
   note: Yup.string().notRequired(),
-  includeOtherSystems: Yup.bool().notRequired(),
-  includeNote: Yup.bool().notRequired(),
+  includeOtherSystems: Yup.bool().required(),
+  includeNotes: Yup.bool().required(),
 });
 
 function EditJobModal({
@@ -39,6 +39,7 @@ function EditJobModal({
     jobTypeId: systemNeedingService?.job?.jobTypeId ?? '',
     note: systemNeedingService?.job?.note ?? '',
     includeOtherSystems: false,
+    otherSystemIds: [],
     includeNotes: false,
   }), [systemNeedingService]);
 
@@ -52,6 +53,14 @@ function EditJobModal({
       const submission = { ...formValues };
       submission.jobTypeId = jobTypeOptions.find((x) => x.type === 'Service').id;
       submission.dateAssigned = moment();
+      if (submission.includeOtherSystems === true) {
+        const systems = systemNeedingService?.customer?.systems;
+        systems.forEach((system) => {
+          if (system.id !== submission.customerSystemId) {
+            submission.otherSystemIds.push(system.id);
+          }
+        });
+      }
       setValues(submission);
       if (newJob) {
         createJob.mutate(submission);
@@ -69,7 +78,7 @@ function EditJobModal({
   };
 
   return (<>
-    <button className="btn btn-info"onClick={() => setIsToggled(true)}>{newJob ? 'Assign' : 'Edit/Delete'}</button>
+    <button className="btn btn-info" onClick={() => setIsToggled(true)}>{newJob ? 'Assign' : 'Edit/Delete'}</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}></ModalHeader>
       <Form className="col-8" onSubmit={formik.handleSubmit}>
@@ -90,7 +99,7 @@ function EditJobModal({
               && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
           </FormGroup>
           <FormGroup>
-        <Label for="note">Notes</Label>
+            <Label for="note">Notes</Label>
             <Input
               type="textarea"
               name="note"
@@ -108,15 +117,17 @@ function EditJobModal({
           </FormGroup>
           {// check to see if includeOtherSystems is true
           }
-          <FormGroup>
-            <Label check>
-              <Input
-                type="checkbox"
-                id="includeNote"
-                {...formik.getFieldProps('includeNote')} />
+          {formik.values.includeOtherSystems === true
+            && <FormGroup>
+              <Label check>
+                <Input
+                  type="checkbox"
+                  id="includeNotes"
+                  {...formik.getFieldProps('includeNotes')} />
               Attach the same note for new jobs?
             </Label>
-          </FormGroup>
+            </FormGroup>
+          }
         </ModalBody>
         <ModalFooter>
           <Button type="submit" color="primary">{newJob ? 'Create Job' : 'Edit Job'}</Button>{' '}
@@ -127,7 +138,7 @@ function EditJobModal({
         </ModalFooter>
       </Form>
     </Modal>
-    </>
+  </>
   );
 }
 

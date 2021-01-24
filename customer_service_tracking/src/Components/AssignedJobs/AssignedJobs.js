@@ -9,7 +9,7 @@ import { useJobsAssignedTo } from '../../Helpers/Data/JobRequests';
 function AssignedJobs({ userId }) {
   const jobsAssigned = useJobsAssignedTo(userId);
 
-  const tableData = useMemo(() => (jobsAssigned || []), [jobsAssigned]);
+  const tableData = useMemo(() => (jobsAssigned.data?.data ? jobsAssigned.data.data : []), [jobsAssigned.data]);
 
   const tableColumns = useMemo(() => [
     {
@@ -28,10 +28,10 @@ function AssignedJobs({ userId }) {
     },
     {
       Header: 'Job Type',
-      accessor: (j) => j.type,
+      accessor: (j) => j.jobType?.type,
     },
     {
-      Header: '',
+      Header: ' ',
       accessor: (j) => j.id,
       Cell: ({ row: { original } }) => (
         <Link to={{ pathname: `/new-report/${original?.customerSystem?.id}` }} className="btn btn-info">Make a Report</Link>
