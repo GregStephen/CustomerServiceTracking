@@ -1,89 +1,108 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Modal,
   ModalHeader,
+  Input,
+  Col,
+  Row,
 } from 'reactstrap';
-import PropTypes from 'prop-types';
+
+import { Page, Header, GlobalTable } from '../Global';
 
 import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
-import UnregisteredTeamMemberWidget from './UnregisteredTeamMemberWidget/UnregisteredTeamMemberWidget';
-
 import BusinessRequests from '../../Helpers/Data/BusinessRequests';
+import UserRequests from '../../Helpers/Data/UserRequests';
 
 import './TeamPage.scss';
 
-class TeamPage extends React.Component {
-  static propTypes = {
-    authorized: PropTypes.bool.isRequired,
-    userObj: PropTypes.object.isRequired,
-  }
+function TeamPage({ userObj }) {
+  const [teamMembers, getTeamMembers] = useState();
+  const [searchFilter, setSearchFilter] = useState('');
+  const [addTeamMemberModalIsOpen, getAddTeamMemberModalIsOpen] = useState();
 
-  state = {
-    teamMembers: [],
-    modalIsOpen: false,
-  }
-
-  pageLoad = () => {
-    const { userObj } = this.props;
-    BusinessRequests.getUnregisteredEmployees(userObj.businessId)
-      .then((teamMembers) => this.setState({ teamMembers }))
+  useEffect(() => {
+    BusinessRequests.getRegisteredAndUnregisteredEmployees(userObj.businessId)
+      .then((teamMembersReturned) => getTeamMembers(teamMembersReturned))
       .catch((err) => console.error(err));
-  }
+  }, [userObj.businessId]);
 
-  componentDidMount() {
-    // find employees of business
-    this.pageLoad();
-  }
-
-  toggleModalOpen = () => {
-    this.setState((prevState) => ({
-      modalIsOpen: !prevState.modalIsOpen,
-    }));
-  }
-
-  addTeamMember = (teamMember) => {
-    BusinessRequests.addUnregisteredEmployee(teamMember)
-      .then(this.pageLoad())
+  const addTeamMember = (teamMember) => {
+    UserRequests.addUnregisteredEmployee(teamMember)
+      .then()
       .catch((err) => console.error(err));
-  }
+  };
+  const tableData = useMemo(() => (teamMembers || []), [teamMembers]);
 
-  render() {
-    const { teamMembers } = this.state;
-    const { userObj } = this.props;
-    const { businessId } = userObj;
-    const showTeamMembers = () => {
-      if (teamMembers.length > 0) {
-        return (
-          teamMembers.map((teamMember) => (
-            <UnregisteredTeamMemberWidget
-            key={teamMember.id}
-            unregisteredTeamMember={teamMember}
-            />
-          ))
-        );
-      }
-      return <p>No team members to display, add some!</p>;
-    };
+  const tableColumns = useMemo(() => [
+    {
+      Header: 'Name',
+      accessor: (e) => e.fullName,
+    },
+    {
+      Header: 'Registered',
+      accessor: (e) => e.registered,
+      Cell: ({ row: { original } }) => (
+        original.registered ? <i className="fas fa-check"/> : <i className="fas fa-times"/>
+      ),
+    },
+    {
+      Header: 'Search',
+      accessor: (r) => r.fullName,
+    },
+  ], []);
 
-    return (
+  const hiddenColumns = useMemo(() => ['Search'], []);
+
+  const filters = useMemo(
+    () => [
+      { id: 'Search', value: searchFilter },
+    ],
+    [searchFilter],
+  );
+
+  return (
+    <Page>
       <div className="TeamPage">
-        <h1>Team Page</h1>
-        {showTeamMembers()}
-
-        <button className="btn btn-info" onClick={this.toggleModalOpen}>Add a Team Member</button>
-        <Modal isOpen={this.state.modalIsOpen} toggle={this.toggleModalOpen}>
-          <ModalHeader toggle={this.modalIsOpen}>
+        <Header title='Team' icon='fa-users' />
+        <div className="d-flex row justify-content-end">
+          <button className="btn btn-info mr-4 mb-4" onClick={() => getAddTeamMemberModalIsOpen(!addTeamMemberModalIsOpen)}><i className="fa fa-user-plus" />Add a Team Member</button>
+        </div>
+        <div className="widget col-10">
+        <Row className="mb-3">
+            <Col className="d-flex justify-content-between">
+              <div className="ml-4">
+                <Input
+                  type="text"
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  placeholder="Search Reports"
+                  style={{ maxWidth: '100%', width: '300px' }}
+                />
+              </div>
+            </Col>
+          </Row>
+          <GlobalTable
+            columns={tableColumns}
+            data={tableData}
+          />
+        </div>
+        <Modal isOpen={addTeamMemberModalIsOpen} toggle={() => getAddTeamMemberModalIsOpen(!addTeamMemberModalIsOpen)}>
+          <ModalHeader toggle={() => getAddTeamMemberModalIsOpen(!addTeamMemberModalIsOpen)}>
             Add Team Member
           </ModalHeader>
-            <AddTeamMemberModal
-              toggleModalOpen={this.toggleModalOpen}
-              businessId={businessId}
-              addTeamMember={this.addTeamMember}
-            />
+          <AddTeamMemberModal
+            toggleModalOpen={getAddTeamMemberModalIsOpen}
+            modalIsOpen={addTeamMemberModalIsOpen}
+            businessId={userObj.businessId}
+            addTeamMember={addTeamMember}
+            defaultSortColumn='Name'
+            hiddenColumns={hiddenColumns}
+            filters={filters}
+          />
         </Modal>
       </div>
-    );
-  }
+    </Page>
+  );
 }
 
 export default TeamPage;

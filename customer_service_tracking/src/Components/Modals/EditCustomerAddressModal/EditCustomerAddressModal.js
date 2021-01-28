@@ -1,129 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Form, Button, ModalBody, ModalFooter,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  ModalBody,
+  ModalFooter,
+  Modal,
+  ModalHeader,
 } from 'reactstrap';
-import PropTypes from 'prop-types';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useUpdateCustomerAddress } from '../../../Helpers/Data/CustomerRequests';
 
+const editAddressValidationSchema = Yup.object().shape({
+  addressLine1: Yup.string().required('Address is required'),
+  addressLine2: Yup.string().notRequired().nullable(),
+  city: Yup.string().required('City is required'),
+  state: Yup.string().length(2).required('State is required'),
+  zipCode: Yup.string().length(5).required('Zip Code is required'),
+});
 
-const defaultCustomer = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  officePhone: '',
-  homePhone: '',
-  address: {
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-  },
-};
+function EditCustomerAddressModal({
+  customer,
+}) {
+  const [isToggled, setIsToggled] = useState(false);
+  const updateCustomerAddress = useUpdateCustomerAddress();
 
-class EditCustomerAddressModal extends React.Component {
-  static propTypes = {
-    customer: PropTypes.object.isRequired,
-    toggleModalOpen: PropTypes.func.isRequired,
-    updateCustomerAddress: PropTypes.func.isRequired,
-  }
+  const formik = useFormik({
+    initialValues: customer?.address,
+    enableReinitialize: true,
+    validationSchema: editAddressValidationSchema,
+    onSubmit: (formValues, { setSubmitting }) => {
+      const submission = { ...customer };
+      submission.address = formValues;
+      updateCustomerAddress.mutate(submission);
+      setSubmitting(false);
+      setIsToggled(false);
+    },
+  });
 
-  state = {
-    updatedCustomerAddress: defaultCustomer,
-  }
-
-  componentDidMount() {
-    const { customer } = this.props;
-    this.setState({ updatedCustomerAddress: customer });
-  }
-
-  toggleModal = (e) => {
-    const { toggleModalOpen } = this.props;
-    toggleModalOpen(e);
-  };
-
-  formSubmit = (e) => {
-    e.preventDefault();
-    const { updatedCustomerAddress } = this.state;
-    const { updateCustomerAddress } = this.props;
-    updateCustomerAddress(updatedCustomerAddress);
-    this.toggleModal();
-  };
-
-  formFieldStringState = (e) => {
-    const tempCustomerAddress = { ...this.state.updatedCustomerAddress };
-    tempCustomerAddress.address[e.target.id] = e.target.value;
-    this.setState({ updatedCustomerAddress: tempCustomerAddress });
-  };
-
-  render() {
-    const { updatedCustomerAddress } = this.state;
-    return (
-      <div className="EditCustomerAddressModal">
-        <Form onSubmit={this.formSubmit}>
-          <ModalBody>
-          <div className="form-group">
-            <label htmlFor="addressLine1">Address Line 1</label>
-            <input
+  return (<>
+    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit Address</button>
+    <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
+      <ModalHeader toggle={() => setIsToggled(false)}>Edit Customer Address</ModalHeader>
+      <Form onSubmit={formik.handleSubmit}>
+        <ModalBody>
+          <FormGroup>
+            <Label htmlFor="addressLine1">Address</Label>
+            <Input
               type="input"
               className="form-control"
               id="addressLine1"
-              value={updatedCustomerAddress.address.addressLine1}
-              onChange={this.formFieldStringState}
-              required
+              {...formik.getFieldProps('addressLine1')}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="addressLine2">Address Line 2</label>
-            <input
+            {formik.touched.addressLine1
+              && <FormFeedback className="d-block">{formik.errors?.addressLine1}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="addressLine2">Address Line 2</Label>
+            <Input
               type="input"
               className="form-control"
               id="addressLine2"
-              value={updatedCustomerAddress.address.addressLine2}
-              onChange={this.formFieldStringState}
+              {...formik.getFieldProps('addressLine2')}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="city">City</label>
-            <input
+            {formik.touched.addressLine2
+              && <FormFeedback className="d-block">{formik.errors?.addressLine2}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="city">City</Label>
+            <Input
               type="input"
               className="form-control"
               id="city"
-              value={updatedCustomerAddress.address.city}
-              onChange={this.formFieldStringState}
-              required
+              {...formik.getFieldProps('city')}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="state">State</label>
-            <input
+            {formik.touched.city
+              && <FormFeedback className="d-block">{formik.errors?.city}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="state">State</Label>
+            <Input
               type="input"
               className="form-control"
               id="state"
-              value={updatedCustomerAddress.address.state}
-              onChange={this.formFieldStringState}
-              required
+              {...formik.getFieldProps('state')}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="zipCode">Zip Code</label>
-            <input
+            {formik.touched.state
+              && <FormFeedback className="d-block">{formik.errors?.state}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="zipCode">Zip Code</Label>
+            <Input
               type="input"
               className="form-control"
               id="zipCode"
-              value={updatedCustomerAddress.address.zipCode}
-              onChange={this.formFieldStringState}
-              required
+              {...formik.getFieldProps('zipCode')}
             />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button type="submit" color="primary">Edit Customer Address</Button>{' '}
-            <Button color="secondary" value="info" onClick={this.toggleModal}>Cancel</Button>
-          </ModalFooter>
-        </Form>
-      </div>
-    );
-  }
+            {formik.touched.zipCode
+              && <FormFeedback className="d-block">{formik.errors?.zipCode}</FormFeedback>}
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button type="submit" color="primary">Edit Customer Address</Button>{' '}
+          <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
+        </ModalFooter>
+      </Form>
+    </Modal>
+  </>);
 }
 
 export default EditCustomerAddressModal;

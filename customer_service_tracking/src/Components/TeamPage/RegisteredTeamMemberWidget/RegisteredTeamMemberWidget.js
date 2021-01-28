@@ -3,15 +3,18 @@ import PropTypes from 'prop-types';
 
 class RegisteredTeamMemberWidget extends React.Component {
   static propTypes = {
-    registeredTeamMember: PropTypes.object.isRequired,
+    registeredTeamMembers: PropTypes.array.isRequired,
   }
 
   render() {
-    const { registeredTeamMember } = this.props;
+    const { registeredTeamMembers } = this.props;
     return (
-      <div className="RegisteredTeamMemberWidget">
-        <p>Team Member Widget</p>
-        <p>{registeredTeamMember.firstName}</p>
+      <div className="RegisteredTeamMemberWidget widget col-8 mb-4">
+        <h2>Registered Team</h2>
+        {registeredTeamMembers.map((teamMember) => (
+          <p>{teamMember.fullName}</p>
+        ))
+        }
       </div>
     );
   }

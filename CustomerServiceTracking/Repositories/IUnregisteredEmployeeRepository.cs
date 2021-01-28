@@ -1,4 +1,5 @@
 ﻿using CustomerServiceTracking.DataModels;
+using CustomerServiceTracking.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace CustomerServiceTracking.Repositories
         IEnumerable<UnregisteredEmployee> GetUnregisteredEmployeesByBusinessId(Guid businessId);
         Guid CheckIfBusinessHasEmailOfUnregisteredEmployee(string email, Guid businessId);
         UnregisteredEmployee GetUnregisteredEmployeeById(Guid id);
-        bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee);
+        bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee userToAdd);
         bool DeleteUnregisteredEmployee(Guid unregisteredEmployeeId);
     }
 }

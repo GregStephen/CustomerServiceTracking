@@ -1,191 +1,180 @@
 /* eslint-disable no-param-reassign */
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import {
-  FormGroup, Label, Input,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Col,
+  Row,
+  FormFeedback,
 } from 'reactstrap';
 import moment from 'moment';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useParams } from 'react-router-dom';
 
+import { Page, Header } from '../Global';
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
-import SystemRequests from '../../Helpers/Data/SystemRequests';
+import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
-const defaultCustomerSystem = {
-  customerId: '',
-  systemId: '',
-  installDate: '',
-  nozzles: 0,
-  serialNumber: '',
-  sold: false,
-  sprayCycles: 0,
-  sprayDuration: 0,
-};
-
-class EditCustomerSystemPage extends React.Component {
-  static propTypes = {
-    authorized: PropTypes.bool.isRequired,
-    userObj: PropTypes.object.isRequired,
-  }
-
-  state = {
-    systemOptions: [],
-    updatedCustomerSystem: defaultCustomerSystem,
-  }
+const editCustomerSystemValidationSchema = Yup.object().shape({
+  nozzles: Yup.number().required('Nozzles is required'),
+  notes: Yup.string().notRequired(),
+  sprayCycles: Yup.number().required('Spray cycles is required'),
+  sprayDuration: Yup.number().required('Spray duration is required'),
+  serialNumber: Yup.string().required('Serial number is required'),
+  sold: Yup.bool().required(),
+});
 
 
-  loadPage() {
-    const { userObj } = this.props;
-    const customerSystemId = this.props.match.params.id;
-    CustomerRequests.getCustomerSystemFromCustomerSystemId(customerSystemId)
-      .then((customerSystemResult) => {
-        customerSystemResult.installDate = moment(customerSystemResult.installDate).format('YYYY-MM-DD');
-        this.setState({ updatedCustomerSystem: customerSystemResult });
-      })
-      .catch((err) => console.error(err));
-    SystemRequests.getSystemsForBusiness(userObj.businessId)
-      .then((systemOptions) => this.setState({ systemOptions }))
-      .catch((err) => console.error(err));
-  }
+function EditCustomerSystemPage({ userObj }) {
+  const systemOptions = useGetSystemsForBusiness(userObj.businessId);
+  const { id } = useParams();
+  const [currentSystem, getCurrentSystem] = useState();
+  const today = moment().format('YYYY-MM-DD');
 
-  componentDidMount() {
-    this.loadPage();
-  }
-
-  updateCustomerSystem = (e) => {
-    e.preventDefault();
-    const { updatedCustomerSystem } = this.state;
-    updatedCustomerSystem.nozzles = parseInt(updatedCustomerSystem.nozzles, 10);
-    updatedCustomerSystem.sprayCycles = parseInt(updatedCustomerSystem.sprayCycles, 10);
-    updatedCustomerSystem.sprayDuration = parseInt(updatedCustomerSystem.sprayDuration, 10);
-    updatedCustomerSystem.installDate = moment(updatedCustomerSystem.installDate).format('YYYY-MM-DD');
-    console.error(updatedCustomerSystem);
-    CustomerRequests.updateCustomerSystem(updatedCustomerSystem)
-      .then(() => {
-        this.props.history.push(`/customer/${updatedCustomerSystem.customerId}`);
-      })
-      .catch((err) => console.error(err));
-  }
-
-  formFieldStringState = (e) => {
-    const tempCustomerSystem = { ...this.state.updatedCustomerSystem };
-    tempCustomerSystem[e.target.id] = e.target.value;
-    this.setState({ updatedCustomerSystem: tempCustomerSystem });
+  const defaultCustomerSystem = {
+    customerId: currentSystem?.customerId ?? '',
+    systemId: currentSystem?.systemId ?? '',
+    notes: currentSystem?.notes ?? '',
+    installDate: currentSystem?.installDate ?? '',
+    nozzles: currentSystem?.nozzles ?? 0,
+    serialNumber: currentSystem?.serialNumber ?? '',
+    sold: currentSystem?.sold ?? false,
+    sprayCycles: currentSystem?.sprayCycles ?? 0,
+    sprayDuration: currentSystem?.sprayDuration ?? 0,
   };
 
-  handleRadio = (e) => {
-    const tempCustomerSystem = { ...this.state.updatedCustomerSystem };
-    const sold = e.currentTarget.value === 'true';
-    tempCustomerSystem[e.target.id] = sold;
-    this.setState({ updatedCustomerSystem: tempCustomerSystem });
-  }
+  const formik = useFormik({
+    initialValues: defaultCustomerSystem,
+    enableReinitialize: true,
+    validationSchema: editCustomerSystemValidationSchema,
+    onSubmit: (formValues, { setSubmitting }) => {
+      const { updatedCustomerSystem } = { ...formValues };
+      updatedCustomerSystem.nozzles = parseInt(updatedCustomerSystem.nozzles, 10);
+      updatedCustomerSystem.sprayCycles = parseInt(updatedCustomerSystem.sprayCycles, 10);
+      updatedCustomerSystem.sprayDuration = parseInt(updatedCustomerSystem.sprayDuration, 10);
+      updatedCustomerSystem.installDate = moment(updatedCustomerSystem.installDate).format('YYYY-MM-DD');
+      CustomerRequests.updateCustomerSystem(updatedCustomerSystem)
+        .then(() => {
+          this.props.history.push(`/customer/${updatedCustomerSystem.customerId}`);
+        })
+        .catch((err) => console.error(err));
+      setSubmitting(false);
+    },
+  });
 
-  render() {
-    const { updatedCustomerSystem, systemOptions } = this.state;
-    return (
-      <div className='EditCustomerSystemPage'>
-        <h1>Edit Customer System</h1>
-        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.updateCustomerSystem}>
+  useEffect(() => {
+    CustomerRequests.getCustomerSystemFromCustomerSystemId(id)
+      .then((customerSystemResult) => {
+        customerSystemResult.installDate = moment(customerSystemResult.installDate).format('YYYY-MM-DD');
+        getCurrentSystem(customerSystemResult);
+      })
+      .catch((err) => console.error(err));
+  }, [id]);
+
+  return (
+    <Page>
+      <Header title="Edit System" />
+      <div className="widget col-10 d-flex justify-content-center mb-4">
+        <Form className="col-8" onSubmit={formik.handleSubmit}>
           <FormGroup>
             <Label htmlFor="systemId">Which system did you install?</Label>
             <Input
               type="select"
               name="systemId"
               id="systemId"
-              value={updatedCustomerSystem.systemId}
-              onChange={this.formFieldStringState}
-              required>
+              {...formik.getFieldProps('systemId')}>
               <option value="">Select a system</option>
-              {systemOptions.map((object) => (
+              {systemOptions?.data?.data?.map((object) => (
                 <option key={object.id} value={object.id}>{object.type}</option>
               ))}
             </Input>
+            {formik.touched.systemId
+              && <FormFeedback className="d-block">{formik.errors?.systemId}</FormFeedback>}
           </FormGroup>
-          <div className="form-group">
-            <label htmlFor="installDate">Install Date</label>
-            <input
+          <FormGroup>
+            <Label for="installDate">Install Date</Label>
+            <Input
               type="date"
-              className="form-control"
               id="installDate"
-              value={updatedCustomerSystem.installDate}
-              onChange={this.formFieldStringState}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="nozzles">Number of nozzles</label>
-            <input
-              type="number"
-              className="form-control"
-              id="nozzles"
-              min="0"
-              value={updatedCustomerSystem.nozzles}
-              onChange={this.formFieldStringState}
-              required
-            />
-            <div className="form-group">
-              <label htmlFor="sprayCycles">Spray Cycles</label>
-              <input
-                type="number"
-                className="form-control"
-                id="sprayCycles"
-                min="0"
-                value={updatedCustomerSystem.sprayCycles}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="sprayDuration">Duration of spray in seconds</label>
-              <input
-                type="number"
-                className="form-control"
-                id="sprayDuration"
-                min="0"
-                value={updatedCustomerSystem.sprayDuration}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="serialNumber">Serial Number</label>
-              <input
-                type="input"
-                className="form-control"
-                id="serialNumber"
-                value={updatedCustomerSystem.serialNumber}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="sold">Sold</label>
-              <input
-                type="radio"
-                className="form-control"
-                id="sold"
-                value="true"
-                checked={updatedCustomerSystem.sold === true}
-                onChange={this.handleRadio}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="lease">Lease</label>
-              <input
-                type="radio"
-                className="form-control"
-                id="sold"
-                value="false"
-                checked={updatedCustomerSystem.sold === false}
-                onChange={this.handleRadio}
-                required
-              />
-            </div>
-          </div>
-          <button type="submit" className="btn btn-success">Update System</button>
-        </form>
+              name="installDate"
+              max={today}
+              {...formik.getFieldProps('installDate')} />
+            {formik.touched.installDate
+              && <FormFeedback className="d-block">{formik.errors?.installDate}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label for="serialNumber">Serial number</Label>
+            <Input
+              type="input"
+              id="serialNumber"
+              name="serialNumber"
+              max={today}
+              {...formik.getFieldProps('serialNumber')} />
+            {formik.touched.serialNumber
+              && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
+          </FormGroup>
+          <Row form>
+            <Col md={4}>
+              <FormGroup>
+                <Label for="nozzles">Number of nozzles</Label>
+                <Input
+                  type="number"
+                  id="nozzles"
+                  min="0"
+                  {...formik.getFieldProps('nozzles')} />
+                {formik.touched.nozzles
+                  && <FormFeedback className="d-block">{formik.errors?.nozzles}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col md={4}>
+              <FormGroup>
+                <Label for="sprayCycles">Spray Cycles</Label>
+                <Input
+                  type="number"
+                  id="sprayCycles"
+                  min="0"
+                  {...formik.getFieldProps('sprayCycles')} />
+                {formik.touched.sprayCycles
+                  && <FormFeedback className="d-block">{formik.errors?.sprayCycles}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col md={4}>
+              <FormGroup>
+                <Label for="sprayDuration">Duration of spray in seconds</Label>
+                <Input
+                  type="number"
+                  id="sprayDuration"
+                  min="0"
+                  {...formik.getFieldProps('sprayDuration')} />
+                {formik.touched.sprayDuration
+                  && <FormFeedback className="d-block">{formik.errors?.sprayDuration}</FormFeedback>}
+              </FormGroup>
+            </Col>
+          </Row>
+          <FormGroup>
+            <Label for="sold">Sold</Label>
+            <Input
+              type="checkbox"
+              id="sold"
+              {...formik.getFieldProps('sold')} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="notes">Notes for the System</Label>
+            <Input
+              type="input"
+              id="notes"
+              {...formik.getFieldProps('notes')} />
+            {formik.touched.notes
+              && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
+          </FormGroup>
+          <button type="submit" className="btn btn-success">Edit Customers System</button>
+        </Form>
       </div>
-    );
-  }
+    </Page>
+  );
 }
 
 export default EditCustomerSystemPage;

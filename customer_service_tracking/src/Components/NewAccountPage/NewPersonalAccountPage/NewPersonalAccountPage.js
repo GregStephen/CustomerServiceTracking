@@ -14,6 +14,7 @@ const defaultUser = {
   admin: false,
   businessId: '',
   unregisteredUserId: '',
+  userId: '',
 };
 
 class NewPersonalAccountPage extends React.Component {
@@ -26,6 +27,7 @@ class NewPersonalAccountPage extends React.Component {
     newUser: defaultUser,
     businessId: '',
     email: '',
+    userId: '',
     password: '',
     confirmPassword: '',
     error: '',
@@ -37,6 +39,7 @@ class NewPersonalAccountPage extends React.Component {
       .then((unregisteredUser) => {
         this.setState({ email: unregisteredUser.email });
         this.setState({ businessId: unregisteredUser.businessId });
+        this.setState({ userId: unregisteredUser.userId });
       })
       .catch();
   }
@@ -58,7 +61,7 @@ class NewPersonalAccountPage extends React.Component {
   createAccount = (e) => {
     e.preventDefault();
     const {
-      email, password, confirmPassword, businessId,
+      email, password, confirmPassword, businessId, userId,
     } = this.state;
     const { logIn } = this.props;
     const unregisteredUserId = this.props.match.params.id;
@@ -74,7 +77,7 @@ class NewPersonalAccountPage extends React.Component {
         saveMe.firebaseUid = firebase.auth().currentUser.uid;
         saveMe.businessId = businessId;
         saveMe.unregisteredUserId = unregisteredUserId;
-        console.log(saveMe);
+        saveMe.userId = userId;
         UserRequests.addNewPersonalUser(saveMe)
           .then(() => {
             logIn(email, password);

@@ -6,7 +6,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'User')
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[Admin] BIT not null,
-		[FirebaseUid] NVARCHAR (255) not null,
+		[FirebaseUid] NVARCHAR (255) null,
 		[FirstName] NVARCHAR(255) not null,
 		[LastName] NVARCHAR(255) not null
 	)
@@ -84,14 +84,39 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Customer')
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
 		[FirstName] NVARCHAR(255) not null,
-		[HomePhone] NVARCHAR(10) null,
 		[LastName] NVARCHAR(255) not null,
-		[OfficePhone] NVARCHAR(10) null,
+		[Enabled] BIT not null,
 		[AddressId] UNIQUEIDENTIFIER not null,
 	)
 	END
 ELSE
 	PRINT 'Customer table already exists'
+
+
+If not exists (SELECT * FROM sys.tables WHERE [name] = 'PhoneNumbers')
+	BEGIN
+	CREATE TABLE [PhoneNumbers]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[CustomerId] UNIQUEIDENTIFIER not null, 
+		[PhoneNumber] NVARCHAR(10) not null,
+		[Type] SMALLINT not null,
+	)
+	END
+ELSE
+	PRINT 'PhoneNumbers table already exists'
+
+If not exists (SELECT * FROM sys.tables WHERE [name] = 'Emails')
+	BEGIN
+	CREATE TABLE [Emails]
+	(
+		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[CustomerId] UNIQUEIDENTIFIER not null, 
+		[Email] NVARCHAR(255) not null,
+	)
+	END
+ELSE
+	PRINT 'Emails table already exists'
 
 IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Address')
 	BEGIN
@@ -166,7 +191,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Job')
 		[CustomerSystemId] UNIQUEIDENTIFIER not null,
 		[DateAssigned] DATETIME not null,
 		[TechnicianId] UNIQUEIDENTIFIER not null,
-		[JobTypeId] UNIQUEIDENTIFIER not null
+		[JobTypeId] UNIQUEIDENTIFIER not null,
+		[Note] NVARCHAR(255) null,
 	)
 	END
 ELSE
@@ -212,6 +238,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'UnregisteredEmployee')
 	CREATE TABLE [UnregisteredEmployee]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[UserId] UNIQUEIDENTIFIER not null,
 		[BusinessId] UNIQUEIDENTIFIER not null,
 		[Email] NVARCHAR(255) not null,
 		[FirstName] NVARCHAR(255) not null,
@@ -441,3 +468,13 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UnregisteredEmp
 	END
 ELSE
 	PRINT 'Foreign key FK_UnregisteredEmployee_Business already exists'
+
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_UnregisteredEmployee_User')
+	BEGIN
+	ALTER TABLE [UnregisteredEmployee]
+	ADD CONSTRAINT FK_UnregisteredEmployee_User
+		FOREIGN KEY (UserId) 
+		REFERENCES [User] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_UnregisteredEmployee_User already exists'

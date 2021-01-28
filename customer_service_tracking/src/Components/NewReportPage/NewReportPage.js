@@ -1,186 +1,185 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import {
-  FormGroup, Label, Input,
+  Col,
+  Row,
+  FormGroup,
+  Form,
+  FormFeedback,
+  Label,
+  Input,
 } from 'reactstrap';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useHistory, useParams } from 'react-router-dom';
 import moment from 'moment';
+
+import { Header, Page } from '../Global';
 
 import defaults from '../../Helpers/defaults';
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
-import JobRequests from '../../Helpers/Data/JobRequests';
-import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
-import ReportRequests from '../../Helpers/Data/ReportRequests';
+import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
+import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
+import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
 
 import './NewReportPage.scss';
 
-class NewReportPage extends React.Component {
-  static propTypes = {
-    userObj: PropTypes.object.isRequired,
-    authorized: PropTypes.bool.isRequired,
-  }
+const newReportValidationSchema = Yup.object().shape({
+  amountRemaining: Yup.number().required('Amount remaining is required'),
+  inchesAdded: Yup.number().required('Inches added is required'),
+  solutionAdded: Yup.number().required('Solution Added is required'),
+  notes: Yup.string().notRequired(),
+  jobTypeId: Yup.string().notRequired('Job type is required'),
+  serviceDate: Yup.date().required('Service date is required'),
+});
 
-  state = {
-    customerSystem: defaults.defaultSystem,
-    newReport: defaults.defaultReport,
-    jobTypeOptions: defaults.defaultJobTypes,
-    customer: defaults.defaultCustomer,
-    job: {
-      id: '',
-    },
-  }
+function NewReportPage({ userObj }) {
+  const { id } = useParams();
+  const [customerSystem, getCustomerSystem] = useState();
+  const [customer, getCustomer] = useState();
+  const jobTypeOptions = useGetJobTypeOptions();
+  const history = useHistory();
+  const deleteJob = useDeleteJob();
+  const job = useJobForSystemBySystemId(id);
+  const addNewReport = useAddNewReport();
 
-  componentDidMount() {
-    const customerSystemId = this.props.match.params.id;
-    CustomerRequests.getCustomerSystemFromCustomerSystemId(customerSystemId)
-      .then((system) => this.setState({ customerSystem: system }, () => {
-        CustomerRequests.getCustomerFromCustomerId(system.customerId)
-          .then((customer) => this.setState({ customer }));
-      }))
-      .catch((err) => console.error(err));
-    JobTypeRequests.getJobTypes()
-      .then((types) => {
-        const reportTypes = types.filter((x) => x.type !== 'Install');
-        this.setState({ jobTypeOptions: reportTypes });
-      })
-      .catch((err) => console.error(err));
-    JobRequests.getJobForSystemBySystemId(customerSystemId)
-      .then((job) => this.setState({ job }))
-      .catch((err) => console.error(err));
-  }
-
-  formFieldStringState = (e) => {
-    const tempReport = { ...this.state.newReport };
-    tempReport[e.target.id] = e.target.value;
-    this.setState({ newReport: tempReport });
-  };
-
-  createNewReport = (e) => {
-    e.preventDefault();
-    const { newReport, customerSystem, job } = this.state;
-    const { userObj } = this.props;
-    if (job) {
-      newReport.jobTypeId = job.jobTypeId;
+  useEffect(() => {
+    if (addNewReport.isSuccess) {
+      if (job !== '') {
+        deleteJob(job.id)
+          .then(() => history.push('/home'));
+      } else {
+        history.push('/home');
+      }
     }
-    newReport.technicianId = userObj.id;
-    newReport.customerId = customerSystem.customerId;
-    newReport.systemId = customerSystem.id;
-    newReport.amountRemaining = parseInt(newReport.amountRemaining, 10);
-    newReport.inchesAdded = parseInt(newReport.inchesAdded, 10);
-    newReport.serviceDate = moment(newReport.serviceDate).format('YYYY-MM-DD');
-    newReport.solutionAdded = parseInt(newReport.solutionAdded, 10);
-    ReportRequests.addNewReport(newReport)
-      .then(() => JobRequests.deleteJob(job.id)
-        .then(() => this.props.history.push('/home')))
-      .catch((err) => console.error(err));
-  }
+  }, [addNewReport.isSuccess, deleteJob, history, job]);
 
-  render() {
-    const {
-      newReport,
-      jobTypeOptions,
-      customerSystem,
-      customer,
-      job,
-    } = this.state;
-    const maxInches = customerSystem.systemInfo.inches;
-    const today = moment().format('YYYY-MM-DD');
-    return (
-      <div className="NewReportPage">
-        <h1>New Report</h1>
-        <form className="col-12 col-md-8 col-lg-4 log-in-form" onSubmit={this.createNewReport}>
-          <h3>{customer.firstName} {customer.lastName}</h3>
-          <h3>{customer.address.addressLine1}</h3>
-          {customer.address.addressLine2 ? <h3>{customer.address.addressLine2} </h3> : ''}
-          <h3>{customer.address.city}, {customer.address.state} {customer.address.zipCode}</h3>
-          {customerSystem.notes
+  const formik = useFormik({
+    initialValues: defaults.defaultReport,
+    enableReinitialize: true,
+    validationSchema: newReportValidationSchema,
+    onSubmit: (formValues, { setSubmitting, setValues }) => {
+      const submission = { ...formValues };
+      submission.technicianId = userObj.id;
+      submission.customerId = customerSystem?.customerId;
+      submission.systemId = customerSystem?.id;
+      submission.amountRemaining = parseInt(submission.amountRemaining, 10);
+      submission.inchesAdded = parseInt(submission.inchesAdded, 10);
+      submission.serviceDate = moment(submission.serviceDate).format('YYYY-MM-DD');
+      submission.solutionAdded = parseInt(submission.solutionAdded, 10);
+      setValues(submission);
+      addNewReport.mutate(submission);
+      setSubmitting(false);
+    },
+  });
+
+  useEffect(() => {
+    CustomerRequests.getCustomerSystemFromCustomerSystemId(id)
+      .then((systemReturned) => getCustomerSystem(systemReturned))
+      .catch((err) => console.error(err));
+  }, [id]);
+
+  useEffect(() => {
+    if (customerSystem) {
+      CustomerRequests.getCustomerFromCustomerId(customerSystem?.customerId)
+        .then((customerReturned) => getCustomer(customerReturned));
+    }
+  }, [customerSystem]);
+
+  const maxInches = customerSystem?.systemInfo?.inches;
+  const today = moment().format('YYYY-MM-DD');
+  return (
+    <Page>
+      <Header title="New Report" />
+      <div className="widget col-10 d-flex justify-content-center mb-4">
+        <Form className="col-8" onSubmit={formik.handleSubmit}>
+          <h3>{customer?.firstName} {customer?.lastName}</h3>
+          <h3>{customer?.address?.addressLine1}</h3>
+          {customer?.address?.addressLine2 ? <h3>{customer?.address?.addressLine2} </h3> : ''}
+          <h3>{customer?.address?.city}, {customer?.address?.state} {customer?.address?.zipCode}</h3>
+          {customerSystem?.notes
             ? <div>
               <h3>Notes on System</h3>
-              <p>{customerSystem.notes}</p>
+              <p>{customerSystem?.notes}</p>
             </div>
             : ''}
-          {job.id !== ''
-            ? <p className="typeOfJob">Type of Job: {jobTypeOptions.find((x) => x.id === job.jobTypeId)?.type}</p>
-            : <FormGroup>
+          <FormGroup>
               <Label htmlFor="jobTypeId">What type of job?</Label>
               <Input
                 type="select"
                 name="jobTypeId"
                 id="jobTypeId"
-                value={newReport.jobTypeId}
-                onChange={this.formFieldStringState}
-                required>
+                {...formik.getFieldProps('jobTypeId')}>
                 <option value="">Select a job</option>
-                {jobTypeOptions.map((object) => (
+                {jobTypeOptions.data?.data?.map((object) => (
                   <option key={object.id} value={object.id}>{object.type}</option>
                 ))}
               </Input>
+              {formik.touched.jobTypeId
+                && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
             </FormGroup>
-          }
-          <div className="form-group">
-            <label htmlFor="serviceDate">Service Date</label>
-            <input
+          <FormGroup>
+            <Label for="serviceDate">Service Date</Label>
+            <Input
               type="date"
-              className="form-control"
               id="serviceDate"
+              name="serviceDate"
               max={today}
-              value={newReport.serviceDate}
-              onChange={this.formFieldStringState}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="amountRemaining">Inches of Water Remaining</label>
-            <input
+              {...formik.getFieldProps('serviceDate')} />
+            {formik.touched.serviceDate
+              && <FormFeedback className="d-block">{formik.errors?.serviceDate}</FormFeedback>}
+          </FormGroup>
+          <Row form>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="amountRemaining">Inches of Water Remaining</Label>
+                <Input
+                  type="number"
+                  id="amountRemaining"
+                  min="0"
+                  max={maxInches}
+                  {...formik.getFieldProps('amountRemaining')} />
+                {formik.touched.amountRemaining
+                  && <FormFeedback className="d-block">{formik.errors?.amountRemaining}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="inchesAdded">Inches of Water Added</Label>
+                <Input
+                  type="number"
+                  id="inchesAdded"
+                  min="0"
+                  max={(maxInches - formik.values.amountRemaining ?? 0).toString()}
+                  {...formik.getFieldProps('inchesAdded')} />
+                {formik.touched.inchesAdded
+                  && <FormFeedback className="d-block">{formik.errors?.inchesAdded}</FormFeedback>}
+              </FormGroup>
+            </Col>
+          </Row>
+          <FormGroup>
+            <Label for="solutionAdded">Solution Added</Label>
+            <Input
               type="number"
-              className="form-control"
-              id="amountRemaining"
-              min="0"
-              max={maxInches}
-              value={newReport.amountRemaining}
-              onChange={this.formFieldStringState}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="inchesAdded">Inches of Water Added</label>
-            <input
-              type="number"
-              className="form-control"
-              id="inchesAdded"
-              min="0"
-              max={maxInches - newReport.amountRemaining}
-              value={newReport.inchesAdded}
-              onChange={this.formFieldStringState}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="solutionAdded">Solution Added</label>
-            <input
-              type="number"
-              className="form-control"
               id="solutionAdded"
               min="0"
-              value={newReport.solutionAdded}
-              onChange={this.formFieldStringState}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="notes">Notes</label>
-            <input
+              {...formik.getFieldProps('solutionAdded')} />
+            {formik.touched.solutionAdded
+              && <FormFeedback className="d-block">{formik.errors?.solutionAdded}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label for="notes">Notes</Label>
+            <Input
               type="input"
-              className="form-control"
               id="notes"
-              value={newReport.notes}
-              onChange={this.formFieldStringState}
-            />
-          </div>
+              {...formik.getFieldProps('notes')} />
+            {formik.touched.notes
+              && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
+          </FormGroup>
           <button type="submit" className="btn btn-success">Add New Report</button>
-        </form>
+        </Form>
       </div>
-    );
-  }
+    </Page>
+  );
 }
 
 export default NewReportPage;

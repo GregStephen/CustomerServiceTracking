@@ -26,9 +26,9 @@ VALUES
 	1
 ),
 (
-	'John',
+	'Greg',
 	'Worker',
-	'aKyHTatDy7WJSL30tXy3whavr8p1',
+	'Yk3pvshTbMSKOlhNyhOUveXvBXf1',
 	0
 )
 
@@ -38,7 +38,7 @@ WHERE FirstName = 'Ben'
 
 SELECT @user2 = [Id]
 FROM [User]
-WHERE FirstName = 'John'
+WHERE FirstName = 'Greg'
 
 /* Creates an address for the business
 	and an address for the customer */
@@ -57,10 +57,10 @@ VALUES
 	'37013'
 ),
 (
-	'321 Easy Street',
+	'719 Long Hunter Ct',
 	'Nashville',
 	'TN',
-	'32189'
+	'37013'
 )
 
 SELECT @businessAddress = [Id]
@@ -69,7 +69,7 @@ WHERE [AddressLine1] = '123 Fake Street'
 
 SELECT @customerAddress = [Id]
 FROM [Address]
-WHERE [AddressLine1] = '321 Easy Street'
+WHERE [AddressLine1] = '719 Long Hunter Ct'
 
 /* Creates the business */
 INSERT INTO [Business]
@@ -138,8 +138,7 @@ INSERT INTO [Customer]
 (
     [FirstName],
     [LastName],
-    [HomePhone],
-    [OfficePhone],
+	[Enabled],
     [AddressId]
 )
 
@@ -147,14 +146,47 @@ VALUES
 (
 	'Frank',
 	'Customer',
-	'6150950598',
-	'1234567890',
+	1,
 	@customerAddress
 )
 
 SELECT @customer = [Id]
 FROM [Customer]
 WHERE FirstName = 'Frank'
+
+INSERT INTO [Emails]
+(
+	[CustomerId],
+	[Email]	
+)
+VALUES
+(
+	@customer,
+	'FrankCustomer@gmail.com'
+)
+
+INSERT INTO [PhoneNumbers]
+(
+	[CustomerId],
+	[PhoneNumber],
+	[Type]
+)
+VALUES
+(
+	@customer,
+	'1234567890',
+	1
+),
+(
+	@customer,
+	'6154955196',
+	2
+),
+(
+	@customer,
+	'3211234321',
+	3
+)
 
 /* Links the business with the customer */
 INSERT INTO [BusinessCustomer]
@@ -184,7 +216,7 @@ INSERT INTO [CustomerSystem]
 VALUES
 (
 	@customer,
-	'2020-07-07 00:00:00.000',
+	'2020-12-12 00:00:00.000',
 	'Around back near the gate',
 	10,
 	'1239129123',
@@ -198,21 +230,6 @@ SELECT @customerSystem = [Id]
 FROM [CustomerSystem]
 WHERE [SerialNumber] = '1239129123'
 
-/* Creates an unregistered Employee */
-INSERT INTO [UnregisteredEmployee]
-(
-    [FirstName],
-    [LastName],
-    [BusinessId],
-    [Email]
-)
-VALUES
-(
-	'Jean',
-	'DeHean',
-	@business,
-	'Jean@deHean.com'
-)
 
 /* Creates new Job Types */
 INSERT INTO [JobType]
@@ -260,11 +277,11 @@ VALUES
 (
 	0,
 	@customer,
-	'2020-10-07 00:00:00.000',
+	'2021-01-10 00:00:00.000',
 	20,
 	@jobTypeInstall,
 	'All lines look good',
-	'2020-07-07 00:00:00.000',
+	'2020-12-12 00:00:00.000',
 	5,
 	@customerSystem,
 	@user2

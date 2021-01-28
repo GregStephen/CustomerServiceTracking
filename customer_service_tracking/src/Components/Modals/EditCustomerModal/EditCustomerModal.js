@@ -1,141 +1,88 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  Modal, ModalHeader, Form, Button, ModalBody, ModalFooter,
+  Modal,
+  ModalHeader,
+  Form,
+  Button,
+  ModalBody,
+  ModalFooter,
+  Label,
+  Input,
+  FormFeedback,
+  FormGroup,
 } from 'reactstrap';
-import PropTypes from 'prop-types';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useUpdateCustomer } from '../../../Helpers/Data/CustomerRequests';
 
 import DeleteCustomerModal from '../DeleteCustomerModal/DeleteCustomerModal';
 
-const defaultCustomer = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  officePhone: '',
-  homePhone: '',
-  address: {
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-  },
-};
+const editCustomerValidationSchema = Yup.object().shape({
+  firstName: Yup.string().required('First Name is required'),
+  lastName: Yup.string().required('Last Name is required'),
+});
 
-class EditCustomerModal extends React.Component {
-  static propTypes = {
-    customer: PropTypes.object.isRequired,
-    toggleModalOpen: PropTypes.func.isRequired,
-    updateCustomer: PropTypes.func.isRequired,
-    customerDeleted: PropTypes.func.isRequired,
-  }
 
-  state = {
-    updatedCustomer: defaultCustomer,
-    deleteCustomerModalIsOpen: false,
-  }
+function EditCustomerModal({ customer }) {
+  const [isToggled, setIsToggled] = useState(false);
+  const updateCustomer = useUpdateCustomer();
 
-  componentDidMount() {
-    const { customer } = this.props;
-    this.setState({ updatedCustomer: customer });
-  }
+  const defaultCustomer = useMemo(() => ({
+    id: customer?.id ?? '',
+    firstName: customer?.firstName ?? '',
+    lastName: customer?.lastName ?? '',
+  }), [customer]);
 
-  toggleModal = (e) => {
-    const { toggleModalOpen } = this.props;
-    toggleModalOpen(e);
-  };
+  const formik = useFormik({
+    initialValues: defaultCustomer,
+    enableReinitialize: true,
+    validationSchema: editCustomerValidationSchema,
+    onSubmit: (formValues, { setSubmitting }) => {
+      const submission = { ...customer, ...formValues };
+      updateCustomer.mutate(submission);
+      setSubmitting(false);
+      setIsToggled(false);
+    },
+  });
 
-  toggleDeleteCustomerModal = (e) => {
-    this.setState((prevState) => ({
-      deleteCustomerModalIsOpen: !prevState.deleteCustomerModalIsOpen,
-    }));
-  }
-
-  formSubmit = (e) => {
-    e.preventDefault();
-    const { updatedCustomer } = this.state;
-    const { updateCustomer } = this.props;
-    updateCustomer(updatedCustomer);
-    this.toggleModal();
-  };
-
-  formFieldStringState = (e) => {
-    const tempCustomer = { ...this.state.updatedCustomer };
-    tempCustomer[e.target.id] = e.target.value;
-    this.setState({ updatedCustomer: tempCustomer });
-  };
-
-  deleteCustomer = () => {
-    const { customerDeleted } = this.props;
-    customerDeleted();
-  }
-
-  render() {
-    const { updatedCustomer } = this.state;
-    const { customer } = this.props;
-    return (
-      <div className="EditCustomerModal">
-        <Form onSubmit={this.formSubmit}>
-          <ModalBody>
-            <div className="form-group">
-              <label htmlFor="firstName">First Name</label>
-              <input
-                type="input"
-                className="form-control"
-                id="firstName"
-                value={updatedCustomer.firstName}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                type="input"
-                className="form-control"
-                id="lastName"
-                value={updatedCustomer.lastName}
-                onChange={this.formFieldStringState}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="homePhone">Home Phone</label>
-              <input
-                type="input"
-                className="form-control"
-                id="homePhone"
-                value={updatedCustomer.homePhone}
-                onChange={this.formFieldStringState}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="officePhone">Office Phone</label>
-              <input
-                type="input"
-                className="form-control"
-                id="officePhone"
-                value={updatedCustomer.officePhone}
-                onChange={this.formFieldStringState}
-              />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button type="submit" color="primary">Edit Customer</Button>{' '}
-            <Button color="secondary" value="info" onClick={this.toggleModal}>Cancel</Button>
-            <Button color="danger" value="info" onClick={this.toggleDeleteCustomerModal}>DELETE</Button>
-          </ModalFooter>
-        </Form>
-        <Modal isOpen={this.state.deleteCustomerModalIsOpen} toggle={this.toggleDeleteCustomerModal}>
-          <ModalHeader toggle={this.deleteCustomerModalIsOpen}>Delete Customer?</ModalHeader>
-          <DeleteCustomerModal
-              toggleModalOpen={this.toggleDeleteCustomerModal}
-              customer={customer}
-              deleteCustomer={this.deleteCustomer}
+  return (<>
+    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit Customer</button>
+    <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
+      <ModalHeader toggle={() => setIsToggled(false)}>Edit Customer</ModalHeader>
+      <Form onSubmit={formik.handleSubmit}>
+        <ModalBody>
+          <FormGroup>
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              type="input"
+              className="form-control"
+              id="firstName"
+              {...formik.getFieldProps('firstName')}
             />
-        </Modal>
-      </div>
-    );
-  }
+            {formik.touched.firstName
+              && <FormFeedback className="d-block">{formik.errors?.firstName}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              type="input"
+              className="form-control"
+              id="lastName"
+              {...formik.getFieldProps('lastName')}
+            />
+            {formik.touched.lastName
+              && <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>}
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button type="submit" color="primary">Edit Customer</Button>{' '}
+          <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
+          <DeleteCustomerModal customer={customer} />
+        </ModalFooter>
+      </Form>
+    </Modal>
+  </>
+  );
 }
 
 export default EditCustomerModal;

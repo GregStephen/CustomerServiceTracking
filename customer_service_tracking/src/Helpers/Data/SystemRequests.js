@@ -1,46 +1,63 @@
 import axios from 'axios';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 const baseUrl = 'https://localhost:44324/api/system';
 
 // GETS
 
 //  Sends Business ID and returns a system array.
-const getSystemsForBusiness = (businessId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/${businessId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
-
+export function useGetSystemsForBusiness(businessId) {
+  const url = `${baseUrl}/${businessId}`;
+  return useQuery([url], () => axios.get(url));
+}
 
 // POSTS
 
 // Sends a new System with users Business Id attached.
-const addNewSystem = (systemObj) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}`, systemObj)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
-
+export function useAddNewSystem() {
+  const url = `${baseUrl}`;
+  const queryClient = useQueryClient();
+  return useMutation((newSystem) => axios.post(url, newSystem), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}
 
 // DELETES
-
-const deleteSystemById = (systemId) => new Promise((resolve, reject) => {
-  axios.delete(`${baseUrl}/${systemId}`)
-    .then((results) => resolve(results))
-    .catch((err) => reject(err));
-});
+export function useDeleteSystemById() {
+  const url = `${baseUrl}`;
+  const queryClient = useQueryClient();
+  return useMutation((systemId) => axios.delete(`${url}/${systemId}`), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}
 
 // PUTS
 
-const editSystem = (updatedSystem) => new Promise((resolve, reject) => {
-  axios.put(`${baseUrl}/updateSystem`, updatedSystem)
-    .then((result) => resolve(result.data))
-    .catch((err) => reject(err));
-});
-
-export default {
-  getSystemsForBusiness,
-  addNewSystem,
-  deleteSystemById,
-  editSystem,
-};
+export function useEditSystem() {
+  const url = `${baseUrl}/updateSystem`;
+  const queryClient = useQueryClient();
+  return useMutation((updatedSystem) => axios.put([url], updatedSystem), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}

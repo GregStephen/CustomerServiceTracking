@@ -15,12 +15,16 @@ namespace CustomerServiceTracking.Repositories
         string _connectionString;
         private IAddressRepository _addressRepo;
         private ISystemRepository _systemRepo;
+        private IEmailRepository _emailRepo;
+        private IPhoneNumberRepository _phoneRepo;
 
-        public CustomerRepository(IConfiguration configuration, IAddressRepository addressRepo, ISystemRepository systemRepo)
+        public CustomerRepository(IConfiguration configuration, IAddressRepository addressRepo, ISystemRepository systemRepo, IEmailRepository emailRepo, IPhoneNumberRepository phoneRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _addressRepo = addressRepo;
             _systemRepo = systemRepo;
+            _emailRepo = emailRepo;
+            _phoneRepo = phoneRepo;
         }
 
         public IEnumerable<Customer> GetCustomersByBusinessId(Guid businessId)
@@ -38,11 +42,35 @@ namespace CustomerServiceTracking.Repositories
                 {
                     customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
                     customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
+                    customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customer.Id).ToList();
+                    customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
                 }
                 return customers;
             }
         }
-        
+
+        public IEnumerable<Customer> GetActiveCustomersByBusinessId(Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT c.*
+                            FROM [BusinessCustomer] bc
+                            JOIN [Customer] c
+                            ON bc.[CustomerId] = c.[Id]
+                            WHERE bc.[BusinessId] = @businessId AND c.Enabled = 1";
+                var parameters = new { businessId };
+                var customers = db.Query<Customer>(sql, parameters);
+                foreach (var customer in customers)
+                {
+                    customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
+                    customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
+                    customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customer.Id).ToList();
+                    customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
+                }
+                return customers;
+            }
+        }
+
         public Customer GetCustomerByCustomerId(Guid customerId)
         {
             using (var db = new SqlConnection(_connectionString))
@@ -54,6 +82,8 @@ namespace CustomerServiceTracking.Repositories
                 var customer = db.QueryFirstOrDefault<Customer>(sql, parameters);
                 customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
                 customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
+                customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customerId).ToList();
+                customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
                 return customer;
             }
         }
@@ -107,8 +137,7 @@ namespace CustomerServiceTracking.Repositories
                             (
                              [FirstName],
                              [LastName],
-                             [HomePhone],
-                             [OfficePhone],
+                             [Enabled],
                              [AddressId]
                             )
                             OUTPUT INSERTED.Id
@@ -116,11 +145,35 @@ namespace CustomerServiceTracking.Repositories
                             (
                             @firstName,
                             @lastName,
-                            @homePhone,
-                            @officePhone,
+                            1,
                             @addressId
                             )";
                 var customerId = db.QueryFirst<Guid>(sql, newCustomerDTO);
+                foreach (var phoneNumber in newCustomerDTO.PhoneNumbers) { 
+                    if (phoneNumber.Number != "" ) 
+                    {
+                        var newPhoneDto = new NewPhoneNumberDTO()
+                        {
+                            Number = phoneNumber.Number,
+                            Type = phoneNumber.Type,
+                            CustomerId = customerId
+                        };
+                        _phoneRepo.AddNewPhoneNumberToDatabase(newPhoneDto);
+                    }
+                }
+                foreach (var email in newCustomerDTO.Emails)
+                    {
+                    if (!String.IsNullOrEmpty(email)) {
+                        var newEmailDTO = new NewEmailDTO()
+                        {
+                            Email = email,
+                            CustomerId = customerId
+                        };
+                        _emailRepo.AddNewEmailToDatabase(newEmailDTO);
+                    }
+
+                }
+
                 return AddCustomerToBusiness(customerId, newCustomerDTO.BusinessId);
             }
         }
@@ -164,11 +217,24 @@ namespace CustomerServiceTracking.Repositories
                 var sql = @"UPDATE [Customer]
                             SET 
                                 [FirstName] = @firstName,
-                                [LastName] = @lastName,
-                                [HomePhone] = @homePhone,
-                                [OfficePhone] = @officePhone
+                                [LastName] = @lastName
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedCustomer) == 1);
+            }
+        }
+
+        public bool UpdateCustomerEnabledOrDisabled(Customer updatedCustomer)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var id = updatedCustomer.Id;
+                var enabled = updatedCustomer.Enabled;
+                var sql = @"UPDATE [Customer]
+                            SET
+                                [Enabled] = @enabled
+                            WHERE [Id] = @id";
+                var parameters = new { id, enabled };
+                return (db.Execute(sql, parameters) == 1);
             }
         }
         public bool UpdateCustomerAddress(Customer updatedCustomerAddress)

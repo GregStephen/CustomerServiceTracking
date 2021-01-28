@@ -1,4 +1,5 @@
 ﻿using CustomerServiceTracking.DataModels;
+using CustomerServiceTracking.DTOS;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +23,7 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT *
+                var sql = @"SELECT *, FirstName + ' ' + LastName as FullName
                             FROM [UnregisteredEmployee]
                             WHERE [BusinessId] = @businessId";
                 var parameters = new { businessId };
@@ -54,25 +55,27 @@ namespace CustomerServiceTracking.Repositories
                 return db.QueryFirst<UnregisteredEmployee>(sql, parameters);
             }
         }
-        public bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee unregisteredEmployee)
+        public bool AddUnregisteredEmployeeToDatabase(UnregisteredEmployee userToAdd)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [UnregisteredEmployee]
-                            (
-                             [FirstName],
-                             [LastName],
-                             [BusinessId],
-                             [Email]
-                            )
-                            VALUES
-                            (
-                            @firstName,
-                            @lastName,
-                            @businessId,
-                            @email
-                            )";
-                return db.Execute(sql, unregisteredEmployee) == 1;
+            var sql = @"INSERT INTO [UnregisteredEmployee]
+                    (
+                        [FirstName],
+                        [LastName],
+                        [BusinessId],
+                        [Email],
+                        [UserId]
+                    )
+                    VALUES
+                    (
+                    @firstName,
+                    @lastName,
+                    @businessId,
+                    @email,
+                    @userId
+                    )";
+                    return db.Execute(sql, userToAdd) == 1;
             }
         }
 

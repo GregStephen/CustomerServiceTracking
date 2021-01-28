@@ -32,12 +32,6 @@ const getUnregisteredEmployeeById = (unregisteredEmployeeId) => new Promise((res
     .catch((err) => reject(err));
 });
 
-const addUnregisteredEmployee = (unregisteredEmployeeObject) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}/unregisteredEmployee`, unregisteredEmployeeObject)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
-
 const checkBusinessForEmail = (possibleMatch) => new Promise((resolve, reject) => {
   axios.get(`${baseUrl}/unregisteredEmployee/email=${possibleMatch.email}/businessId=${possibleMatch.chosenBusiness}`)
     .then((results) => resolve(results.data))
@@ -56,7 +50,6 @@ export default {
   getRegisteredEmployees,
   getUnregisteredEmployees,
   getUnregisteredEmployeeById,
-  addUnregisteredEmployee,
   checkBusinessForEmail,
   deleteUnregisteredUser,
 };

@@ -1,69 +1,75 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Modal,
+  ModalHeader,
+} from 'reactstrap';
 
-import System from './System/System';
+import { Page, Header, GlobalTable } from '../Global';
+import EditSystemModal from '../Modals/EditSystemModal/EditSystemModal';
 
-import SystemsRequests from '../../Helpers/Data/SystemRequests';
+import { useDeleteSystemById, useEditSystem, useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 import './SystemsPage.scss';
 
-class SystemsPage extends React.Component {
-  static propTypes = {
-    userObj: PropTypes.object.isRequired,
-    authorized: PropTypes.bool.isRequired,
-  }
+function SystemsPage({ userObj }) {
+  const systems = useGetSystemsForBusiness(userObj.businessId);
+  const [editSystemModalIsOpen, getEditSystemModalIsOpen] = useState();
+  const editTheSystem = useEditSystem();
+  const deleteTheSystem = useDeleteSystemById();
 
-  state = {
-    systems: [],
-  }
+  const tableData = useMemo(() => (systems.data?.data ? systems.data.data : []), [systems.data]);
 
-  componentDidMount() {
-    this.getAllSystems();
-  }
-
-  getAllSystems = () => {
-    const { userObj } = this.props;
-    SystemsRequests.getSystemsForBusiness(userObj.businessId)
-      .then((systems) => {
-        this.setState({ systems });
-      })
-      .catch();
-  }
-
-  editTheSystem = (updatedSystem) => {
-    SystemsRequests.editSystem(updatedSystem)
-      .then(() => this.getAllSystems())
-      .catch((err) => console.error(err));
-  }
-
-  deleteTheSystem = (systemId) => {
-    SystemsRequests.deleteSystemById(systemId)
-      .then(() => this.getAllSystems())
-      .catch((err) => console.error(err));
-  }
-
-  render() {
-    const { systems } = this.state;
-    const showSystems = systems.map((system) => (
-      <System
-        system={system}
-        key={system.id}
-        deleteTheSystem={this.deleteTheSystem}
-        editTheSystem={this.editTheSystem}
-      />
-    ));
-    return (
-      <div className="SystemsPage container">
-        <h1>Systems</h1>
-        <Link className="btn btn-info col-8" to={'/new-system'}>Create a New System</Link>
-        <div className="row justify-content-around">
-          {systems.length > 0 ? showSystems
-            : <p className="no-systems">You have no systems to show! Try adding some first</p>}
+  const tableColumns = useMemo(() => [
+    {
+      Header: 'System Type',
+      accessor: (s) => s.type,
+    },
+    {
+      Header: 'Gallons',
+      accessor: (s) => s.gallons,
+    },
+    {
+      Header: 'Inches',
+      accessor: (s) => s.inches,
+    },
+    {
+      Header: 'Edit',
+      accessor: (s) => s.id,
+      Cell: ({ row: { original } }) => (
+        <>
+          <button className="btn btn-info" onClick={() => getEditSystemModalIsOpen(!editSystemModalIsOpen)}>Edit</button>
+          <Modal isOpen={editSystemModalIsOpen} toggle={() => getEditSystemModalIsOpen(!editSystemModalIsOpen)}>
+            <ModalHeader toggle={() => getEditSystemModalIsOpen(!editSystemModalIsOpen)}>Edit System</ModalHeader>
+            <EditSystemModal
+              toggleModalOpen={getEditSystemModalIsOpen}
+              modalIsOpen={editSystemModalIsOpen}
+              system={original}
+              editSystem={editTheSystem}
+              deleteSystem={deleteTheSystem}
+            />
+          </Modal>
+        </>
+      ),
+    },
+  ], [editSystemModalIsOpen, deleteTheSystem, editTheSystem]);
+  return (
+    <Page>
+      <div className="SystemsPage">
+        <Header title="Systems" />
+        <div className="d-flex justify-content-end">
+          <Link className="btn btn-info mr-4 mb-4" to={'/new-system'}>Create a New System</Link>
+        </div>
+        <div className="widget col-10">
+          <GlobalTable
+            columns={tableColumns}
+            data={tableData}
+            hidePagination={tableData.length < 10}
+          />
         </div>
       </div>
-    );
-  }
+    </Page>
+  );
 }
 
 export default SystemsPage;
