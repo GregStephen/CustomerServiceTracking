@@ -25,7 +25,7 @@ function CustomersPage({ userObj }) {
 
   useEffect(() => {
     if (customers) {
-      const numberOfInactiveCustomers = customers.filter((c) => !c.active).length;
+      const numberOfInactiveCustomers = customers.filter((c) => !c.enabled).length;
       getInactiveCustomers(numberOfInactiveCustomers);
     }
   }, [customers]);
@@ -53,7 +53,7 @@ function CustomersPage({ userObj }) {
       Header: 'Active',
       accessor: (r) => r.enabled,
       Cell: ({ row: { original } }) => (
-        <h5><Badge color={original.enabled ? 'success' : 'danger'}>{original.enabled ? 'Actice' : 'Inactive'}</Badge></h5>
+        <h5><Badge color={original.enabled ? 'success' : 'danger'}>{original.enabled ? 'Active' : 'Inactive'}</Badge></h5>
       ),
     },
     {

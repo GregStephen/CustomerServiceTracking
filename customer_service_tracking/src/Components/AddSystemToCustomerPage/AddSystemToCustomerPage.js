@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Col,
   Row,
@@ -14,11 +14,10 @@ import * as Yup from 'yup';
 import { useHistory, useParams } from 'react-router-dom';
 import { Header, Page } from '../Global';
 
-
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
-import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
-import ReportRequests from '../../Helpers/Data/ReportRequests';
-import SystemRequests from '../../Helpers/Data/SystemRequests';
+import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
+import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
+import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 import defaults from '../../Helpers/defaults';
 
@@ -41,9 +40,16 @@ const newInstallReportValidationSchema = Yup.object().shape({
 function AddSystemToCustomerPage({ userObj }) {
   const { id } = useParams();
   const history = useHistory();
-  const [systemOptions, getSystemOptions] = useState();
-  const [jobTypeOptions, getJobTypeOptions] = useState();
+  const systemOptions = useGetSystemsForBusiness();
+  const jobTypeOptions = useGetJobTypeOptions();
+  const addNewReport = useAddNewReport();
   const today = moment().format('YYYY-MM-DD');
+
+  useEffect(() => {
+    if (addNewReport.isSuccess) {
+      history.push(`/customer/${id}`);
+    }
+  }, [addNewReport, history, id]);
 
   const formik = useFormik({
     initialValues: { ...defaultReport, ...defaultSystem },
@@ -51,6 +57,8 @@ function AddSystemToCustomerPage({ userObj }) {
     validationSchema: newInstallReportValidationSchema,
     onSubmit: (formValues, { setSubmitting }) => {
       const submission = { ...formValues };
+      const jTOptions = jobTypeOptions?.data?.data;
+      const installId = jTOptions.find((x) => x.type === 'Install');
       const newCustomerSystem = {
         customerId: id,
         nozzles: parseInt(submission.nozzles, 10),
@@ -64,7 +72,7 @@ function AddSystemToCustomerPage({ userObj }) {
       };
       const newInstallReport = {
         customerId: id,
-        jobTypeId: jobTypeOptions,
+        jobTypeId: installId,
         amountRemaining: 0,
         inchesAdded: parseInt(submission.inchesAdded, 10),
         serviceDate: submission.installDate,
@@ -75,27 +83,12 @@ function AddSystemToCustomerPage({ userObj }) {
       CustomerRequests.addNewCustomerSystem(newCustomerSystem)
         .then((newCustomerSystemId) => {
           newInstallReport.systemId = newCustomerSystemId;
-          ReportRequests.addNewReport(newInstallReport)
-            .then(() => {
-              history.push(`/customer/${id}`);
-            });
+          addNewReport.mutate(newInstallReport);
         })
         .catch((err) => console.error(err));
       setSubmitting(false);
     },
   });
-
-  useEffect(() => {
-    SystemRequests.getSystemsForBusiness(userObj.businessId)
-      .then((systemOptionsResult) => getSystemOptions(systemOptionsResult))
-      .catch((err) => console.error(err));
-    JobTypeRequests.getJobTypes()
-      .then((types) => {
-        const reportType = types.find((x) => x.type === 'Install');
-        getJobTypeOptions(reportType.id);
-      })
-      .catch((err) => console.error(err));
-  }, [id, userObj.businessId]);
 
   return (
     <Page>
@@ -110,7 +103,7 @@ function AddSystemToCustomerPage({ userObj }) {
               id="systemId"
               {...formik.getFieldProps('systemId')}>
               <option value="">Select a system</option>
-              {systemOptions?.map((object) => (
+              {systemOptions?.data?.data?.map((object) => (
                 <option key={object.id} value={object.id}>{object.type}</option>
               ))}
             </Input>
@@ -200,7 +193,7 @@ function AddSystemToCustomerPage({ userObj }) {
                 type="number"
                 min="0"
                 id="inchesAdded"
-                max={systemOptions.find((x) => x.id === formik.values.systemId).inches}
+                max={systemOptions?.data?.data?.find((x) => x.id === formik.values.systemId).inches}
                 {...formik.getFieldProps('inchesAdded')} />
               {formik.touched.inchesAdded
                 && <FormFeedback className="d-block">{formik.errors?.inchesAdded}</FormFeedback>}

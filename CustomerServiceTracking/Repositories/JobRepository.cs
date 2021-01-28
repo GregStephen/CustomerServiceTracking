@@ -113,6 +113,11 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
+                var check = GetJobForSystemBySystemId(newJobDTO.CustomerSystemId);
+                if (check != null)
+                {
+                    DeleteJob(check.Id);
+                }
                 var sql = @"INSERT INTO [Job]
                             (
                                 [CustomerSystemId], 

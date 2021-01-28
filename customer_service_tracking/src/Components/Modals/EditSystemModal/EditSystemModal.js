@@ -40,7 +40,7 @@ class EditSystemModal extends React.Component {
     const { editSystem } = this.props;
     updatedSystem.inches = parseInt(updatedSystem.inches, 10);
     updatedSystem.gallons = parseInt(updatedSystem.gallons, 10);
-    editSystem(updatedSystem);
+    editSystem.mutate(updatedSystem);
     this.toggleModal();
   };
 
@@ -52,7 +52,7 @@ class EditSystemModal extends React.Component {
 
   deleteSystem = () => {
     const { deleteSystem, system } = this.props;
-    deleteSystem(system.id);
+    deleteSystem.mutate(system.id);
   }
 
   render() {

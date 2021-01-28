@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Row, Col, Input } from 'reactstrap';
@@ -7,20 +7,14 @@ import { Page, Header, GlobalTable } from '../Global';
 
 import './ReportsPage.scss';
 
-import ReportRequests from '../../Helpers/Data/ReportRequests';
+import { useGetAllReportsByBusinessId } from '../../Helpers/Data/ReportRequests';
 
 
 function ReportsPage({ userObj }) {
-  const [reports, getReports] = useState();
+  const reports = useGetAllReportsByBusinessId(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
 
-  useEffect(() => {
-    ReportRequests.getAllReportsByBusinessId(userObj.businessId)
-      .then((allReports) => getReports(allReports))
-      .catch((err) => console.error(err));
-  }, [userObj.businessId]);
-
-  const tableData = useMemo(() => (reports || []), [reports]);
+  const tableData = useMemo(() => (reports.data?.data ? reports.data.data : []), [reports.data]);
 
   const tableColumns = useMemo(() => [
     {

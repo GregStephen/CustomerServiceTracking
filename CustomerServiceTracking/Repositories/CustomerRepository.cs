@@ -227,11 +227,14 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
+                var id = updatedCustomer.Id;
+                var enabled = updatedCustomer.Enabled;
                 var sql = @"UPDATE [Customer]
                             SET
                                 [Enabled] = @enabled
                             WHERE [Id] = @id";
-                return (db.Execute(sql, updatedCustomer) == 1);
+                var parameters = new { id, enabled };
+                return (db.Execute(sql, parameters) == 1);
             }
         }
         public bool UpdateCustomerAddress(Customer updatedCustomerAddress)

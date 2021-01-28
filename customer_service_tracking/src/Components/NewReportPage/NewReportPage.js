@@ -18,8 +18,8 @@ import { Header, Page } from '../Global';
 import defaults from '../../Helpers/defaults';
 import CustomerRequests from '../../Helpers/Data/CustomerRequests';
 import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
-import JobTypeRequests from '../../Helpers/Data/JobTypeRequests';
-import ReportRequests from '../../Helpers/Data/ReportRequests';
+import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
+import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
 
 import './NewReportPage.scss';
 
@@ -36,11 +36,22 @@ function NewReportPage({ userObj }) {
   const { id } = useParams();
   const [customerSystem, getCustomerSystem] = useState();
   const [customer, getCustomer] = useState();
-  const [jobTypeOptions, getJobTypeOptions] = useState();
-  const [job, getJob] = useState();
+  const jobTypeOptions = useGetJobTypeOptions();
   const history = useHistory();
   const deleteJob = useDeleteJob();
-  const getJobForSystemBySystemId = useJobForSystemBySystemId();
+  const job = useJobForSystemBySystemId(id);
+  const addNewReport = useAddNewReport();
+
+  useEffect(() => {
+    if (addNewReport.isSuccess) {
+      if (job !== '') {
+        deleteJob(job.id)
+          .then(() => history.push('/home'));
+      } else {
+        history.push('/home');
+      }
+    }
+  }, [addNewReport.isSuccess, deleteJob, history, job]);
 
   const formik = useFormik({
     initialValues: defaults.defaultReport,
@@ -48,9 +59,6 @@ function NewReportPage({ userObj }) {
     validationSchema: newReportValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
-      if (job !== '') {
-        submission.jobTypeId = job.jobTypeId;
-      }
       submission.technicianId = userObj.id;
       submission.customerId = customerSystem?.customerId;
       submission.systemId = customerSystem?.id;
@@ -59,15 +67,7 @@ function NewReportPage({ userObj }) {
       submission.serviceDate = moment(submission.serviceDate).format('YYYY-MM-DD');
       submission.solutionAdded = parseInt(submission.solutionAdded, 10);
       setValues(submission);
-      ReportRequests.addNewReport(submission)
-        .then(() => {
-          if (job !== '') {
-            deleteJob(job.id)
-              .then(() => history.push('/home'));
-          } else {
-            history.push('/home');
-          }
-        });
+      addNewReport.mutate(submission);
       setSubmitting(false);
     },
   });
@@ -75,15 +75,6 @@ function NewReportPage({ userObj }) {
   useEffect(() => {
     CustomerRequests.getCustomerSystemFromCustomerSystemId(id)
       .then((systemReturned) => getCustomerSystem(systemReturned))
-      .catch((err) => console.error(err));
-    JobTypeRequests.getJobTypes()
-      .then((types) => {
-        const reportTypes = types.filter((x) => x.type !== 'Install');
-        getJobTypeOptions(reportTypes);
-      })
-      .catch((err) => console.error(err));
-    getJobForSystemBySystemId(id)
-      .then((jobForSystem) => getJob(jobForSystem))
       .catch((err) => console.error(err));
   }, [id]);
 
@@ -111,9 +102,7 @@ function NewReportPage({ userObj }) {
               <p>{customerSystem?.notes}</p>
             </div>
             : ''}
-          {job !== ''
-            ? <p className="typeOfJob">Type of Job: {jobTypeOptions?.find((x) => x.id === job?.jobTypeId)?.type}</p>
-            : <FormGroup>
+          <FormGroup>
               <Label htmlFor="jobTypeId">What type of job?</Label>
               <Input
                 type="select"
@@ -121,14 +110,13 @@ function NewReportPage({ userObj }) {
                 id="jobTypeId"
                 {...formik.getFieldProps('jobTypeId')}>
                 <option value="">Select a job</option>
-                {jobTypeOptions?.map((object) => (
+                {jobTypeOptions.data?.data?.map((object) => (
                   <option key={object.id} value={object.id}>{object.type}</option>
                 ))}
               </Input>
               {formik.touched.jobTypeId
                 && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
             </FormGroup>
-          }
           <FormGroup>
             <Label for="serviceDate">Service Date</Label>
             <Input

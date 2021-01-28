@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Modal,
@@ -8,33 +8,17 @@ import {
 import { Page, Header, GlobalTable } from '../Global';
 import EditSystemModal from '../Modals/EditSystemModal/EditSystemModal';
 
-import SystemsRequests from '../../Helpers/Data/SystemRequests';
+import { useDeleteSystemById, useEditSystem, useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 import './SystemsPage.scss';
 
 function SystemsPage({ userObj }) {
-  const [systems, getSystems] = useState();
+  const systems = useGetSystemsForBusiness(userObj.businessId);
   const [editSystemModalIsOpen, getEditSystemModalIsOpen] = useState();
+  const editTheSystem = useEditSystem();
+  const deleteTheSystem = useDeleteSystemById();
 
-  useEffect(() => {
-    SystemsRequests.getSystemsForBusiness(userObj.businessId)
-      .then((systemsReturned) => getSystems(systemsReturned))
-      .catch((err) => console.error(err));
-  }, [userObj.businessId]);
-
-  const editTheSystem = (updatedSystem) => {
-    SystemsRequests.editSystem(updatedSystem)
-      .then(() => this.getAllSystems())
-      .catch((err) => console.error(err));
-  };
-
-  const deleteTheSystem = (systemId) => {
-    SystemsRequests.deleteSystemById(systemId)
-      .then(() => this.getAllSystems())
-      .catch((err) => console.error(err));
-  };
-
-  const tableData = useMemo(() => (systems || []), [systems]);
+  const tableData = useMemo(() => (systems.data?.data ? systems.data.data : []), [systems.data]);
 
   const tableColumns = useMemo(() => [
     {
@@ -68,7 +52,7 @@ function SystemsPage({ userObj }) {
         </>
       ),
     },
-  ], [editSystemModalIsOpen]);
+  ], [editSystemModalIsOpen, deleteTheSystem, editTheSystem]);
   return (
     <Page>
       <div className="SystemsPage">

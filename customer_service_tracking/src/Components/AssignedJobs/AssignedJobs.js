@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Header, GlobalTable } from '../Global';
+import JobNotesModal from '../Modals/JobNotesModal/JobNotesModal';
 import Formatting from '../../Helpers/Functions/Formatting';
 
 import { useJobsAssignedTo } from '../../Helpers/Data/JobRequests';
@@ -29,6 +30,11 @@ function AssignedJobs({ userId }) {
     {
       Header: 'Job Type',
       accessor: (j) => j.jobType?.type,
+    },
+    {
+      Header: 'Notes',
+      accessor: 'note',
+      Cell: ({ value }) => (value ? <JobNotesModal note={value}/> : 'No Notes'),
     },
     {
       Header: ' ',

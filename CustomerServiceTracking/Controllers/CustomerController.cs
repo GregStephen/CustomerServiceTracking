@@ -111,9 +111,9 @@ namespace CustomerServiceTracking.Controllers
         }
 
         [HttpPut("updateCustomerStatus")]
-        public IActionResult UpdateCustomerStatus(Customer updateCustomer)
+        public IActionResult UpdateCustomerStatus(Customer customer)
         {
-            if (_repo.UpdateCustomerEnabledOrDisabled(updateCustomer))
+            if (_repo.UpdateCustomerEnabledOrDisabled(customer))
             {
                 return Ok();
             }

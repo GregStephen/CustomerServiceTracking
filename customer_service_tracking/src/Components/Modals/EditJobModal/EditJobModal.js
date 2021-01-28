@@ -38,12 +38,12 @@ function EditJobModal({
     technicianId: systemNeedingService?.job?.technicianId ?? '',
     jobTypeId: systemNeedingService?.job?.jobTypeId ?? '',
     note: systemNeedingService?.job?.note ?? '',
-    includeOtherSystems: false,
+    includeOtherSystems: systemNeedingService?.job?.includeOtherSystems ?? false,
     otherSystemIds: [],
-    includeNotes: false,
+    includeNotes: systemNeedingService?.job?.includeNotes ?? false,
   }), [systemNeedingService]);
 
-  const newJob = !systemNeedingService.job;
+  const newJob = !systemNeedingService?.job?.id;
 
   const formik = useFormik({
     initialValues: defaultJob,
@@ -106,18 +106,18 @@ function EditJobModal({
               id="note"
               {...formik.getFieldProps('note')} />
           </FormGroup>
-          <FormGroup>
-            <Label check>
-              <Input
-                type="checkbox"
-                id="includeOtherSystems"
-                {...formik.getFieldProps('includeOtherSystems')} />
+          {newJob
+            && <FormGroup>
+              <Label check>
+                <Input
+                  type="checkbox"
+                  id="includeOtherSystems"
+                  {...formik.getFieldProps('includeOtherSystems')} />
               Create job for Customers other systems?
             </Label>
-          </FormGroup>
-          {// check to see if includeOtherSystems is true
+            </FormGroup>
           }
-          {formik.values.includeOtherSystems === true
+          {(formik.values.includeOtherSystems === true)
             && <FormGroup>
               <Label check>
                 <Input

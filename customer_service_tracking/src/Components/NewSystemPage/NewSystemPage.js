@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Col,
   Row,
@@ -12,7 +12,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { Header, Page } from '../Global';
-import SystemsRequests from '../../Helpers/Data/SystemRequests';
+import { useAddNewSystem } from '../../Helpers/Data/SystemRequests';
 
 import './NewSystemPage.scss';
 
@@ -30,6 +30,8 @@ const newSystemValidationSchema = Yup.object().shape({
 
 function NewSystemPage({ userObj }) {
   const history = useHistory();
+  const addNewSystem = useAddNewSystem();
+
   const formik = useFormik({
     initialValues: defaultSystem,
     enableReinitialize: true,
@@ -39,12 +41,17 @@ function NewSystemPage({ userObj }) {
       submission.businessId = userObj.businessId;
       submission.gallons = parseInt(submission.gallons, 10);
       submission.inches = parseInt(submission.inches, 10);
-      SystemsRequests.addNewSystem(submission)
-        .then(() => history.push('/systems'))
-        .catch((err) => console.error(err));
+      addNewSystem.mutate(submission);
       setSubmitting(false);
     },
   });
+
+  useEffect(() => {
+    if (addNewSystem.isSuccess) {
+      history.push('/systems');
+    }
+  }, [addNewSystem, history]);
+
   return (
     <Page>
       <Header title="New System" />
