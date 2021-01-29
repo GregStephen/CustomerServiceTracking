@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Col,
   Row,
@@ -16,7 +16,7 @@ import moment from 'moment';
 import { Header, Page } from '../Global';
 
 import defaults from '../../Helpers/defaults';
-import CustomerRequests from '../../Helpers/Data/CustomerRequests';
+import { useGetCustomerFromCustomerId, useGetCustomerSystemFromCustomerSystemId } from '../../Helpers/Data/CustomerRequests';
 import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
@@ -34,8 +34,8 @@ const newReportValidationSchema = Yup.object().shape({
 
 function NewReportPage({ userObj }) {
   const { id } = useParams();
-  const [customerSystem, getCustomerSystem] = useState();
-  const [customer, getCustomer] = useState();
+  const customerSystem = useGetCustomerSystemFromCustomerSystemId(id);
+  const customer = useGetCustomerFromCustomerId(customerSystem?.data?.customerId);
   const jobTypeOptions = useGetJobTypeOptions();
   const history = useHistory();
   const deleteJob = useDeleteJob();
@@ -72,19 +72,6 @@ function NewReportPage({ userObj }) {
     },
   });
 
-  useEffect(() => {
-    CustomerRequests.getCustomerSystemFromCustomerSystemId(id)
-      .then((systemReturned) => getCustomerSystem(systemReturned))
-      .catch((err) => console.error(err));
-  }, [id]);
-
-  useEffect(() => {
-    if (customerSystem) {
-      CustomerRequests.getCustomerFromCustomerId(customerSystem?.customerId)
-        .then((customerReturned) => getCustomer(customerReturned));
-    }
-  }, [customerSystem]);
-
   const maxInches = customerSystem?.systemInfo?.inches;
   const today = moment().format('YYYY-MM-DD');
   return (
@@ -92,7 +79,7 @@ function NewReportPage({ userObj }) {
       <Header title="New Report" />
       <div className="widget col-10 d-flex justify-content-center mb-4">
         <Form className="col-8" onSubmit={formik.handleSubmit}>
-          <h3>{customer?.firstName} {customer?.lastName}</h3>
+          <h3>{customer?.data?.firstName} {customer?.data?.lastName}</h3>
           <h3>{customer?.address?.addressLine1}</h3>
           {customer?.address?.addressLine2 ? <h3>{customer?.address?.addressLine2} </h3> : ''}
           <h3>{customer?.address?.city}, {customer?.address?.state} {customer?.address?.zipCode}</h3>

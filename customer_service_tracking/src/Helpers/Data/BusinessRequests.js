@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useQuery } from 'react-query';
 
 const baseUrl = 'https://localhost:44324/api/business';
 
@@ -8,17 +9,30 @@ const getBusinesses = () => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
-const getRegisteredAndUnregisteredEmployees = (businessId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/allEmployees/${businessId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useGetBusinesses() {
+  const url = `${baseUrl}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
 
-const getRegisteredEmployees = (businessId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/registeredEmployees/${businessId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useGetRegisteredAndUnregisteredEmployees(businessId) {
+  const url = `${baseUrl}/allEmployees/${businessId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
+
+export function useGetRegisteredEmployees(businessId) {
+  const url = `${baseUrl}/registeredEmployees/${businessId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
+
 
 const getUnregisteredEmployees = (businessId) => new Promise((resolve, reject) => {
   axios.get(`${baseUrl}/unregisteredEmployees/${businessId}`)
@@ -46,8 +60,6 @@ const deleteUnregisteredUser = (unregisteredUserId) => new Promise((resolve, rej
 
 export default {
   getBusinesses,
-  getRegisteredAndUnregisteredEmployees,
-  getRegisteredEmployees,
   getUnregisteredEmployees,
   getUnregisteredEmployeeById,
   checkBusinessForEmail,

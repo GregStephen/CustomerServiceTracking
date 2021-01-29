@@ -5,17 +5,26 @@ const baseUrl = 'https://localhost:44324/api/report';
 
 export function useGetAllReportsByBusinessId(businessId) {
   const url = `${baseUrl}/businessId/${businessId}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
 export function useGetReportsByCustomerId(customerId) {
   const url = `${baseUrl}/customerId/${customerId}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
 export function useGetReportById(reportId) {
   const url = `${baseUrl}/reportId/${reportId}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
 export function useAddNewReport() {

@@ -8,26 +8,42 @@ const baseUrl = 'https://localhost:44324/api/customer';
 //  Sends Business ID and returns a system array.
 export function useGetCustomerFromCustomerId(customerId) {
   const url = `${baseUrl}/customerId/${customerId}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
-const getCustomersForBusiness = (businessId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/businessId/${businessId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useGetCustomerForBusiness(businessId) {
+  const url = `${baseUrl}/businessId/${businessId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
 
-const getCustomerSystemFromCustomerSystemId = (customerSystemId) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/customerSystemId/${customerSystemId}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useGetCustomerSystemFromCustomerSystemId(customerSystemId) {
+  const url = `${baseUrl}/customerSystemId/${customerSystemId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
 
-const addNewCustomer = (newCustomerObj) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}`, newCustomerObj)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
+export function useAddNewCustomer() {
+  const url = `${baseUrl}`;
+  const queryClient = useQueryClient();
+  return useMutation((customer) => axios.post(url, customer), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}
 
 export function useUpdateCustomer() {
   const url = `${baseUrl}/updateCustomer`;
@@ -58,11 +74,22 @@ export function useUpdateCustomerAddress() {
     },
   });
 }
-const updateCustomerSystem = (updatedCustomerSystem) => new Promise((resolve, reject) => {
-  axios.put(`${baseUrl}/updateCustomerSystem`, updatedCustomerSystem)
-    .then((result) => resolve(result.data))
-    .catch((err) => reject(err));
-});
+
+
+export function useUpdateCustomerSystem() {
+  const url = `${baseUrl}/updateCustomerSystem`;
+  const queryClient = useQueryClient();
+  return useMutation((updatedCustomerSystem) => axios.post(url, updatedCustomerSystem), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}
 
 export function useUpdateCustomerStatus() {
   const url = `${baseUrl}/updateCustomerStatus`;
@@ -109,16 +136,17 @@ export function useDeleteCustomerSystem() {
   });
 }
 
-const addNewCustomerSystem = (customerSystem) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}/addSystem`, customerSystem)
-    .then((result) => resolve(result.data))
-    .catch((err) => reject(err));
-});
-
-export default {
-  getCustomersForBusiness,
-  getCustomerSystemFromCustomerSystemId,
-  addNewCustomer,
-  updateCustomerSystem,
-  addNewCustomerSystem,
-};
+export function useAddNewCustomerSystem() {
+  const url = `${baseUrl}/addSystem`;
+  const queryClient = useQueryClient();
+  return useMutation((customerSystem) => axios.post(url, customerSystem), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}

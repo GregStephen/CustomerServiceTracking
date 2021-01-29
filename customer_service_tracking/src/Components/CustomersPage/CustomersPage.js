@@ -8,29 +8,23 @@ import {
 } from 'reactstrap';
 
 import { Page, Header, GlobalTable } from '../Global';
-import CustomerRequests from '../../Helpers/Data/CustomerRequests';
+import { useGetCustomerForBusiness } from '../../Helpers/Data/CustomerRequests';
 
 import './CustomersPage.scss';
 
 function CustomersPage({ userObj }) {
-  const [customers, getCustomers] = useState();
+  const customers = useGetCustomerForBusiness(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
   const [inactiveCustomers, getInactiveCustomers] = useState();
 
   useEffect(() => {
-    CustomerRequests.getCustomersForBusiness(userObj.businessId)
-      .then((customersReturned) => getCustomers(customersReturned))
-      .catch((err) => console.error(err));
-  }, [userObj.businessId]);
-
-  useEffect(() => {
-    if (customers) {
-      const numberOfInactiveCustomers = customers.filter((c) => !c.enabled).length;
+    if (customers?.data) {
+      const numberOfInactiveCustomers = customers.data.filter((c) => !c.enabled).length;
       getInactiveCustomers(numberOfInactiveCustomers);
     }
   }, [customers]);
 
-  const tableData = useMemo(() => (customers || []), [customers]);
+  const tableData = useMemo(() => (customers.data ? customers.data : []), [customers.data]);
 
   const tableColumns = useMemo(() => [
     {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Modal,
   ModalHeader,
@@ -10,28 +10,22 @@ import {
 import { Page, Header, GlobalTable } from '../Global';
 
 import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
-import BusinessRequests from '../../Helpers/Data/BusinessRequests';
+import { useGetRegisteredAndUnregisteredEmployees } from '../../Helpers/Data/BusinessRequests';
 import UserRequests from '../../Helpers/Data/UserRequests';
 
 import './TeamPage.scss';
 
 function TeamPage({ userObj }) {
-  const [teamMembers, getTeamMembers] = useState();
+  const teamMembers = useGetRegisteredAndUnregisteredEmployees(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
   const [addTeamMemberModalIsOpen, getAddTeamMemberModalIsOpen] = useState();
-
-  useEffect(() => {
-    BusinessRequests.getRegisteredAndUnregisteredEmployees(userObj.businessId)
-      .then((teamMembersReturned) => getTeamMembers(teamMembersReturned))
-      .catch((err) => console.error(err));
-  }, [userObj.businessId]);
 
   const addTeamMember = (teamMember) => {
     UserRequests.addUnregisteredEmployee(teamMember)
       .then()
       .catch((err) => console.error(err));
   };
-  const tableData = useMemo(() => (teamMembers || []), [teamMembers]);
+  const tableData = useMemo(() => (teamMembers?.data ? teamMembers.data : []), [teamMembers]);
 
   const tableColumns = useMemo(() => [
     {

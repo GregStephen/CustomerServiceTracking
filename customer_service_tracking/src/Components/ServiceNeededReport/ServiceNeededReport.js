@@ -32,7 +32,7 @@ function ServiceNeededReport({ businessId }) {
   const createNewJob = useCreateNewJob();
   const editTheJob = useEditJob();
 
-  const tableData = useMemo(() => (systemsNeedingService.data?.data ? systemsNeedingService.data.data : []), [systemsNeedingService.data]);
+  const tableData = useMemo(() => (systemsNeedingService.data ? systemsNeedingService.data : []), [systemsNeedingService.data]);
 
   const tableColumns = useMemo(() => [
     {
@@ -68,11 +68,11 @@ function ServiceNeededReport({ businessId }) {
           editJob={editTheJob}
           deleteJob={deleteJob}
           createJob={createNewJob}
-          jobTypeOptions={jobTypeOptions.data?.data}
+          jobTypeOptions={jobTypeOptions?.data}
         />
       ),
     },
-  ], [jobTypeOptions.data, deleteJob, createNewJob, editTheJob]);
+  ], [jobTypeOptions, deleteJob, createNewJob, editTheJob]);
 
   return (
     <div className="ServiceNeededReport widget col-10">

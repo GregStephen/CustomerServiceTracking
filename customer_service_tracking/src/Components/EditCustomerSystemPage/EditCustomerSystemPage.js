@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Form,
   FormGroup,
@@ -12,10 +12,10 @@ import {
 import moment from 'moment';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import { Page, Header } from '../Global';
-import CustomerRequests from '../../Helpers/Data/CustomerRequests';
+import { useUpdateCustomerSystem, useGetCustomerSystemFromCustomerSystemId } from '../../Helpers/Data/CustomerRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 const editCustomerSystemValidationSchema = Yup.object().shape({
@@ -29,16 +29,18 @@ const editCustomerSystemValidationSchema = Yup.object().shape({
 
 
 function EditCustomerSystemPage({ userObj }) {
-  const systemOptions = useGetSystemsForBusiness(userObj.businessId);
   const { id } = useParams();
-  const [currentSystem, getCurrentSystem] = useState();
+  const history = useHistory();
+  const systemOptions = useGetSystemsForBusiness(userObj.businessId);
+  const currentSystem = useGetCustomerSystemFromCustomerSystemId(id);
   const today = moment().format('YYYY-MM-DD');
+  const updateCustomerSystem = useUpdateCustomerSystem();
 
   const defaultCustomerSystem = {
     customerId: currentSystem?.customerId ?? '',
     systemId: currentSystem?.systemId ?? '',
     notes: currentSystem?.notes ?? '',
-    installDate: currentSystem?.installDate ?? '',
+    installDate: currentSystem?.installDate ? moment(currentSystem?.installDate).format('YYYY-MM-DD') : '',
     nozzles: currentSystem?.nozzles ?? 0,
     serialNumber: currentSystem?.serialNumber ?? '',
     sold: currentSystem?.sold ?? false,
@@ -56,23 +58,14 @@ function EditCustomerSystemPage({ userObj }) {
       updatedCustomerSystem.sprayCycles = parseInt(updatedCustomerSystem.sprayCycles, 10);
       updatedCustomerSystem.sprayDuration = parseInt(updatedCustomerSystem.sprayDuration, 10);
       updatedCustomerSystem.installDate = moment(updatedCustomerSystem.installDate).format('YYYY-MM-DD');
-      CustomerRequests.updateCustomerSystem(updatedCustomerSystem)
-        .then(() => {
-          this.props.history.push(`/customer/${updatedCustomerSystem.customerId}`);
-        })
-        .catch((err) => console.error(err));
+      updateCustomerSystem.mutate(updatedCustomerSystem, {
+        onSuccess: () => {
+          history.push(`/customer/${updatedCustomerSystem.customerId}`);
+        },
+      });
       setSubmitting(false);
     },
   });
-
-  useEffect(() => {
-    CustomerRequests.getCustomerSystemFromCustomerSystemId(id)
-      .then((customerSystemResult) => {
-        customerSystemResult.installDate = moment(customerSystemResult.installDate).format('YYYY-MM-DD');
-        getCurrentSystem(customerSystemResult);
-      })
-      .catch((err) => console.error(err));
-  }, [id]);
 
   return (
     <Page>

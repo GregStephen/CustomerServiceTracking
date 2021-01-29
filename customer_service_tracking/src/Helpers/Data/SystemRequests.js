@@ -8,7 +8,10 @@ const baseUrl = 'https://localhost:44324/api/system';
 //  Sends Business ID and returns a system array.
 export function useGetSystemsForBusiness(businessId) {
   const url = `${baseUrl}/${businessId}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
 // POSTS
