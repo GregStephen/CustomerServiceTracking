@@ -16,8 +16,8 @@ import Formatting from '../../Helpers/Functions/Formatting';
 
 function CustomerPage({ userObj }) {
   const { id } = useParams();
-  const reports = useGetReportsByCustomerId(id).data;
-  const customer = useGetCustomerFromCustomerId(id).data;
+  const reports = useGetReportsByCustomerId(id);
+  const customer = useGetCustomerFromCustomerId(id);
   const updateCustomerStatus = useUpdateCustomerStatus();
   const customerName = `${customer?.data?.firstName} ${customer?.data?.lastName}`;
 

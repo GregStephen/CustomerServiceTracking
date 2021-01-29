@@ -14,7 +14,7 @@ import * as Yup from 'yup';
 import { useHistory, useParams } from 'react-router-dom';
 import { Header, Page } from '../Global';
 
-import CustomerRequests from '../../Helpers/Data/CustomerRequests';
+import { useAddNewCustomerSystem } from '../../Helpers/Data/CustomerRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
@@ -43,6 +43,7 @@ function AddSystemToCustomerPage({ userObj }) {
   const systemOptions = useGetSystemsForBusiness();
   const jobTypeOptions = useGetJobTypeOptions();
   const addNewReport = useAddNewReport();
+  const addNewCustomerSystem = useAddNewCustomerSystem();
   const today = moment().format('YYYY-MM-DD');
 
   useEffect(() => {
@@ -80,12 +81,12 @@ function AddSystemToCustomerPage({ userObj }) {
         technicianId: userObj.id,
         notes: '',
       };
-      CustomerRequests.addNewCustomerSystem(newCustomerSystem)
-        .then((newCustomerSystemId) => {
-          newInstallReport.systemId = newCustomerSystemId;
+      addNewCustomerSystem.mutate(newCustomerSystem, {
+        onSuccess: (data, variables, context) => {
+          newInstallReport.systemId = data.data;
           addNewReport.mutate(newInstallReport);
-        })
-        .catch((err) => console.error(err));
+        },
+      });
       setSubmitting(false);
     },
   });

@@ -12,7 +12,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { Header, Page } from '../Global';
-import CustomerRequests from '../../Helpers/Data/CustomerRequests';
+import { useAddNewCustomer } from '../../Helpers/Data/CustomerRequests';
 
 import './NewCustomerPage.scss';
 
@@ -51,6 +51,8 @@ const newCustomerValidationSchema = Yup.object().shape({
 
 function NewCustomerPage({ userObj }) {
   const history = useHistory();
+  const addNewCustomer = useAddNewCustomer();
+
   const formik = useFormik({
     initialValues: defaultCustomer,
     enableReinitialize: true,
@@ -75,9 +77,11 @@ function NewCustomerPage({ userObj }) {
       stuff.phoneNumbers.push(newCellNumber, newHomeNumber, newOfficeNumber);
       stuff.businessId = userObj.businessId;
       setValues(stuff);
-      CustomerRequests.addNewCustomer(stuff)
-        .then(() => history.push('/customers'))
-        .catch((err) => console.error(err));
+      addNewCustomer.mutate(stuff, {
+        onSuccess: () => {
+          history.push('/customers');
+        },
+      });
       setSubmitting(false);
     },
   });

@@ -228,7 +228,7 @@ namespace CustomerServiceTracking.Repositories
             using (var db = new SqlConnection(_connectionString))
             {
                 var id = updatedCustomer.Id;
-                var enabled = updatedCustomer.Enabled;
+                var enabled = !updatedCustomer.Enabled;
                 var sql = @"UPDATE [Customer]
                             SET
                                 [Enabled] = @enabled

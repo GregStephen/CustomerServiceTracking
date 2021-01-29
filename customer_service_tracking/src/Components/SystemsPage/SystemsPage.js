@@ -18,7 +18,7 @@ function SystemsPage({ userObj }) {
   const editTheSystem = useEditSystem();
   const deleteTheSystem = useDeleteSystemById();
 
-  const tableData = useMemo(() => (systems.data?.data ? systems.data.data : []), [systems.data]);
+  const tableData = useMemo(() => (systems?.data ? systems.data : []), [systems]);
 
   const tableColumns = useMemo(() => [
     {

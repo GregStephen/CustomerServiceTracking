@@ -5,17 +5,26 @@ const baseUrl = 'https://localhost:44324/api/job';
 
 export function useJobForSystemBySystemId(systemId) {
   const url = `${baseUrl}/systemId/${systemId}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
 export function useJobsNeedingAssignment(businessId, daysOut) {
   const url = `${baseUrl}/upcoming-jobs/${businessId}/${daysOut}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
 export function useJobsAssignedTo(employeeId) {
   const url = `${baseUrl}/employeeId/${employeeId}`;
-  return useQuery([url], () => axios.get(url));
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
 }
 
 export function useCreateNewJob() {

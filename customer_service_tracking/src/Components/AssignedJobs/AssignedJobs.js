@@ -10,7 +10,7 @@ import { useJobsAssignedTo } from '../../Helpers/Data/JobRequests';
 function AssignedJobs({ userId }) {
   const jobsAssigned = useJobsAssignedTo(userId);
 
-  const tableData = useMemo(() => (jobsAssigned.data?.data ? jobsAssigned.data.data : []), [jobsAssigned.data]);
+  const tableData = useMemo(() => (jobsAssigned.data ? jobsAssigned.data : []), [jobsAssigned.data]);
 
   const tableColumns = useMemo(() => [
     {

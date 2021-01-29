@@ -14,7 +14,7 @@ function ReportsPage({ userObj }) {
   const reports = useGetAllReportsByBusinessId(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
 
-  const tableData = useMemo(() => (reports.data?.data ? reports.data.data : []), [reports.data]);
+  const tableData = useMemo(() => (reports?.data ? reports.data : []), [reports]);
 
   const tableColumns = useMemo(() => [
     {
