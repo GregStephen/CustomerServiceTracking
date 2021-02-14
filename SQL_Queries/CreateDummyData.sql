@@ -47,29 +47,35 @@ INSERT INTO [Address]
     [AddressLine1],
     [City],
     [State],
-    [ZipCode]
+    [ZipCode],
+	[Latitude],
+	[Longitude]
 )
 VALUES
 (
-	'123 Fake Street',
-	'Nashville',
+	'129 Sophie Drive',
+	'Antioch',
 	'TN',
-	'37013'
+	'37013',
+	'36.03565',
+	'-86.58211'
 ),
 (
-	'719 Long Hunter Ct',
+	'719 Longhunter Ct',
 	'Nashville',
 	'TN',
-	'37013'
+	'37217',
+	'36.0954',
+	'-86.63862'
 )
 
 SELECT @businessAddress = [Id]
 FROM [Address]
-WHERE [AddressLine1] = '123 Fake Street'
+WHERE [AddressLine1] = '129 Sophie Drive'
 
 SELECT @customerAddress = [Id]
 FROM [Address]
-WHERE [AddressLine1] = '719 Long Hunter Ct'
+WHERE [AddressLine1] = '719 Longhunter Ct'
 
 /* Creates the business */
 INSERT INTO [Business]

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Form,
   FormGroup,
@@ -68,14 +68,20 @@ function EditJobModal({
         editJob.mutate(submission);
       }
       setSubmitting(false);
-      setIsToggled(false);
+      // setIsToggled(false);
     },
   });
 
   const deleteThisJob = (JobId) => {
     deleteJob.mutate(JobId);
-    setIsToggled(false);
+    // setIsToggled(false);
   };
+
+  useEffect(() => {
+    if (editJob.isSuccess || deleteJob.isSuccess || createJob.isSuccess) {
+      setIsToggled(false);
+    }
+  }, [deleteJob, createJob, editJob]);
 
   return (<>
     <button className="btn btn-info" onClick={() => setIsToggled(true)}>{newJob ? 'Assign' : 'Edit/Delete'}</button>

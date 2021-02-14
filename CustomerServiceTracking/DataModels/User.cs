@@ -13,5 +13,6 @@ namespace CustomerServiceTracking.DataModels
         public bool Admin { get; set; }
         public string BusinessName { get; set; }
         public Guid BusinessId { get; set; }
+        public Business Business { get; set; }
     }
 }

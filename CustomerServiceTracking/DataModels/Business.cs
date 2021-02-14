@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CustomerServiceTracking.DataModels
 {
@@ -9,5 +6,7 @@ namespace CustomerServiceTracking.DataModels
     {
         public Guid Id { get; set; }
         public string BusinessName { get; set; }
+        public Guid AddressId { get; set; }
+        public Address Address { get; set; }
     }
 }

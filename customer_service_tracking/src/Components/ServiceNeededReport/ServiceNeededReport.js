@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FormGroup,
@@ -8,7 +8,9 @@ import {
   Col,
 } from 'reactstrap';
 import moment from 'moment';
+import L from 'leaflet';
 
+import JobsMap from '../JobsMap/JobsMap';
 import { GlobalTable } from '../Global';
 import EditJobModal from '../Modals/EditJobModal/EditJobModal';
 
@@ -24,15 +26,41 @@ import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 
 import './ServiceNeededReport.scss';
 
-function ServiceNeededReport({ businessId }) {
+function ServiceNeededReport({ userObj }) {
+  const [markersData, setMarkersData] = useState([]);
+  const [centerMarker, setCenterMarker] = useState([0, 0]);
   const [daysOut, getDaysOut] = useState(7);
-  const systemsNeedingService = useJobsNeedingAssignment(businessId, daysOut);
+  const systemsNeedingService = useJobsNeedingAssignment(userObj.business.id, daysOut);
   const jobTypeOptions = useGetJobTypeOptions();
   const deleteJob = useDeleteJob();
   const createNewJob = useCreateNewJob();
   const editTheJob = useEditJob();
 
   const tableData = useMemo(() => (systemsNeedingService.data ? systemsNeedingService.data : []), [systemsNeedingService.data]);
+
+  useEffect(() => {
+    setCenterMarker([userObj.business?.address?.latitude, userObj.business?.address?.longitude]);
+  }, [userObj]);
+
+  useEffect(() => {
+    const markers = [];
+    if (systemsNeedingService.data) {
+      systemsNeedingService.data.forEach((element) => {
+        const newMarker = {
+          title: `${element.customer?.firstName} ${element.customer?.lastName}`,
+          customerLink: `/customer/${element.customer?.id}`,
+          latLng: {
+            lat: element.customer?.address?.latitude,
+            lng: element.customer?.address?.longitude,
+          },
+          assigned: !!element.job,
+          tech: element.job?.technicianName ?? '',
+        };
+        markers.push(newMarker);
+      });
+    }
+    setMarkersData(markers);
+  }, [systemsNeedingService.data, userObj]);
 
   const tableColumns = useMemo(() => [
     {
@@ -76,6 +104,11 @@ function ServiceNeededReport({ businessId }) {
 
   return (
     <div className="ServiceNeededReport widget col-10">
+      <JobsMap
+        centerMarker={centerMarker}
+        markersData={markersData}
+        businessAddress={userObj.business.address}
+        selectedMarker={''}/>
       <Row className="ml-4">
         <Col sm={12} md={3}>
           <FormGroup>

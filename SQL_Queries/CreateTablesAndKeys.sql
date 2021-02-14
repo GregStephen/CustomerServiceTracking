@@ -128,6 +128,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Address')
 		[AddressLine1] NVARCHAR(255) not null,
 		[AddressLine2] NVARCHAR(255) null,
 		[ZipCode] NVARCHAR(255) not null,
+		[Latitude] NVARCHAR(255) not null,
+		[Longitude] NVARCHAR(255) not null,
 	)
 	END
 ELSE

@@ -40,7 +40,9 @@ namespace CustomerServiceTracking.Repositories
                              [AddressLine2],
                              [City],
                              [State],
-                             [ZipCode]
+                             [ZipCode],
+                             [Latitude],
+                             [Longitude]
                             )
                             OUTPUT INSERTED.Id
                             VALUES
@@ -49,7 +51,9 @@ namespace CustomerServiceTracking.Repositories
                             @addressLine2,
                             @city,
                             @state,
-                            @zipcode
+                            @zipcode,
+                            @latitude,
+                            @longitude
                             )";
                 return db.QueryFirst<Guid>(sql, newAddress);
             }
@@ -66,7 +70,9 @@ namespace CustomerServiceTracking.Repositories
                     city = updatedCustomerAddress.Address.City,
                     state = updatedCustomerAddress.Address.State,
                     zipCode = updatedCustomerAddress.Address.ZipCode,
-                    addressId = updatedCustomerAddress.AddressId
+                    addressId = updatedCustomerAddress.AddressId,
+                    latitude = updatedCustomerAddress.Address.Latitude,
+                    longitude = updatedCustomerAddress.Address.Longitude
                 };
                 var sql = @"UPDATE [Address]
                             SET 
@@ -75,6 +81,8 @@ namespace CustomerServiceTracking.Repositories
                                 [City] = @city,
                                 [State] = @state,
                                 [ZipCode] = @zipcode
+                                [Latitude] = @latitude,
+                                [Longitude] = @longitude
                             WHERE [Id] = @addressId";
                 return (db.Execute(sql, parameters) == 1);
             }

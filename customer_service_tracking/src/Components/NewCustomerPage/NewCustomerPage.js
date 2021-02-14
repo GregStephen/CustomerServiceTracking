@@ -117,6 +117,13 @@ function NewCustomerPage({ userObj }) {
             </Col>
           </Row>
           <FormGroup>
+            <Label for="search">Search</Label>
+            <Input
+              type="text"
+              id="search"
+            />
+          </FormGroup>
+          <FormGroup>
             <Label for="addressLine1">Address Line</Label>
             <Input
               type="text"

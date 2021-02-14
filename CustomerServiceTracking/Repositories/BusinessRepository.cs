@@ -12,10 +12,12 @@ namespace CustomerServiceTracking.Repositories
     public class BusinessRepository : IBusinessRepository
     {
         string _connectionString;
+        IAddressRepository _addressRepo;
 
-        public BusinessRepository(IConfiguration configuration)
+        public BusinessRepository(IConfiguration configuration, IAddressRepository addressRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
+            _addressRepo = addressRepo;
         }
 
         public IEnumerable<Business> GetBusinesses()
@@ -114,13 +116,15 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT b.[Id], b.[BusinessName]
+                var sql = @"SELECT b.[Id], b.[BusinessName], b.[AddressId]
                             FROM [UserBusiness] u
                             JOIN [Business] b
                             ON b.[Id] = u.[BusinessId]
                             WHERE u.[UserId] = @userId";
                 var parameters = new { userId };
-                return db.QueryFirst<Business>(sql, parameters);
+                var business = db.QueryFirst<Business>(sql, parameters);
+                business.Address = _addressRepo.GetAddressByAddressId(business.AddressId);
+                return business;
             }
         }
 
