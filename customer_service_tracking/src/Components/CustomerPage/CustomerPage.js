@@ -46,7 +46,7 @@ function CustomerPage({ userObj }) {
                   {customer.data.enabled ? 'Deactivate' : 'Activate'}
                 </button>
               </div>
-              <div className="col-5">
+              <div className="offset-1 col-4">
                 <JobsMap
                 getLocation={false}
                 dragging={false}
