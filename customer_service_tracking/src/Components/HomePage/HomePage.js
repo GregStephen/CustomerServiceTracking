@@ -23,7 +23,7 @@ function HomePage({ userObj }) {
           : <div className="jobs-assigned">
             {
               <AssignedJobs
-                userId={userObj.id} />
+                userObj={userObj} />
             }
           </div>
         }

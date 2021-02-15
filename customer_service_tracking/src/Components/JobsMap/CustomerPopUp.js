@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Popup } from 'react-leaflet';
+import Formatting from '../../Helpers/Functions/Formatting';
 
 function CustomerPopUp({ marker }) {
   return (
@@ -11,10 +12,9 @@ function CustomerPopUp({ marker }) {
           to={{ pathname: marker.customerLink }}>
           {marker.title}
         </Link>
-          </p>
-        {marker.assigned
-          ? <p>Tech: {marker.tech}</p>
-          : ''}
+        </p>
+        {Formatting.formatAddressObj(marker.address)}
+        {marker.tech && <p>Tech: {marker.tech}</p>}
       </div>
     </Popup>
   );

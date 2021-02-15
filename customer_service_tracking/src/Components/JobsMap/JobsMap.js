@@ -1,6 +1,8 @@
 import React, {
+  useEffect,
   useState,
   useMemo,
+  useRef,
 } from 'react';
 import L from 'leaflet';
 import {
@@ -15,33 +17,53 @@ import CustomerMarker from './CustomerMarker';
 
 import './JobsMap.scss';
 
-function JobsMap({ markersData, selectedMarker, centerMarker }) {
-  const [hasLocation, setHasLocation] = useState(false);
+function JobsMap({
+  getLocation,
+  markersData,
+  businessAddress,
+  hideMainMarkerPopup,
+  dragging = true,
+  soloMarker = false,
+}) {
+  const [centerMarker, setCenterMarker] = useState([0, 0]);
+  const mapRef = useRef(null);
+  const [refAquired, setRefAquired] = useState(false);
+
+  useEffect(() => {
+    setRefAquired(true);
+  }, []);
 
   const userMarker = (
-    <Marker
-      position={centerMarker}
-    >
-      <Popup>You are here</Popup>
+    <Marker position={centerMarker}>
+      {!hideMainMarkerPopup && <Popup>You are here</Popup>}
     </Marker>
   );
 
-  const handleLocationFound = (e) => {
-    setHasLocation(true);
-    // setUserLocation(e.latlng);
-  };
+  function handleOnLocationFound(e) {
+    setCenterMarker(e.latlng);
+  }
+
+  useEffect(() => {
+    if (getLocation && refAquired && mapRef.current) {
+      const { current = {} } = mapRef;
+      const { leafletElement: map } = current;
+      map.locate();
+    } else {
+      setCenterMarker([businessAddress.latitude, businessAddress.longitude]);
+    }
+  }, [getLocation, businessAddress, refAquired]);
 
   const allSiteBounds = useMemo(() => {
     const bounds = L.latLngBounds();
     bounds.extend(centerMarker);
-    if (markersData.length > 0) {
+    if (markersData?.length > 0) {
       markersData.forEach((site) => bounds.extend(site.latLng));
     }
     return bounds;
   }, [markersData, centerMarker]);
 
   const updateMarkers = () => {
-    if (markersData.length > 0) {
+    if (markersData?.length > 0) {
       const markersToShow = markersData.map((marker) => (<CustomerMarker
           key={marker.key}
           marker={marker}
@@ -59,6 +81,7 @@ function JobsMap({ markersData, selectedMarker, centerMarker }) {
 
   function ChangeBounds({ allBounds }) {
     const map = useMap();
+    map.locate();
     if (allBounds // 👈 null and undefined check
       && Object.keys(allBounds).length !== 0 && allBounds.constructor === Object) {
       map.fitBounds(allBounds);
@@ -72,8 +95,9 @@ function JobsMap({ markersData, selectedMarker, centerMarker }) {
         center={centerMarker}
         zoom={13}
         scrollWheelZoom={true}
-        onLocationfound={handleLocationFound}>
-        {false && <ChangeView center={centerMarker} zoom={13} />}
+        onLocationfound={handleOnLocationFound}
+        dragging={dragging}>
+        {soloMarker && <ChangeView center={centerMarker} zoom={13} />}
         {markersData && <ChangeBounds allBounds={allSiteBounds} />}
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

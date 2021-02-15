@@ -8,7 +8,6 @@ import {
   Col,
 } from 'reactstrap';
 import moment from 'moment';
-import L from 'leaflet';
 
 import JobsMap from '../JobsMap/JobsMap';
 import { GlobalTable } from '../Global';
@@ -28,7 +27,6 @@ import './ServiceNeededReport.scss';
 
 function ServiceNeededReport({ userObj }) {
   const [markersData, setMarkersData] = useState([]);
-  const [centerMarker, setCenterMarker] = useState([0, 0]);
   const [daysOut, getDaysOut] = useState(7);
   const systemsNeedingService = useJobsNeedingAssignment(userObj.business.id, daysOut);
   const jobTypeOptions = useGetJobTypeOptions();
@@ -37,10 +35,6 @@ function ServiceNeededReport({ userObj }) {
   const editTheJob = useEditJob();
 
   const tableData = useMemo(() => (systemsNeedingService.data ? systemsNeedingService.data : []), [systemsNeedingService.data]);
-
-  useEffect(() => {
-    setCenterMarker([userObj.business?.address?.latitude, userObj.business?.address?.longitude]);
-  }, [userObj]);
 
   useEffect(() => {
     const markers = [];
@@ -53,14 +47,15 @@ function ServiceNeededReport({ userObj }) {
             lat: element.customer?.address?.latitude,
             lng: element.customer?.address?.longitude,
           },
-          assigned: !!element.job,
+          color: element.job ? 'green' : 'red',
           tech: element.job?.technicianName ?? '',
+          address: element.customer?.address,
         };
         markers.push(newMarker);
       });
     }
     setMarkersData(markers);
-  }, [systemsNeedingService.data, userObj]);
+  }, [systemsNeedingService.data]);
 
   const tableColumns = useMemo(() => [
     {
@@ -105,10 +100,9 @@ function ServiceNeededReport({ userObj }) {
   return (
     <div className="ServiceNeededReport widget col-10">
       <JobsMap
-        centerMarker={centerMarker}
-        markersData={markersData}
-        businessAddress={userObj.business.address}
-        selectedMarker={''}/>
+        getLocation={false}
+        businessAddress={userObj.business?.address}
+        markersData={markersData}/>
       <Row className="ml-4">
         <Col sm={12} md={3}>
           <FormGroup>

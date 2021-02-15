@@ -13,6 +13,7 @@ import { useGetReportsByCustomerId } from '../../Helpers/Data/ReportRequests';
 
 import './CustomerPage.scss';
 import Formatting from '../../Helpers/Functions/Formatting';
+import JobsMap from '../JobsMap/JobsMap';
 
 function CustomerPage({ userObj }) {
   const { id } = useParams();
@@ -25,27 +26,40 @@ function CustomerPage({ userObj }) {
     <Page>
       {customer?.data
         && <div className="CustomerPage">
-        <Header title={customerName}
-          description={
-            <Badge color={customer.data.enabled ? 'success' : 'danger'}>
-              {customer.data.enabled ? 'Active' : 'Inactive'}
-            </Badge>
-          }
-        />
+          <Header title={customerName}
+            description={
+              <Badge color={customer.data.enabled ? 'success' : 'danger'}>
+                {customer.data.enabled ? 'Active' : 'Inactive'}
+              </Badge>
+            }
+          />
           <div className="customer-info widget col-10 mb-4 pt-0">
             <Header title="Info" icon="fas fa-address-card" />
-            {Formatting.formatContactInfo(customer.data)}
-            {Formatting.formatAddressObj(customer.data.address)}
-            <EditCustomerModal customer={customer.data} />
-            <EditCustomerAddressModal customer={customer.data} />
-          <button className={`btn btn-${customer.data.enabled ? 'danger' : 'success'}`}
-            onClick={() => updateCustomerStatus.mutate(customer.data)}>
-            {customer.data.enabled ? 'Deactivate' : 'Activate'}
-          </button>
+            <div className="row">
+              <div className="col-6">
+                {Formatting.formatContactInfo(customer.data)}
+                {Formatting.formatAddressObj(customer.data.address)}
+                <EditCustomerModal customer={customer.data} />
+                <EditCustomerAddressModal customer={customer.data} />
+                <button className={`btn btn-${customer.data.enabled ? 'danger' : 'success'}`}
+                  onClick={() => updateCustomerStatus.mutate(customer.data)}>
+                  {customer.data.enabled ? 'Deactivate' : 'Activate'}
+                </button>
+              </div>
+              <div className="col-5">
+                <JobsMap
+                getLocation={false}
+                dragging={false}
+                businessAddress={customer.data.address}
+                hideMainMarkerPopup={true}
+                soloMarker={true}
+                />
+              </div>
+            </div>
           </div>
-        <CustomerSystems customer={customer.data} />
-        {reports?.data
-          && <CustomerReports reports={reports.data} />}
+          <CustomerSystems customer={customer.data} />
+          {reports?.data
+            && <CustomerReports reports={reports.data} />}
         </div>
       }
     </Page>

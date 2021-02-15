@@ -1,16 +1,38 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Header, GlobalTable } from '../Global';
+import JobsMap from '../JobsMap/JobsMap';
 import JobNotesModal from '../Modals/JobNotesModal/JobNotesModal';
 import Formatting from '../../Helpers/Functions/Formatting';
 
 import { useJobsAssignedTo } from '../../Helpers/Data/JobRequests';
 
-function AssignedJobs({ userId }) {
-  const jobsAssigned = useJobsAssignedTo(userId);
+function AssignedJobs({ userObj }) {
+  const jobsAssigned = useJobsAssignedTo(userObj.id);
+  const [markersData, setMarkersData] = useState([]);
 
   const tableData = useMemo(() => (jobsAssigned.data ? jobsAssigned.data : []), [jobsAssigned.data]);
+
+  useEffect(() => {
+    const markers = [];
+    if (jobsAssigned.data) {
+      jobsAssigned.data.forEach((element) => {
+        const newMarker = {
+          title: `${element.customer?.firstName} ${element.customer?.lastName}`,
+          customerLink: `/customer/${element.customer?.id}`,
+          latLng: {
+            lat: element.customer?.address?.latitude,
+            lng: element.customer?.address?.longitude,
+          },
+          color: 'green',
+          address: element.customer?.address,
+        };
+        markers.push(newMarker);
+      });
+    }
+    setMarkersData(markers);
+  }, [jobsAssigned.data]);
 
   const tableColumns = useMemo(() => [
     {
@@ -48,6 +70,10 @@ function AssignedJobs({ userId }) {
   return (
     <div className="AssignedJobs widget col-10 pt-0">
       <Header title="Jobs" />
+      <JobsMap
+        getLocation={true}
+        markersData={markersData}
+        businessAddress={userObj.business.address}/>
       <GlobalTable
         columns={tableColumns}
         data={tableData}

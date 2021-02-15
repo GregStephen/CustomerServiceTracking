@@ -7,23 +7,24 @@ import CustomerPopUp from './CustomerPopUp';
 
 const assignedIcon = L.icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
-  popupAnchor: [10, 0],
+  popupAnchor: [12.5, 7.5],
 });
 
 const unAssignedIcon = L.icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-  popupAnchor: [10, 0],
+  popupAnchor: [12.5, 7.5],
 });
 
 function CustomerMarker({ marker }) {
   const markerRef = createRef();
+
   return (
     <Marker
       key={marker.key}
       id={marker.key}
       position={marker.latLng}
       ref={markerRef}
-      icon={marker.assigned ? assignedIcon : unAssignedIcon}
+      icon={marker.color === 'green' ? assignedIcon : unAssignedIcon}
     >
       <CustomerPopUp
         marker={marker}
