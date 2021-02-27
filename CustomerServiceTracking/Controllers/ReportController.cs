@@ -31,10 +31,16 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetAllReportsByBusinessId(businessId));
         }
 
-        [HttpGet("customerId/{customerId}")]
-        public IActionResult GetReportsByCustomerId(Guid customerId)
+        [HttpGet("propertyId/{propertyId}")]
+        public IActionResult GetReportsByPropertyId(Guid propertyId)
         {
-            return Ok(_repo.GetReportsByCustomerId(customerId));
+            return Ok(_repo.GetReportsByPropertyId(propertyId));
+        }
+
+        [HttpGet("propertySystemId/{propertySystemId}")]
+        public IActionResult GetReportsByPropertySystemId(Guid propertySystemId)
+        {
+            return Ok(_repo.GetReportsByPropertySystemId(propertySystemId));
         }
 
         [HttpGet("reportId/{reportId}")]
@@ -44,7 +50,7 @@ namespace CustomerServiceTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddNewReportForCustomer(NewReportDTO report)
+        public IActionResult AddNewReportForPropertySystem(NewReportDTO report)
         {
             if (_repo.AddReport(report))
             {

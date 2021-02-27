@@ -13,178 +13,161 @@ namespace CustomerServiceTracking.Repositories
     public class CustomerRepository : ICustomerRepository
     {
         string _connectionString;
-        private IAddressRepository _addressRepo;
         private ISystemRepository _systemRepo;
-        private IEmailRepository _emailRepo;
-        private IPhoneNumberRepository _phoneRepo;
 
-        public CustomerRepository(IConfiguration configuration, IAddressRepository addressRepo, ISystemRepository systemRepo, IEmailRepository emailRepo, IPhoneNumberRepository phoneRepo)
+        public CustomerRepository(IConfiguration configuration, ISystemRepository systemRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
-            _addressRepo = addressRepo;
             _systemRepo = systemRepo;
-            _emailRepo = emailRepo;
-            _phoneRepo = phoneRepo;
         }
 
-        public IEnumerable<Customer> GetCustomersByBusinessId(Guid businessId)
-        {
-            using (var db = new SqlConnection(_connectionString))
-            {
-                var sql = @"SELECT c.*
-                            FROM [BusinessCustomer] bc
-                            JOIN [Customer] c
-                            ON bc.[CustomerId] = c.[Id]
-                            WHERE bc.[BusinessId] = @businessId";
-                var parameters = new { businessId };
-                var customers =  db.Query<Customer>(sql, parameters);
-                foreach (var customer in customers)
-                {
-                    customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
-                    customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
-                    customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customer.Id).ToList();
-                    customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
-                }
-                return customers;
-            }
-        }
-
-        public IEnumerable<Customer> GetActiveCustomersByBusinessId(Guid businessId)
-        {
-            using (var db = new SqlConnection(_connectionString))
-            {
-                var sql = @"SELECT c.*
-                            FROM [BusinessCustomer] bc
-                            JOIN [Customer] c
-                            ON bc.[CustomerId] = c.[Id]
-                            WHERE bc.[BusinessId] = @businessId AND c.Enabled = 1";
-                var parameters = new { businessId };
-                var customers = db.Query<Customer>(sql, parameters);
-                foreach (var customer in customers)
-                {
-                    customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
-                    customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
-                    customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customer.Id).ToList();
-                    customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
-                }
-                return customers;
-            }
-        }
-
-        public Customer GetCustomerByCustomerId(Guid customerId)
+        public IEnumerable<Property> GetPropertiesByBusinessId(Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"SELECT *
-                            FROM [Customer]
-                            WHERE [Id] = @customerId";
-                var parameters = new { customerId };
-                var customer = db.QueryFirstOrDefault<Customer>(sql, parameters);
-                customer.Address = _addressRepo.GetAddressByAddressId(customer.AddressId);
-                customer.Systems = _systemRepo.GetCustomerSystemsByCustomerId(customer.Id).ToList();
-                customer.Emails = _emailRepo.GetCustomerEmailsByCustomerId(customerId).ToList();
-                customer.PhoneNumbers = _phoneRepo.GetCustomerPhoneNumbersByCustomerId(customer.Id).ToList();
-                return customer;
+                            FROM [Property] 
+                            WHERE [BusinessId] = @businessId";
+                var parameters = new { businessId };
+                var properties =  db.Query<Property>(sql, parameters);
+                foreach (var property in properties)
+                {
+                    property.Systems = _systemRepo.GetPropertySystemsByPropertyId(property.Id).ToList();
+                    property.Contacts = GetPropertyContactsByPropertyId(property.Id).ToList();
+                }
+                return properties;
             }
         }
 
-        public CustomerSystem GetCustomerSystemByCustomerSystemId(Guid customerSystemId)
+        public IEnumerable<Contact> GetPropertyContactsByPropertyId(Guid propertyId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"SELECT *
-                            FROM [CustomerSystem]
-                            WHERE [Id] = @customerSystemId";
-                var parameters = new { customerSystemId };
-                var customerSystem =  db.QueryFirstOrDefault<CustomerSystem>(sql, parameters);
-                customerSystem.SystemInfo = _systemRepo.GetSystemInfoBySystemId(customerSystem.SystemId);
-                return customerSystem;
+                            FROM [Contact]
+                            WHERE [PropertyId] = @propertyId";
+                var parameters = new { propertyId };
+                return db.Query<Contact>(sql, parameters);
             }
         }
-        /*
-        public Customer AddAddressAndSystemsToCustomer(Customer CustomerToAddAddressAndSystems)
-        {
-            CustomerToAddAddressAndSystems.Address = _addressRepo.GetAddressByAddressId(CustomerToAddAddressAndSystems.AddressId);
-            CustomerToAddAddressAndSystems.Systems = _systemRepo.GetCustomerSystemsByCustomerId(CustomerToAddAddressAndSystems.Id).ToList();
-            return CustomerToAddAddressAndSystems;
-        }
-        */
-        private bool AddCustomerToBusiness(Guid customerId, Guid businessId)
+        public IEnumerable<Property> GetActivePropertiesByBusinessId(Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [BusinessCustomer]
-                            (
-                                [BusinessId],
-                                [CustomerId]
-                            )
-                            VALUES
-                            (
-                                @businessId,
-                                @customerId
-                            )";
-                var parameters = new { customerId, businessId };
-                return (db.Execute(sql, parameters) == 1);
+                var sql = @"SELECT *
+                            FROM [Property]
+                            WHERE [BusinessId] = @businessId AND Enabled = 1";
+                var parameters = new { businessId };
+                var properties = db.Query<Property>(sql, parameters);
+                foreach (var property in properties)
+                {
+                    property.Systems = _systemRepo.GetPropertySystemsByPropertyId(property.Id).ToList();
+                    property.Contacts = GetPropertyContactsByPropertyId(property.Id).ToList();
+                }
+                return properties;
             }
         }
-        public bool AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO)
+
+        public Property GetPropertyByPropertyId(Guid propertyId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var addressId = _addressRepo.AddNewAddressToDatabase(newCustomerDTO.NewCustomerAddress);
-                newCustomerDTO.AddressId = addressId;
-                var sql = @"INSERT INTO [Customer]
+                var sql = @"SELECT *
+                            FROM [Property]
+                            WHERE [Id] = @propertyId";
+                var parameters = new { propertyId };
+                var property = db.QueryFirstOrDefault<Property>(sql, parameters);
+                property.Systems = _systemRepo.GetPropertySystemsByPropertyId(property.Id).ToList();
+                property.Contacts = GetPropertyContactsByPropertyId(property.Id).ToList();
+                return property;
+            }
+        }
+
+        public PropertySystem GetPropertySystemByPropertySystemId(Guid propertySystemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [PropertySystem]
+                            WHERE [Id] = @propertySystemId";
+                var parameters = new { propertySystemId };
+                var propertySystem =  db.QueryFirstOrDefault<PropertySystem>(sql, parameters);
+                propertySystem.SystemInfo = _systemRepo.GetSystemInfoBySystemId(propertySystem.SystemId);
+                return propertySystem;
+            }
+        }
+
+        public bool AddNewPropertyToDatabase(NewPropertyDTO newPropertyDTO)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [Property]
                             (
-                             [FirstName],
-                             [LastName],
-                             [Enabled],
-                             [AddressId]
+                            [DisplayName],
+                            [Enabled],
+                            [City],
+                            [State],
+                            [AddressLine1],
+                            [AddressLine2],
+                            [ZipCode],
+                            [Latitude],
+                            [Longitude],
+                            [BusinessId]
                             )
-                            OUTPUT INSERTED.Id
                             VALUES
                             (
-                            @firstName,
-                            @lastName,
+                            @displayName,
                             1,
-                            @addressId
+                            @city,
+                            @state,
+                            @addressLine1,
+                            @addressLine2,
+                            @zipCode,
+                            @latitude,
+                            @longitude,
+                            @businessId
                             )";
-                var customerId = db.QueryFirst<Guid>(sql, newCustomerDTO);
-                foreach (var phoneNumber in newCustomerDTO.PhoneNumbers) { 
-                    if (phoneNumber.Number != "" ) 
-                    {
-                        var newPhoneDto = new NewPhoneNumberDTO()
-                        {
-                            Number = phoneNumber.Number,
-                            Type = phoneNumber.Type,
-                            CustomerId = customerId
-                        };
-                        _phoneRepo.AddNewPhoneNumberToDatabase(newPhoneDto);
-                    }
-                }
-                foreach (var email in newCustomerDTO.Emails)
-                    {
-                    if (!String.IsNullOrEmpty(email)) {
-                        var newEmailDTO = new NewEmailDTO()
-                        {
-                            Email = email,
-                            CustomerId = customerId
-                        };
-                        _emailRepo.AddNewEmailToDatabase(newEmailDTO);
-                    }
-
-                }
-
-                return AddCustomerToBusiness(customerId, newCustomerDTO.BusinessId);
+                return db.Execute(sql, newPropertyDTO) == 1;
             }
         }
-        
-        public Guid AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO)
+
+        public bool AddNewContactToDatabase(NewContactDTO newContactDTO)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [CustomerSystem]
+                var sql = @"INSERT INTO [Property]
                             (
-                            [CustomerId],
+                                [FirstName],
+                                [LastName],
+                                [Primary],
+                                [Email],
+                                [HomePhone],
+                                [CellPhone], 
+                                [WorkPhone],
+                                [PropertyId]
+                            )
+                            VALUES
+                            (
+                                @firstName,
+                                @lastName,
+                                @primary,
+                                @email,
+                                @homePhone,
+                                @cellPhone,
+                                @workPhone,
+                                @propertyId
+                            )";
+                return db.Execute(sql, newContactDTO) == 1;
+            }
+        }
+        public Guid AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"INSERT INTO [PropertySystem]
+                            (
+                            [PropertyId],
+                            [Enable],
                             [InstallDate],
                             [Notes],
                             [Nozzles],
@@ -192,12 +175,14 @@ namespace CustomerServiceTracking.Repositories
                             [Sold],
                             [SprayCycles],
                             [SprayDuration],
-                            [SystemId]
+                            [SystemId],
+                            [DayTankDepleted]
                             )
                             OUTPUT INSERTED.Id
                             VALUES
                             (
                             @customerId,
+                            1,
                             @installDate,
                             @notes,
                             @nozzles,
@@ -205,31 +190,54 @@ namespace CustomerServiceTracking.Repositories
                             @sold,
                             @sprayCycles,
                             @sprayDuration,
-                            @systemId
+                            @systemId,
+                            @dayTankDepleted
                             )";
-                return db.QueryFirst<Guid>(sql, newCustomerSystemDTO);
-            }
-        }
-        public bool UpdateCustomer(Customer updatedCustomer)
-        {
-            using (var db = new SqlConnection(_connectionString))
-            {
-                var sql = @"UPDATE [Customer]
-                            SET 
-                                [FirstName] = @firstName,
-                                [LastName] = @lastName
-                            WHERE [Id] = @id";
-                return (db.Execute(sql, updatedCustomer) == 1);
+                return db.QueryFirst<Guid>(sql, newPropertySystemDTO);
             }
         }
 
-        public bool UpdateCustomerEnabledOrDisabled(Customer updatedCustomer)
+        public bool UpdateProperty(Property updatedProperty)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var id = updatedCustomer.Id;
-                var enabled = !updatedCustomer.Enabled;
-                var sql = @"UPDATE [Customer]
+                var sql = @"UPDATE [Property]
+                            [DisplayName] = @displayName,
+                            [City] = @city,
+                            [State] = @state,
+                            [AddressLine1] = @addressLine1,
+                            [AddressLine2] = @addressLine2,
+                            [ZipCode] = @zipCode,
+                            [Latitude] = @latitude,
+                            [Longitude] = @longitude,
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedProperty) == 1);
+            }
+        }
+        public bool UpdateContact(Contact updatedContact)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Contact]
+                            SET 
+                                [FirstName] = @firstName,
+                                [LastName] = @lastName,
+                                [Email] = @email,
+                                [HomePhone] = @homePhone,
+                                [CellPhone] = @cellPhone,
+                                [WorkPhone] = @workPhone
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedContact) == 1);
+            }
+        }
+
+        public bool UpdatePropertyEnabledOrDisabled(Property updatedProperty)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var id = updatedProperty.Id;
+                var enabled = !updatedProperty.Enabled;
+                var sql = @"UPDATE [Property]
                             SET
                                 [Enabled] = @enabled
                             WHERE [Id] = @id";
@@ -237,16 +245,27 @@ namespace CustomerServiceTracking.Repositories
                 return (db.Execute(sql, parameters) == 1);
             }
         }
-        public bool UpdateCustomerAddress(Customer updatedCustomerAddress)
-        {
-            return (_addressRepo.UpdateCustomerAddress(updatedCustomerAddress));
-        }
 
-        public bool UpdateCustomerSystem(CustomerSystem updatedCustomerSystem)
+        public bool UpdatePropertySystemEnabledOrDisabled(PropertySystem updatedPropertySystem)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"UPDATE [CustomerSystem]
+                var id = updatedPropertySystem.Id;
+                var enabled = !updatedPropertySystem.Enabled;
+                var sql = @"UPDATE [PropertySysten]
+                            SET
+                                [Enabled] = @enabled
+                            WHERE [Id] = @id";
+                var parameters = new { id, enabled };
+                return (db.Execute(sql, parameters) == 1);
+            }
+        }
+
+        public bool UpdatePropertySystem(PropertySystem updatedPropertySystem)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [PropertySystem]
                             SET 
                                 [InstallDate] = @installDate,
                                 [Nozzles] = @nozzles,
@@ -254,49 +273,44 @@ namespace CustomerServiceTracking.Repositories
                                 [Sold] = @sold,
                                 [SprayCycles] = @sprayCycles,
                                 [SprayDuration] = @sprayDuration,
-                                [SystemId] = @systemId
+                                [SystemId] = @systemId,
+                                [Notes] = @notes,
+                                [DayTankDepleted] = @dayTankDepleted
                             WHERE [Id] = @id";
-                return (db.Execute(sql, updatedCustomerSystem) == 1);
+                return (db.Execute(sql, updatedPropertySystem) == 1);
             }
         }
 
-        public bool DeleteFromBusinessCustomer(Guid customerId)
+        public bool DeleteContact(Guid contactId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"DELETE [BusinessCustomer]
-                            WHERE CustomerId = @customerId";
-                var parameters = new { customerId };
+                var sql = @"DELETE [Contact]
+                        WHERE Id = @contactId";
+                var parameters = new { contactId };
                 return db.Execute(sql, parameters) == 1;
             }
         }
-
-        public bool DeleteCustomer(Guid customerId)
+        public bool UpdatePropertySystemDayTankDepleted(Guid systemId, DateTime dateTankWillBeEmptied)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                Customer customerToDelete = GetCustomerByCustomerId(customerId);
-                if (DeleteFromBusinessCustomer(customerId))
-                    {
-                    var sql = @"DELETE [Customer]
-                            WHERE Id = @customerId";
-                    var parameters = new { customerId };
-                    if (db.Execute(sql, parameters) == 1)
-                    {
-                        return _addressRepo.DeleteCustomerAddress(customerToDelete.AddressId);
-                    }
-                    return false;
-                }
-                return false;
+                var sql = @"UPDATE [PropertySystem]
+                            SET
+                                [DayTankDepleted] = @dateTankWillBeEmptied
+                            WHERE [Id] = @systemId";
+                var parameters = new { systemId, dateTankWillBeEmptied };
+                return (db.Execute(sql, parameters) == 1);
             }
         }
-        public bool DeleteCustomerSystem(Guid customerSystemId)
+
+        public bool DeletePropertySystem(Guid propertySystemId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"DELETE [CustomerSystem]
-                            WHERE Id = @customerSystemId";
-                var parameters = new { customerSystemId };
+                var sql = @"DELETE [PropertySystem]
+                            WHERE Id = @propertySystemId";
+                var parameters = new { propertySystemId };
                 return db.Execute(sql, parameters) == 1;
             }
         }

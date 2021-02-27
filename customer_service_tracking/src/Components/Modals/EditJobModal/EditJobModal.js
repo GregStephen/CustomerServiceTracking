@@ -101,8 +101,8 @@ function EditJobModal({
                 <option key={object.id} value={object.id}>{object.fullName}</option>
               ))}
             </Input>
-            {formik.touched.jobTypeId
-              && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
+            {formik.touched.technicianId
+              && <FormFeedback className="d-block">{formik.errors?.technicianId}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label for="note">Notes</Label>

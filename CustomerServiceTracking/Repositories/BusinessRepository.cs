@@ -12,12 +12,10 @@ namespace CustomerServiceTracking.Repositories
     public class BusinessRepository : IBusinessRepository
     {
         string _connectionString;
-        IAddressRepository _addressRepo;
 
-        public BusinessRepository(IConfiguration configuration, IAddressRepository addressRepo)
+        public BusinessRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
-            _addressRepo = addressRepo;
         }
 
         public IEnumerable<Business> GetBusinesses()
@@ -36,9 +34,7 @@ namespace CustomerServiceTracking.Repositories
             {
                 var sql = @"SELECT u.Id, u.FirstName + ' ' + u.LastName as FullName
                             FROM [User] u
-                            JOIN [UserBusiness] ub
-                            ON u.Id = ub.UserId
-                            WHERE ub.BusinessId = @businessId AND u.FirebaseUId IS NOT NULL";
+                            WHERE u.BusinessId = @businessId AND u.FirebaseUId IS NOT NULL";
                 var parameters = new { businessId };
                 return db.Query<Employee>(sql, parameters);
             }
@@ -52,9 +48,7 @@ namespace CustomerServiceTracking.Repositories
                             CASE WHEN u.FirebaseUid IS NULL THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT)
                             END as Registered
                             FROM [User] u
-                            JOIN [UserBusiness] ub
-                            ON u.Id = ub.UserId
-                            WHERE ub.BusinessId = @businessId";
+                            WHERE u.BusinessId = @businessId";
                 var parameters = new { businessId };
                 var registeredUsers = db.Query<Employee>(sql, parameters).ToList();
                 //sql = @"SELECT ue.Id, ue.FirstName + ' ' + ue.LastName as FullName
@@ -72,59 +66,55 @@ namespace CustomerServiceTracking.Repositories
                 return registeredUsers;
             }
         }
-        public Guid AddNewBusinessToDatabase(string businessName, Guid addressId)
-        {
-            using (var db = new SqlConnection(_connectionString))
-            {
-                var sql = @"INSERT INTO [Business]
-                            (
-                             [BusinessName],
-                             [AddressId]
-                            )
-                            OUTPUT INSERTED.Id
-                            VALUES
-                            (
-                            @businessName,
-                            @addressId
-                            )";
-                var parameters = new { businessName, addressId };
-                var businessId = db.QueryFirst<Guid>(sql, parameters);
-                return businessId;
-            }
-        }
+        //public Guid AddNewBusinessToDatabase(string businessName, Guid addressId)
+        //{
+        //    using (var db = new SqlConnection(_connectionString))
+        //    {
+        //        var sql = @"INSERT INTO [Business]
+        //                    (
+        //                     [BusinessName],
+        //                     [AddressId]
+        //                    )
+        //                    OUTPUT INSERTED.Id
+        //                    VALUES
+        //                    (
+        //                    @businessName,
+        //                    @addressId
+        //                    )";
+        //        var parameters = new { businessName, addressId };
+        //        var businessId = db.QueryFirst<Guid>(sql, parameters);
+        //        return businessId;
+        //    }
+        //}
 
-        public bool AddUserToBusiness(Guid userId, Guid businessId)
-        {
-            using (var db = new SqlConnection(_connectionString))
-            {
-                var sql = @"INSERT INTO [UserBusiness]
-                            (
-                             [UserId],
-                             [BusinessId]
-                            )
-                            VALUES
-                            (
-                            @userId,
-                            @businessId
-                            )";
-                var parameters = new { userId, businessId };
-                return (db.Execute(sql, parameters) == 1);
-            }
-        }
+        //public bool AddUserToBusiness(Guid userId, Guid businessId)
+        //{
+        //    using (var db = new SqlConnection(_connectionString))
+        //    {
+        //        var sql = @"INSERT INTO [UserBusiness]
+        //                    (
+        //                     [UserId],
+        //                     [BusinessId]
+        //                    )
+        //                    VALUES
+        //                    (
+        //                    @userId,
+        //                    @businessId
+        //                    )";
+        //        var parameters = new { userId, businessId };
+        //        return (db.Execute(sql, parameters) == 1);
+        //    }
+        //}
 
-        public Business GetUsersBusiness(Guid userId)
+        public Business GetUsersBusiness(Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT b.[Id], b.[BusinessName], b.[AddressId]
-                            FROM [UserBusiness] u
-                            JOIN [Business] b
-                            ON b.[Id] = u.[BusinessId]
-                            WHERE u.[UserId] = @userId";
-                var parameters = new { userId };
-                var business = db.QueryFirst<Business>(sql, parameters);
-                business.Address = _addressRepo.GetAddressByAddressId(business.AddressId);
-                return business;
+                var sql = @"SELECT *
+                            FROM [Business] 
+                            WHERE  [Id] = @businessId";
+                var parameters = new { businessId };
+                return db.QueryFirst<Business>(sql, parameters);
             }
         }
 

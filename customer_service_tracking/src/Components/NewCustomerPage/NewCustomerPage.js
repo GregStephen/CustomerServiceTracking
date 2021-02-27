@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Col,
   Row,
@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { Header, Page } from '../Global';
 import { useAddNewCustomer } from '../../Helpers/Data/CustomerRequests';
+import useSearchAddresses from '../../Helpers/Data/TomTomRequests';
 
 import './NewCustomerPage.scss';
 
@@ -53,6 +54,7 @@ function NewCustomerPage({ userObj }) {
   const history = useHistory();
   const addNewCustomer = useAddNewCustomer();
 
+
   const formik = useFormik({
     initialValues: defaultCustomer,
     enableReinitialize: true,
@@ -85,6 +87,9 @@ function NewCustomerPage({ userObj }) {
       setSubmitting(false);
     },
   });
+
+  const addressSearches = useSearchAddresses(formik.values.newCustomerAddress);
+
   return (
     <Page>
       <Header title="New Customer" icon="fa-user-plus" />
@@ -116,13 +121,6 @@ function NewCustomerPage({ userObj }) {
               </FormGroup>
             </Col>
           </Row>
-          <FormGroup>
-            <Label for="search">Search</Label>
-            <Input
-              type="text"
-              id="search"
-            />
-          </FormGroup>
           <FormGroup>
             <Label for="addressLine1">Address Line</Label>
             <Input

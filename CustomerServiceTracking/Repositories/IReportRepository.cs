@@ -10,8 +10,13 @@ namespace CustomerServiceTracking.Repositories
     public interface IReportRepository
     {
         IEnumerable<ReportToSendDTO> GetAllReportsByBusinessId(Guid businessId);
-        IEnumerable<ReportToSendDTO> GetReportsByCustomerId(Guid customerId);
+
+        IEnumerable<ReportToSendDTO> GetReportsByPropertyId(Guid propertyId);
+
+        IEnumerable<ReportToSendDTO> GetReportsByPropertySystemId(Guid propertySystemId);
+
         ReportToSendDTO GetReportById(Guid reportId);
+
         bool AddReport(NewReportDTO newReport);
     }
 }

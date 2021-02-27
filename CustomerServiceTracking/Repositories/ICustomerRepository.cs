@@ -9,17 +9,36 @@ namespace CustomerServiceTracking.Repositories
 {
     public interface ICustomerRepository
     {
-        IEnumerable<Customer> GetCustomersByBusinessId(Guid businessId);
-        IEnumerable<Customer> GetActiveCustomersByBusinessId(Guid businessId);
-        Customer GetCustomerByCustomerId(Guid customerId);
-        CustomerSystem GetCustomerSystemByCustomerSystemId(Guid customerSystemId);
-        bool AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO);
-        Guid AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO);
-        bool UpdateCustomer(Customer updatedCustomer);
-        bool UpdateCustomerEnabledOrDisabled(Customer updatedCustomer);
-        bool UpdateCustomerAddress(Customer updatedCustomerAddress);
-        bool UpdateCustomerSystem(CustomerSystem updatedCustomerSystem);
-        bool DeleteCustomer(Guid customerId);
-        bool DeleteCustomerSystem(Guid customerSystemId);
+        IEnumerable<Property> GetPropertiesByBusinessId(Guid businessId);
+
+        IEnumerable<Contact> GetPropertyContactsByPropertyId(Guid propertyId);
+
+        IEnumerable<Property> GetActivePropertiesByBusinessId(Guid businessId);
+
+        Property GetPropertyByPropertyId(Guid propertyId);
+
+        PropertySystem GetPropertySystemByPropertySystemId(Guid propertySystemId);
+
+        bool AddNewPropertyToDatabase(NewPropertyDTO newPropertyDTO);
+
+        bool AddNewContactToDatabase(NewContactDTO newContactDTO);
+
+        Guid AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO);
+
+        bool UpdateProperty(Property updatedProperty);
+
+        bool UpdateContact(Contact updatedContact);
+
+        bool UpdatePropertyEnabledOrDisabled(Property updatedProperty);
+
+        bool UpdatePropertySystemEnabledOrDisabled(PropertySystem updatedPropertySystem);
+
+        bool UpdatePropertySystem(PropertySystem updatedPropertySystem);
+
+        bool UpdatePropertySystemDayTankDepleted(Guid systemId, DateTime dateTankWillBeEmptied);
+
+        bool DeleteContact(Guid contactId);
+
+        bool DeletePropertySystem(Guid propertySystemId);
     }
 }

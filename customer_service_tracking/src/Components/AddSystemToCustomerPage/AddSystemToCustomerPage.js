@@ -40,7 +40,7 @@ const newInstallReportValidationSchema = Yup.object().shape({
 function AddSystemToCustomerPage({ userObj }) {
   const { id } = useParams();
   const history = useHistory();
-  const systemOptions = useGetSystemsForBusiness();
+  const systemOptions = useGetSystemsForBusiness(userObj.businessId);
   const jobTypeOptions = useGetJobTypeOptions();
   const addNewReport = useAddNewReport();
   const addNewCustomerSystem = useAddNewCustomerSystem();
@@ -58,8 +58,8 @@ function AddSystemToCustomerPage({ userObj }) {
     validationSchema: newInstallReportValidationSchema,
     onSubmit: (formValues, { setSubmitting }) => {
       const submission = { ...formValues };
-      const jTOptions = jobTypeOptions?.data?.data;
-      const installId = jTOptions.find((x) => x.type === 'Install');
+      const jTOptions = jobTypeOptions?.data;
+      const installId = jTOptions.find((x) => x.type === 'Install').id;
       const newCustomerSystem = {
         customerId: id,
         nozzles: parseInt(submission.nozzles, 10),
@@ -104,7 +104,7 @@ function AddSystemToCustomerPage({ userObj }) {
               id="systemId"
               {...formik.getFieldProps('systemId')}>
               <option value="">Select a system</option>
-              {systemOptions?.data?.data?.map((object) => (
+              {systemOptions?.data?.map((object) => (
                 <option key={object.id} value={object.id}>{object.type}</option>
               ))}
             </Input>

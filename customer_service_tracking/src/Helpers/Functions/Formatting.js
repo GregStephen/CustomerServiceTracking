@@ -29,6 +29,8 @@ const formatAddressObj = (addressObj) => (
     </div>
 );
 
+const formatAddressIntoQuery = (addressObj) => `${addressObj.addressLine1.replace(/\s/g, '+')}${addressObj.addressLine2 ? `+ ${addressObj.addressLine2.replace(/\s/g, '+')}` : ''}+${addressObj.city}+${addressObj.state}+${addressObj.zipCode}`;
+
 const formatContactInfo = (customerObj) => {
   const createEmails = () => {
     if (customerObj.emails) {
@@ -59,4 +61,5 @@ export default {
   directionLink,
   formatAddressObj,
   formatContactInfo,
+  formatAddressIntoQuery,
 };

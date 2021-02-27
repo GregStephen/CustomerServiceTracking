@@ -7,7 +7,7 @@ namespace CustomerServiceTracking.DTOS
 {
     public class NewJobDTO
     {
-        public Guid CustomerSystemId { get; set; }
+        public Guid PropertySystemId { get; set; }
         public DateTime DateAssigned { get; set; }
         public Guid TechnicianId { get; set; }
         public Guid JobTypeId { get; set; }

@@ -34,7 +34,6 @@ namespace CustomerServiceTracking
 
             services.AddControllers();
 
-            services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IBusinessRepository, BusinessRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IJobRepository, JobRepository>();
@@ -43,8 +42,6 @@ namespace CustomerServiceTracking
             services.AddScoped<ISystemRepository, SystemRepository>();
             services.AddScoped<IUnregisteredEmployeeRepository, UnregisteredEmployeeRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IEmailRepository, EmailRepository>();
-            services.AddScoped<IPhoneNumberRepository, PhoneNumberRepository>();
 
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

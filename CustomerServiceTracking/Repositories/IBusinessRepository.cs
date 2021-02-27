@@ -11,8 +11,6 @@ namespace CustomerServiceTracking.Repositories
         IEnumerable<Business> GetBusinesses();
         IEnumerable<Employee> GetRegisteredEmployees(Guid businessId);
         List<Employee> GetAllEmployees(Guid businessId);
-        Guid AddNewBusinessToDatabase(string businessName, Guid addressId);
-        bool AddUserToBusiness(Guid userId, Guid businessId);
         Business GetUsersBusiness(Guid userId);
     }
 }

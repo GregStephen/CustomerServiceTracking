@@ -1,14 +1,39 @@
 DECLARE @user1Admin UNIQUEIDENTIFIER
 DECLARE @user2 UNIQUEIDENTIFIER
-DECLARE @businessAddress UNIQUEIDENTIFIER
-DECLARE @customerAddress UNIQUEIDENTIFIER
-DECLARE @customer UNIQUEIDENTIFIER
-DECLARE @customerSystem UNIQUEIDENTIFIER
+DECLARE @contact UNIQUEIDENTIFIER
+DECLARE @property UNIQUEIDENTIFIER
+DECLARE @propertySystem UNIQUEIDENTIFIER
 DECLARE @business UNIQUEIDENTIFIER
 DECLARE @system UNIQUEIDENTIFIER
 DECLARE @jobTypeInstall UNIQUEIDENTIFIER
 DECLARE @jobTypeService UNIQUEIDENTIFIER
 DECLARE @jobTypeRepair UNIQUEIDENTIFIER
+
+/* Creates the business */
+INSERT INTO [Business]
+(
+    [BusinessName],
+	[AddressLine1],
+    [City],
+    [State],
+    [ZipCode],
+	[Latitude],
+	[Longitude]
+)
+VALUES
+(
+	'Bloopers Business',
+	'129 Sophie Drive',
+	'Antioch',
+	'TN',
+	'37013',
+	'36.03565',
+	'-86.58211'
+)
+
+SELECT @business = [Id]
+FROM [Business]
+WHERE BusinessName = 'Bloopers Business'
 
 /* Creates an admin user and a personal user*/
 INSERT INTO [User]
@@ -16,20 +41,23 @@ INSERT INTO [User]
     [FirstName],
     [LastName],
     [FirebaseUid],
-    [Admin]
+    [Admin],
+	[BusinessId]
 )
 VALUES
 (
 	'Ben',
 	'Blooper',
 	'Fyq955AUwHRecZThPWfuslrIlUq2',
-	1
+	1,
+	@business
 ),
 (
 	'Greg',
 	'Worker',
 	'Yk3pvshTbMSKOlhNyhOUveXvBXf1',
-	0
+	0,
+	@business
 )
 
 SELECT @user1Admin = [Id]
@@ -40,10 +68,12 @@ SELECT @user2 = [Id]
 FROM [User]
 WHERE FirstName = 'Greg'
 
-/* Creates an address for the business
-	and an address for the customer */
-INSERT INTO [Address]
+/* Creates a property */
+INSERT INTO [Property]
 (
+	[DisplayName],
+	[Enabled],
+	[BusinessId],
     [AddressLine1],
     [City],
     [State],
@@ -53,14 +83,9 @@ INSERT INTO [Address]
 )
 VALUES
 (
-	'129 Sophie Drive',
-	'Antioch',
-	'TN',
-	'37013',
-	'36.03565',
-	'-86.58211'
-),
-(
+	'Long Hunter',
+	1,
+	@business,
 	'719 Longhunter Ct',
 	'Nashville',
 	'TN',
@@ -69,83 +94,41 @@ VALUES
 	'-86.63862'
 )
 
-SELECT @businessAddress = [Id]
-FROM [Address]
-WHERE [AddressLine1] = '129 Sophie Drive'
 
-SELECT @customerAddress = [Id]
-FROM [Address]
+SELECT @property = [Id]
+FROM [Property]
 WHERE [AddressLine1] = '719 Longhunter Ct'
-
-/* Creates the business */
-INSERT INTO [Business]
-(
-    [BusinessName],
-    [AddressId]
-)
-VALUES
-(
-	'Bloopers Business',
-	@businessAddress
-)
-
-SELECT @business = [Id]
-FROM [Business]
-WHERE BusinessName = 'Bloopers Business'
-
-/* Links the admin user and personal user to the business */
-INSERT INTO [UserBusiness]
-(
-	[UserId],
-	[BusinessId]
-)
-VALUES
-(
-	@user1Admin,
-	@business
-),
-(
-	@user2,
-	@business
-)
 
 /* Creates a new System */
 INSERT INTO [System]
 (
     [Type],
     [Gallons],
-    [Inches]
+    [Inches],
+	[BusinessId]
 )
 VALUES
 (
 	'Bloopers System',
 	30,
-	20
+	20,
+	@business
 )
 
 SELECT @system = [Id]
 FROM [System]
 WHERE [Type] = 'Bloopers System'
 
-/* Connects the system to the business */
-INSERT INTO [BusinessSystem]
-(
-	[SystemId],
-	[BusinessId]
-)
-VALUES
-(
-	@system,
-	@business
-)
-
-/* Creates a new Customer */
-INSERT INTO [Customer]
+/* Creates a new Contact */
+INSERT INTO [Contact]
 (
     [FirstName],
     [LastName],
-	[Enabled],
-    [AddressId]
+	[Primary],
+	[PropertyId],
+    [Email],
+	[CellPhone],
+	[HomePhone]
 )
 
 VALUES
@@ -153,63 +136,22 @@ VALUES
 	'Frank',
 	'Customer',
 	1,
-	@customerAddress
+	@property,
+	'FrankCustomer@gmail.com',
+	'1234567890',
+	'9015960456'
 )
 
-SELECT @customer = [Id]
-FROM [Customer]
+SELECT @contact = [Id]
+FROM [Contact]
 WHERE FirstName = 'Frank'
 
-INSERT INTO [Emails]
-(
-	[CustomerId],
-	[Email]	
-)
-VALUES
-(
-	@customer,
-	'FrankCustomer@gmail.com'
-)
 
-INSERT INTO [PhoneNumbers]
+/* Creates a new system for the property */
+INSERT INTO [PropertySystem]
 (
-	[CustomerId],
-	[PhoneNumber],
-	[Type]
-)
-VALUES
-(
-	@customer,
-	'1234567890',
-	1
-),
-(
-	@customer,
-	'6154955196',
-	2
-),
-(
-	@customer,
-	'3211234321',
-	3
-)
-
-/* Links the business with the customer */
-INSERT INTO [BusinessCustomer]
-(
-    [BusinessId],
-    [CustomerId]
-)
-VALUES
-(
-    @business,
-    @customer
-)
-
-/* Creates a new system for the customer */
-INSERT INTO [CustomerSystem]
-(
-	[CustomerId],
+	[PropertyId],
+	[Enable],
 	[InstallDate],
 	[Notes],
 	[Nozzles],
@@ -217,11 +159,13 @@ INSERT INTO [CustomerSystem]
 	[Sold],
 	[SprayCycles],
 	[SprayDuration],
-	[SystemId]
+	[SystemId],
+	[DayTankDepleted]
 )
 VALUES
 (
-	@customer,
+	@property,
+	1,
 	'2020-12-12 00:00:00.000',
 	'Around back near the gate',
 	10,
@@ -229,11 +173,12 @@ VALUES
 	0,
 	4,
 	30,
-	@system
+	@system,
+	'2021-01-02 00:00:00.000'
 )
 
-SELECT @customerSystem = [Id]
-FROM [CustomerSystem]
+SELECT @propertySystem = [Id]
+FROM [PropertySystem]
 WHERE [SerialNumber] = '1239129123'
 
 
@@ -269,8 +214,7 @@ WHERE [Type] = 'Repair'
 INSERT INTO [Report]
 (
     [AmountRemaining],
-    [CustomerId],
-	[DayTankDepleted],
+    [PropertyId],
     [InchesAdded],
 	[JobTypeId],
     [Notes],
@@ -282,16 +226,15 @@ INSERT INTO [Report]
 VALUES
 (
 	0,
-	@customer,
-	'2021-01-10 00:00:00.000',
+	@property,
 	20,
 	@jobTypeInstall,
 	'All lines look good',
 	'2020-12-12 00:00:00.000',
 	5,
-	@customerSystem,
+	@propertySystem,
 	@user2
 )
 
 
-SELECT * FROM [User], [UserBusiness], [Report], [Customer]
+SELECT * FROM [User], [Report], [Property]

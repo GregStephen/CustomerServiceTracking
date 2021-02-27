@@ -37,43 +37,43 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult AddNewAdminUserToDatabase(NewAdminUserDTO newUser)
-        {
-            if (_repo.AddNewAdminUserToDatabase(newUser))
-            {
-                return Created($"user/{newUser.FirstName}", newUser);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPost]
+        //public IActionResult AddNewAdminUserToDatabase(NewAdminUserDTO newUser)
+        //{
+        //    if (_repo.AddNewAdminUserToDatabase(newUser))
+        //    {
+        //        return Created($"user/{newUser.FirstName}", newUser);
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
-        [HttpPost("personal")]
-        public IActionResult AddNewPersonalUserToDatabase(NewPersonalUserDTO newUser)
-        {
-            if (_repo.UpdateUnregisteredUserToRegisteredUser(newUser))
-            {
-                return Created($"user/personal/{newUser.FirstName}", newUser);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPost("personal")]
+        //public IActionResult AddNewPersonalUserToDatabase(NewPersonalUserDTO newUser)
+        //{
+        //    if (_repo.UpdateUnregisteredUserToRegisteredUser(newUser))
+        //    {
+        //        return Created($"user/personal/{newUser.FirstName}", newUser);
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
-        [HttpPost("unregisteredEmployee")]
-        public IActionResult AddUnregisteredEmployeeToDatabase(NewUnregisteredEmployeeDTO unregisteredEmployee)
-        {
-            if (_repo.AddUnregisteredEmployeeToDatabase(unregisteredEmployee))
-            {
-                return Created($"business/{unregisteredEmployee.FirstName}", unregisteredEmployee);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpPost("unregisteredEmployee")]
+        //public IActionResult AddUnregisteredEmployeeToDatabase(NewUnregisteredEmployeeDTO unregisteredEmployee)
+        //{
+        //    if (_repo.AddUnregisteredEmployeeToDatabase(unregisteredEmployee))
+        //    {
+        //        return Created($"business/{unregisteredEmployee.FirstName}", unregisteredEmployee);
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
     }
 }

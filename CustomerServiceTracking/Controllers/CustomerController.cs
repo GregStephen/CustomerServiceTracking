@@ -25,18 +25,18 @@ namespace CustomerServiceTracking.Controllers
         }
 
         [HttpGet("businessId/{businessId}")]
-        public IActionResult GetCustomersByBusinessId(Guid businessId)
+        public IActionResult GetPropertiesByBusinessId(Guid businessId)
         {
-            return Ok(_repo.GetCustomersByBusinessId(businessId));
+            return Ok(_repo.GetPropertiesByBusinessId(businessId));
         }
 
-        [HttpGet("customerId/{customerId}")]
-        public IActionResult GetCustomerByCustomerId(Guid customerId)
+        [HttpGet("propertyId/{propertyId}")]
+        public IActionResult GetPropertyByPropertyId(Guid propertyId)
         {
-            var customer = _repo.GetCustomerByCustomerId(customerId);
-            if (customer != null)
+            var property = _repo.GetPropertyByPropertyId(propertyId);
+            if (property != null)
             {
-                return Ok(customer);
+                return Ok(property);
             }
             else
             {
@@ -44,13 +44,13 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpGet("customerSystemId/{customerSystemId}")]
-        public IActionResult GetCustomerSystemByCustomerSystemId(Guid customerSystemId)
+        [HttpGet("propertySystemId/{propertySystemId}")]
+        public IActionResult GetPropertySystemByPropertySystemId(Guid propertySystemId)
         {
-            var customerSystem = _repo.GetCustomerSystemByCustomerSystemId(customerSystemId);
-            if (customerSystem != null)
+            var propertySystem = _repo.GetPropertySystemByPropertySystemId(propertySystemId);
+            if (propertySystem != null)
             {
-                return Ok(customerSystem);
+                return Ok(propertySystem);
             }
             else
             {
@@ -59,11 +59,24 @@ namespace CustomerServiceTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddNewCustomerToDatabase(NewCustomerDTO newCustomerDTO)
+        public IActionResult AddNewPropertyToDatabase(NewPropertyDTO newProperty)
         {
-            if (_repo.AddNewCustomerToDatabase(newCustomerDTO))
+            if (_repo.AddNewPropertyToDatabase(newProperty))
             {
-                return Created($"customer/{newCustomerDTO.FirstName}", newCustomerDTO);
+                return Created($"customer/{newProperty.DisplayName}", newProperty);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("contact")]
+        public IActionResult AddNewContactToDatabase(NewContactDTO newContactDTO)
+        {
+            if (_repo.AddNewContactToDatabase(newContactDTO))
+            {
+                return Created($"customer/{newContactDTO.FirstName}", newContactDTO);
             }
             else
             {
@@ -72,22 +85,22 @@ namespace CustomerServiceTracking.Controllers
         }
 
         [HttpPost("addSystem")]
-        public IActionResult AddNewSystemToCustomer(NewCustomerSystemDTO newCustomerSystemDTO)
+        public IActionResult AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO)
         {
-            var customerSystemId = _repo.AddNewSystemToCustomer(newCustomerSystemDTO);
-            if (customerSystemId != null)
+            var propertySystemId = _repo.AddNewSystemToProperty(newPropertySystemDTO);
+            if (propertySystemId != null)
             {
-                return Ok(customerSystemId);
+                return Ok(propertySystemId);
             }
             else
             {
                 return BadRequest();
             }
         }
-        [HttpPut("updateCustomer")]
-        public IActionResult UpdateCustomer(Customer updateCustomer)
+        [HttpPut("updateContact")]
+        public IActionResult UpdateContact(Contact updateContact)
         {
-            if (_repo.UpdateCustomer(updateCustomer))
+            if (_repo.UpdateContact(updateContact))
             {
                 return Ok();
             }
@@ -97,10 +110,10 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpPut("updateCustomerAddress")]
-        public IActionResult UpdateCustomerAddress(Customer updateCustomerAddress)
+        [HttpPut("updateProperty")]
+        public IActionResult UpdateProperty(Property updatedProperty)
         {
-            if (_repo.UpdateCustomerAddress(updateCustomerAddress))
+            if (_repo.UpdateProperty(updatedProperty))
             {
                 return Ok();
             }
@@ -110,10 +123,10 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpPut("updateCustomerStatus")]
-        public IActionResult UpdateCustomerStatus(Customer customer)
+        [HttpPut("updatePropertyStatus")]
+        public IActionResult UpdatePropertyStatus(Property property)
         {
-            if (_repo.UpdateCustomerEnabledOrDisabled(customer))
+            if (_repo.UpdatePropertyEnabledOrDisabled(property))
             {
                 return Ok();
             }
@@ -123,10 +136,10 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpPut("updateCustomerSystem")]
-        public IActionResult UpdateCustomerSystem(CustomerSystem updateCustomerSystem)
+        [HttpPut("updatePropertySystem")]
+        public IActionResult UpdatePropertySystem(PropertySystem updatePropertySystem)
         {
-            if (_repo.UpdateCustomerSystem(updateCustomerSystem))
+            if (_repo.UpdatePropertySystem(updatePropertySystem))
             {
                 return Ok();
             }
@@ -136,10 +149,10 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpDelete("{customerId}")]
-        public IActionResult DeleteCustomer(Guid customerId)
+        [HttpDelete("{contactId}")]
+        public IActionResult DeleteContact(Guid contactId)
         {
-            if (_repo.DeleteCustomer(customerId))
+            if (_repo.DeleteContact(contactId))
             {
                 return Ok();
             }
@@ -149,10 +162,10 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpDelete("customerSystem/{customerSystemId}")]
-        public IActionResult DeleteCustomerSystem(Guid customerSystemId)
+        [HttpDelete("propertySystem/{propertySystemId}")]
+        public IActionResult DeletePropertySystem(Guid propertySystemId)
         {
-            if (_repo.DeleteCustomerSystem(customerSystemId))
+            if (_repo.DeletePropertySystem(propertySystemId))
             {
                 return Ok();
             }

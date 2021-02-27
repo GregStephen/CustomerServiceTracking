@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CustomerServiceTracking.DTOS
 {
     public class NewReportDTO
     {
         public int AmountRemaining { get; set; }
-        public Guid CustomerId { get; set; }
+        public Guid PropertyId { get; set; }
         public int InchesAdded { get; set; }
         public string Notes { get; set; }
         public DateTime ServiceDate { get; set; }

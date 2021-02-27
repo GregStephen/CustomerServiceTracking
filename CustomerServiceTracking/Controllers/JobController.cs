@@ -56,7 +56,7 @@ namespace CustomerServiceTracking.Controllers
                     var newJob = new NewJobDTO()
                     {
                         DateAssigned = newJobDTO.DateAssigned,
-                        CustomerSystemId = systemId,
+                        PropertySystemId = systemId,
                         JobTypeId = newJobDTO.JobTypeId,
                         TechnicianId = newJobDTO.TechnicianId,
                     };

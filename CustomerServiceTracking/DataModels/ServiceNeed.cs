@@ -7,8 +7,8 @@ namespace CustomerServiceTracking.DataModels
 {
     public class ServiceNeed
     {
-        public Customer Customer { get; set; }
-        public CustomerSystem System { get; set; }
+        public Property Property { get; set; }
+        public PropertySystem System { get; set; }
         public int DaysUntilEmpty { get; set; }
         public List<Employee> EmployeeOptions { get; set; }
         public Job Job { get; set; }

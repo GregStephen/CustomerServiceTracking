@@ -1,8 +1,5 @@
 ﻿using CustomerServiceTracking.DataModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CustomerServiceTracking.DTOS
 {
@@ -10,8 +7,8 @@ namespace CustomerServiceTracking.DTOS
     {
         public Guid Id { get; set; }
         public int AmountRemaining { get; set; }
-        public Guid CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public Guid PropertyId { get; set; }
+        public Property Property { get; set; }
         public DateTime DayTankDepleted { get; set; }
         public int InchesAdded { get; set; }
         public string Notes { get; set; }

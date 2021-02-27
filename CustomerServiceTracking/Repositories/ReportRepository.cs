@@ -26,45 +26,60 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT r.Id, r.AmountRemaining, r.CustomerId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, r.DayTankDepleted, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.PropertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
                             FROM [Report] r
                             JOIN [User] u
 							ON r.TechnicianId = u.Id
-							Join [UserBusiness] ub
-							On u.Id = ub.UserId
 							JOIN [JobType] jt
 							ON r.JobTypeId = jt.Id
-                            WHERE ub.BusinessId = @businessId";
+                            WHERE u.BusinessId = @businessId";
                 var parameters = new { businessId };
                 var reports = db.Query<ReportToSendDTO>(sql, parameters);
                 foreach (var report in reports)
                 {
-                    report.Customer = _customerRepo.GetCustomerByCustomerId(report.CustomerId);
+                    report.Property = _customerRepo.GetPropertyByPropertyId(report.PropertyId);
                 }
                 return reports;
             }
         }
 
-            public IEnumerable<ReportToSendDTO> GetReportsByCustomerId(Guid customerId)
+        public IEnumerable<ReportToSendDTO> GetReportsByPropertyId(Guid propertyId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT r.Id, r.AmountRemaining, r.CustomerId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, r.DayTankDepleted, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.PropertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
                             FROM [Report] r
                             JOIN [User] u
 							ON r.TechnicianId = u.Id
 							JOIN [JobType] jt
 							ON r.JobTypeId = jt.Id
-                            WHERE r.[CustomerId] = @customerId";
-                var parameters = new { customerId };
+                            WHERE r.[PropertyId] = @propertyId";
+                var parameters = new { propertyId };
                 return db.Query<ReportToSendDTO>(sql, parameters);
             }
         }
+
+        public IEnumerable<ReportToSendDTO> GetReportsByPropertySystemId(Guid propertySystemId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.PropertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                            FROM [Report] r
+                            JOIN [User] u
+							ON r.TechnicianId = u.Id
+							JOIN [JobType] jt
+							ON r.JobTypeId = jt.Id
+                            WHERE r.[SystemId] = @propertySystemId";
+                var parameters = new { propertySystemId };
+                return db.Query<ReportToSendDTO>(sql, parameters);
+            }
+        }
+
         public ReportToSendDTO GetReportById(Guid reportId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT r.Id, r.AmountRemaining, r.CustomerId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, r.DayTankDepleted, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.propertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
                             FROM [Report] r
                             JOIN [User] u
 							ON r.TechnicianId = u.Id
@@ -82,7 +97,7 @@ namespace CustomerServiceTracking.Repositories
             int totalInchesInSystem = newReportDTO.AmountRemaining + newReportDTO.InchesAdded;
 
             // gets the exact system being checked
-            CustomerSystem systemToDoMath = _systemRepo.GetCustomerSystemBySystemId(newReportDTO.SystemId);
+            PropertySystem systemToDoMath = _systemRepo.GetPropertySystemBySystemId(newReportDTO.SystemId);
 
             // 0.03 is the amount per oz that a single nozzle shoots out in a second at 200 psi
             var ozPerNozzlePerSprayDuration = systemToDoMath.SprayDuration * 0.03;
@@ -114,24 +129,13 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                Report newReport = new Report();
-
-                newReport.DayTankDepleted = GetTheDateTheTankWillBeDepleted(newReportDTO);
-                newReport.AmountRemaining = newReportDTO.AmountRemaining;
-                newReport.CustomerId = newReportDTO.CustomerId;
-                newReport.InchesAdded = newReportDTO.InchesAdded;
-                newReport.JobTypeId = newReportDTO.JobTypeId;
-                newReport.Notes = newReportDTO.Notes;
-                newReport.ServiceDate = newReportDTO.ServiceDate;
-                newReport.SolutionAdded = newReportDTO.SolutionAdded;
-                newReport.SystemId = newReportDTO.SystemId;
-                newReport.TechnicianId = newReportDTO.TechnicianId;
+                var dateTankWillBeEmptied = GetTheDateTheTankWillBeDepleted(newReportDTO);
+                _customerRepo.UpdatePropertySystemDayTankDepleted(newReportDTO.SystemId, dateTankWillBeEmptied);
 
                 var sql = @"INSERT INTO [Report]
                             (
                                 [AmountRemaining],
                                 [CustomerId],
-                                [DayTankDepleted],
                                 [InchesAdded],
                                 [JobTypeId],
                                 [Notes],
@@ -144,7 +148,6 @@ namespace CustomerServiceTracking.Repositories
                             (
                                 @amountRemaining,
                                 @customerId,
-                                @dayTankDepleted,
                                 @inchesAdded,
                                 @jobTypeId,
                                 @notes,
@@ -153,7 +156,7 @@ namespace CustomerServiceTracking.Repositories
                                 @systemId,
                                 @technicianId
                             )";
-                return (db.Execute(sql, newReport) == 1);
+                return (db.Execute(sql, newReportDTO) == 1);
             }
         }
     }
