@@ -13,9 +13,10 @@ import {
 } from 'reactstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useUpdateCustomerAddress } from '../../../Helpers/Data/CustomerRequests';
+import { useUpdateProperty } from '../../../Helpers/Data/PropertyRequests';
 
-const editAddressValidationSchema = Yup.object().shape({
+const editPropertyValidationSchema = Yup.object().shape({
+  displayName: Yup.string().required('Display Name is required'),
   addressLine1: Yup.string().required('Address is required'),
   addressLine2: Yup.string().notRequired().nullable(),
   city: Yup.string().required('City is required'),
@@ -23,31 +24,42 @@ const editAddressValidationSchema = Yup.object().shape({
   zipCode: Yup.string().length(5).required('Zip Code is required'),
 });
 
-function EditCustomerAddressModal({
-  customer,
+function EditPropertyModal({
+  property,
 }) {
   const [isToggled, setIsToggled] = useState(false);
-  const updateCustomerAddress = useUpdateCustomerAddress();
+  const updateProperty = useUpdateProperty();
 
   const formik = useFormik({
-    initialValues: customer?.address,
+    initialValues: property,
     enableReinitialize: true,
-    validationSchema: editAddressValidationSchema,
-    onSubmit: (formValues, { setSubmitting }) => {
-      const submission = { ...customer };
-      submission.address = formValues;
-      updateCustomerAddress.mutate(submission);
+    validationSchema: editPropertyValidationSchema,
+    onSubmit: ({ setSubmitting }) => {
+      const submission = { ...property };
+      updateProperty.mutate(submission);
       setSubmitting(false);
       setIsToggled(false);
     },
   });
 
   return (<>
-    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit Address</button>
+    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit Property</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
-      <ModalHeader toggle={() => setIsToggled(false)}>Edit Customer Address</ModalHeader>
+      <ModalHeader toggle={() => setIsToggled(false)}>Edit Property</ModalHeader>
       <Form onSubmit={formik.handleSubmit}>
         <ModalBody>
+        <FormGroup>
+            <Label htmlFor="displayName">Display Name</Label>
+            <Input
+              type="input"
+              className="form-control"
+              id="displayName"
+              placeholder="'Smith Town House', '123 Fake Street', 'Johnson Beach House', etc..."
+              {...formik.getFieldProps('displayName')}
+            />
+            {formik.touched.displayName
+              && <FormFeedback className="d-block">{formik.errors?.displayName}</FormFeedback>}
+          </FormGroup>
           <FormGroup>
             <Label htmlFor="addressLine1">Address</Label>
             <Input
@@ -105,7 +117,7 @@ function EditCustomerAddressModal({
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-          <Button type="submit" color="primary">Edit Customer Address</Button>{' '}
+          <Button type="submit" color="primary">Edit Property</Button>{' '}
           <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
         </ModalFooter>
       </Form>
@@ -113,4 +125,4 @@ function EditCustomerAddressModal({
   </>);
 }
 
-export default EditCustomerAddressModal;
+export default EditPropertyModal;

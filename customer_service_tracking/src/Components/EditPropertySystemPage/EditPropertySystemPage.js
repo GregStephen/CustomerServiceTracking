@@ -15,10 +15,10 @@ import * as Yup from 'yup';
 import { useParams, useHistory } from 'react-router-dom';
 
 import { Page, Header } from '../Global';
-import { useUpdateCustomerSystem, useGetCustomerSystemFromCustomerSystemId } from '../../Helpers/Data/CustomerRequests';
+import { useUpdatePropertySystem, useGetPropertySystemFromPropertySystemId } from '../../Helpers/Data/PropertyRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
-const editCustomerSystemValidationSchema = Yup.object().shape({
+const editPropertySystemValidationSchema = Yup.object().shape({
   nozzles: Yup.number().required('Nozzles is required'),
   notes: Yup.string().notRequired(),
   sprayCycles: Yup.number().required('Spray cycles is required'),
@@ -28,15 +28,15 @@ const editCustomerSystemValidationSchema = Yup.object().shape({
 });
 
 
-function EditCustomerSystemPage({ userObj }) {
+function EditPropertySystemPage({ userObj }) {
   const { id } = useParams();
   const history = useHistory();
   const systemOptions = useGetSystemsForBusiness(userObj.businessId);
-  const currentSystem = useGetCustomerSystemFromCustomerSystemId(id);
+  const currentSystem = useGetPropertySystemFromPropertySystemId(id);
   const today = moment().format('YYYY-MM-DD');
-  const updateCustomerSystem = useUpdateCustomerSystem();
+  const updatePropertySystem = useUpdatePropertySystem();
 
-  const defaultCustomerSystem = {
+  const defaultPropertySystem = {
     customerId: currentSystem?.customerId ?? '',
     systemId: currentSystem?.systemId ?? '',
     notes: currentSystem?.notes ?? '',
@@ -49,18 +49,18 @@ function EditCustomerSystemPage({ userObj }) {
   };
 
   const formik = useFormik({
-    initialValues: defaultCustomerSystem,
+    initialValues: defaultPropertySystem,
     enableReinitialize: true,
-    validationSchema: editCustomerSystemValidationSchema,
+    validationSchema: editPropertySystemValidationSchema,
     onSubmit: (formValues, { setSubmitting }) => {
-      const { updatedCustomerSystem } = { ...formValues };
-      updatedCustomerSystem.nozzles = parseInt(updatedCustomerSystem.nozzles, 10);
-      updatedCustomerSystem.sprayCycles = parseInt(updatedCustomerSystem.sprayCycles, 10);
-      updatedCustomerSystem.sprayDuration = parseInt(updatedCustomerSystem.sprayDuration, 10);
-      updatedCustomerSystem.installDate = moment(updatedCustomerSystem.installDate).format('YYYY-MM-DD');
-      updateCustomerSystem.mutate(updatedCustomerSystem, {
+      const { updatedCustomerSystem: updatedPropertySystem } = { ...formValues };
+      updatedPropertySystem.nozzles = parseInt(updatedPropertySystem.nozzles, 10);
+      updatedPropertySystem.sprayCycles = parseInt(updatedPropertySystem.sprayCycles, 10);
+      updatedPropertySystem.sprayDuration = parseInt(updatedPropertySystem.sprayDuration, 10);
+      updatedPropertySystem.installDate = moment(updatedPropertySystem.installDate).format('YYYY-MM-DD');
+      updatePropertySystem.mutate(updatedPropertySystem, {
         onSuccess: () => {
-          history.push(`/customer/${updatedCustomerSystem.customerId}`);
+          history.push(`/property/${updatedPropertySystem.propertyId}`);
         },
       });
       setSubmitting(false);
@@ -163,11 +163,11 @@ function EditCustomerSystemPage({ userObj }) {
             {formik.touched.notes
               && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
           </FormGroup>
-          <button type="submit" className="btn btn-success">Edit Customers System</button>
+          <button type="submit" className="btn btn-success">Edit Properties System</button>
         </Form>
       </div>
     </Page>
   );
 }
 
-export default EditCustomerSystemPage;
+export default EditPropertySystemPage;

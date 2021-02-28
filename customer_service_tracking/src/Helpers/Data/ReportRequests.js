@@ -11,8 +11,8 @@ export function useGetAllReportsByBusinessId(businessId) {
   });
 }
 
-export function useGetReportsByCustomerId(customerId) {
-  const url = `${baseUrl}/customerId/${customerId}`;
+export function useGetReportsByPropertyId(propertyId) {
+  const url = `${baseUrl}/propertyId/${propertyId}`;
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
     return data;

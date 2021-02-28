@@ -8,40 +8,47 @@ import {
 } from 'reactstrap';
 
 import { Page, Header, GlobalTable } from '../Global';
-import { useGetCustomerForBusiness } from '../../Helpers/Data/CustomerRequests';
+import { useGetPropertiesForBusiness } from '../../Helpers/Data/PropertyRequests';
 
-import './CustomersPage.scss';
-
-function CustomersPage({ userObj }) {
-  const customers = useGetCustomerForBusiness(userObj.businessId);
+function PropertiesPage({ userObj }) {
+  const properties = useGetPropertiesForBusiness(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
-  const [inactiveCustomers, getInactiveCustomers] = useState();
+  const [inactiveProperties, getInactiveProperties] = useState();
+
+  const returnPrimaryContactName = (contacts) => {
+    contacts.forEach((contact) => {
+      if (contact.primary === true) {
+        return <p>{contact.firstName}</p>;
+      }
+      return '';
+    });
+  };
 
   useEffect(() => {
-    if (customers?.data) {
-      const numberOfInactiveCustomers = customers.data.filter((c) => !c.enabled).length;
-      getInactiveCustomers(numberOfInactiveCustomers);
+    if (properties?.data) {
+      const numberOfInactiveCustomers = properties.data.filter((p) => !p.enabled).length;
+      getInactiveProperties(numberOfInactiveCustomers);
     }
-  }, [customers]);
+  }, [properties]);
 
-  const tableData = useMemo(() => (customers.data ? customers.data : []), [customers.data]);
+  const tableData = useMemo(() => (properties.data ? properties.data : []), [properties.data]);
 
   const tableColumns = useMemo(() => [
     {
-      Header: 'Customer Name',
-      accessor: (c) => c.firstName,
+      Header: 'Property Display Name',
+      accessor: (r) => r.displayName,
       Cell: ({ row: { original } }) => (
-        <Link to={{ pathname: `/customer/${original.id}` }}>{`${original.firstName} ${original.lastName}`}</Link>
+        <Link to={{ pathname: `/customer/${original.id}` }}>{`${original.displayName}`}</Link>
       ),
     },
     {
-      Header: 'Email',
+      Header: 'Primary Contact',
       accessor: (r) => r.id,
-      Cell: ({ row: { original } }) => (original?.emails[0] ? original.emails[0] : ''),
+      Cell: ({ row: { original } }) => (returnPrimaryContactName(original.contacts)),
     },
     {
       Header: 'City',
-      accessor: (r) => r.address.city,
+      accessor: (r) => r.city,
     },
     {
       Header: 'Active',
@@ -52,7 +59,7 @@ function CustomersPage({ userObj }) {
     },
     {
       Header: 'Search',
-      accessor: (r) => r.address?.city + r.firstName + r.lastName,
+      accessor: (r) => r.city + r.displayName,
     },
   ], []);
 
@@ -67,13 +74,13 @@ function CustomersPage({ userObj }) {
 
   return (
     <Page>
-      <div className="CustomersPage">
-        <Header title="Customers" icon="fa-house-user" />
+      <div className="PropertiesPage">
+        <Header title="Properties" icon="fa-house-user" />
         <div className="d-flex justify-content-end">
-          <Link className="btn btn-info mr-4 mb-2" to={'/new-customer'}>Add a new customer</Link>
+          <Link className="btn btn-info mr-4 mb-2" to={'/new-customer'}>Add a new Property</Link>
         </div>
         <div className="d-flex justify-content-end">
-          <p className="mr-4 mb-4">Total number of inactive: {inactiveCustomers}</p>
+          <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>
         </div>
         <div className="widget col-10">
           <Row className="mb-3">
@@ -93,7 +100,7 @@ function CustomersPage({ userObj }) {
             columns={tableColumns}
             data={tableData}
             hidePagination={tableData.length < 10}
-            defaultSortColumn='Customer Name'
+            defaultSortColumn='Property Display Name'
             hiddenColumns={hiddenColumns}
             filters={filters}
           />
@@ -103,4 +110,4 @@ function CustomersPage({ userObj }) {
   );
 }
 
-export default CustomersPage;
+export default PropertiesPage;

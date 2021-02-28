@@ -8,15 +8,15 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import './App.scss';
 
-import AddSystemToCustomerPage from '../Components/AddSystemToCustomerPage/AddSystemToCustomerPage';
-import CustomerPage from '../Components/CustomerPage/CustomerPage';
-import CustomersPage from '../Components/CustomersPage/CustomersPage';
-import EditCustomerSystemPage from '../Components/EditCustomerSystemPage/EditCustomerSystemPage';
+import AddSystemToPropertyPage from '../Components/AddSystemToPropertyPage/AddSystemToPropertyPage';
+import PropertyPage from '../Components/PropertyPage/PropertyPage';
+import PropertiesPage from '../Components/PropertiesPage/PropertiesPage';
+import EditPropertySystemPage from '../Components/EditPropertySystemPage/EditPropertySystemPage';
 import HomePage from '../Components/HomePage/HomePage';
 import LandingPage from '../Components/LandingPage/LandingPage';
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
 import NewAccountPage from '../Components/NewAccountPage/NewBusinessAccount/NewAccountPage';
-import NewCustomerPage from '../Components/NewCustomerPage/NewCustomerPage';
+import NewPropertyPage from '../Components/NewCustomerPage/NewCustomerPage';
 import NewPersonalAccountPage from '../Components/NewAccountPage/NewPersonalAccountPage/NewPersonalAccountPage';
 import NewPersonalAccountCheckPage from '../Components/NewAccountPage/ChooseBusinessForPersonalPage/ChooseBusinessForPersonalPage';
 import NewReportPage from '../Components/NewReportPage/NewReportPage';
@@ -101,14 +101,14 @@ class App extends React.Component {
             <PrivateRoute path='/home' component={HomePage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/systems' component={SystemsPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/new-system' component={NewSystemPage} authorized={authorized} userObj={userObj} />
-            <PrivateRoute path='/customers' component={CustomersPage} authorized={authorized} userObj={userObj} />
-            <PrivateRoute path='/new-customer' component={NewCustomerPage} authorized={authorized} userObj={userObj} />
-            <PrivateRoute path='/customer/:id' component={CustomerPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/properties' component={PropertiesPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/new-property' component={NewPropertyPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/property/:id' component={PropertyPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/report/:reportId' component={ReportPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/reports' component={ReportsPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/new-report/:id' component={NewReportPage} authorized={authorized} userObj={userObj} />
-            <PrivateRoute path='/add-system-to-customer/:id' component={AddSystemToCustomerPage} authorized={authorized} userObj={userObj} />
-            <PrivateRoute path='/edit-customer-system/:id' component={EditCustomerSystemPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/add-system-to-property/:id' component={AddSystemToPropertyPage} authorized={authorized} userObj={userObj} />
+            <PrivateRoute path='/edit-property-system/:id' component={EditPropertySystemPage} authorized={authorized} userObj={userObj} />
             <PrivateRoute path='/team' component={TeamPage} authorized={authorized} userObj={userObj} />
             <Redirect from='*' to='/landing-page' />
           </Switch>

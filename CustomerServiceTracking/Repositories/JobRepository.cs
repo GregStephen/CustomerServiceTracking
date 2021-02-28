@@ -48,7 +48,7 @@ namespace CustomerServiceTracking.Repositories
                 // get all employees from businessId
                 List<Employee> employeeOptions = _businessRepo.GetRegisteredEmployees(businessId).ToList();
 
-                var sql = @"SELECT *
+                var sql = @"SELECT ps.*
                             FROM [PropertySystem] ps
                             JOIN [Property] p
                             on ps.[PropertyId] = p.Id
@@ -81,7 +81,7 @@ namespace CustomerServiceTracking.Repositories
                 foreach (var propertySystemNeedingService in propertySystemsNeedingService)
                 {
                     ServiceNeed SystemNeedingService = new ServiceNeed();
-                    SystemNeedingService.DaysUntilEmpty = (propertySystemNeedingService.DayTankDepleted - new DateTime()).Days;
+                    SystemNeedingService.DaysUntilEmpty = (new DateTime() - propertySystemNeedingService.DayTankDepleted).Days;
                     SystemNeedingService.Property = _customerRepo.GetPropertyByPropertyId(propertySystemNeedingService.PropertyId);
                     SystemNeedingService.System = propertySystemNeedingService;
                     SystemNeedingService.EmployeeOptions = employeeOptions;

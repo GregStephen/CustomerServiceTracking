@@ -32,7 +32,7 @@ namespace CustomerServiceTracking.Repositories
                             WHERE [FirebaseUid] = @firebaseId";
                 var parameters = new { firebaseId };
                 var userFromDb = db.QueryFirstOrDefault<User>(sql, parameters);
-                var businessInfo = _businessRepo.GetUsersBusiness(userFromDb.Id);
+                var businessInfo = _businessRepo.GetUsersBusiness(userFromDb.BusinessId);
                 userFromDb.Business = businessInfo;
                 userFromDb.BusinessId = businessInfo.Id;
                 userFromDb.BusinessName = businessInfo.BusinessName;

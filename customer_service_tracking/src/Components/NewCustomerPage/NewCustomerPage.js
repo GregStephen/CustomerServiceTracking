@@ -12,7 +12,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { Header, Page } from '../Global';
-import { useAddNewCustomer } from '../../Helpers/Data/CustomerRequests';
+import { useAddNewProperty } from '../../Helpers/Data/PropertyRequests';
 import useSearchAddresses from '../../Helpers/Data/TomTomRequests';
 
 import './NewCustomerPage.scss';
@@ -52,7 +52,7 @@ const newCustomerValidationSchema = Yup.object().shape({
 
 function NewCustomerPage({ userObj }) {
   const history = useHistory();
-  const addNewCustomer = useAddNewCustomer();
+  const addNewCustomer = useAddNewProperty();
 
 
   const formik = useFormik({
@@ -81,7 +81,7 @@ function NewCustomerPage({ userObj }) {
       setValues(stuff);
       addNewCustomer.mutate(stuff, {
         onSuccess: () => {
-          history.push('/customers');
+          history.push('/properties');
         },
       });
       setSubmitting(false);

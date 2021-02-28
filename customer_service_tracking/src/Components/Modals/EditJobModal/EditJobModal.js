@@ -33,7 +33,7 @@ function EditJobModal({
 
   const defaultJob = useMemo(() => ({
     id: systemNeedingService?.job?.id ?? '',
-    customerSystemId: systemNeedingService?.job?.customerSystemId ?? systemNeedingService?.system?.id,
+    propertySystemId: systemNeedingService?.job?.propertySystemId ?? systemNeedingService?.system?.id,
     dateAssigned: systemNeedingService?.job?.dateAssigned ?? '',
     technicianId: systemNeedingService?.job?.technicianId ?? '',
     jobTypeId: systemNeedingService?.job?.jobTypeId ?? '',
@@ -54,9 +54,9 @@ function EditJobModal({
       submission.jobTypeId = jobTypeOptions.find((x) => x.type === 'Service').id;
       submission.dateAssigned = moment();
       if (submission.includeOtherSystems === true) {
-        const systems = systemNeedingService?.customer?.systems;
+        const systems = systemNeedingService?.property?.systems;
         systems.forEach((system) => {
-          if (system.id !== submission.customerSystemId) {
+          if (system.id !== submission.propertySystemId) {
             submission.otherSystemIds.push(system.id);
           }
         });
@@ -119,7 +119,7 @@ function EditJobModal({
                   type="checkbox"
                   id="includeOtherSystems"
                   {...formik.getFieldProps('includeOtherSystems')} />
-              Create job for Customers other systems?
+              Create job for other systems on property?
             </Label>
             </FormGroup>
           }

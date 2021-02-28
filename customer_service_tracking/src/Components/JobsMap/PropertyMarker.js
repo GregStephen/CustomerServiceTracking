@@ -3,7 +3,7 @@ import React, { createRef } from 'react';
 import { Marker } from 'react-leaflet';
 import L from 'leaflet';
 
-import CustomerPopUp from './CustomerPopUp';
+import PropertyPopUp from './PropertyPopUp';
 
 const assignedIcon = L.icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
@@ -15,7 +15,7 @@ const unAssignedIcon = L.icon({
   popupAnchor: [12.5, 7.5],
 });
 
-function CustomerMarker({ marker }) {
+function PropertyMarker({ marker }) {
   const markerRef = createRef();
 
   return (
@@ -26,11 +26,11 @@ function CustomerMarker({ marker }) {
       ref={markerRef}
       icon={marker.color === 'green' ? assignedIcon : unAssignedIcon}
     >
-      <CustomerPopUp
+      <PropertyPopUp
         marker={marker}
       />
     </Marker>
   );
 }
 
-export default CustomerMarker;
+export default PropertyMarker;

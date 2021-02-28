@@ -13,7 +13,7 @@ import {
   useMap,
 } from 'react-leaflet';
 
-import CustomerMarker from './CustomerMarker';
+import PropertyMarker from './PropertyMarker';
 
 import './JobsMap.scss';
 
@@ -48,7 +48,7 @@ function JobsMap({
       const { current = {} } = mapRef;
       const { leafletElement: map } = current;
       map.locate();
-    } else {
+    } else if (businessAddress) {
       setCenterMarker([businessAddress.latitude, businessAddress.longitude]);
     }
   }, [getLocation, businessAddress, refAquired]);
@@ -64,7 +64,7 @@ function JobsMap({
 
   const updateMarkers = () => {
     if (markersData?.length > 0) {
-      const markersToShow = markersData.map((marker) => (<CustomerMarker
+      const markersToShow = markersData.map((marker) => (<PropertyMarker
           key={marker.key}
           marker={marker}
         />));

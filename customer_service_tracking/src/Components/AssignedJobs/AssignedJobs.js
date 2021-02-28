@@ -19,14 +19,14 @@ function AssignedJobs({ userObj }) {
     if (jobsAssigned.data) {
       jobsAssigned.data.forEach((element) => {
         const newMarker = {
-          title: `${element.customer?.firstName} ${element.customer?.lastName}`,
-          customerLink: `/customer/${element.customer?.id}`,
+          title: `${element.property?.displayName}`,
+          propertyLink: `/property/${element.property?.id}`,
           latLng: {
-            lat: element.customer?.address?.latitude,
-            lng: element.customer?.address?.longitude,
+            lat: element.property?.latitude,
+            lng: element.property?.longitude,
           },
           color: 'green',
-          address: element.customer?.address,
+          address: element.property,
         };
         markers.push(newMarker);
       });
@@ -36,17 +36,17 @@ function AssignedJobs({ userObj }) {
 
   const tableColumns = useMemo(() => [
     {
-      Header: 'Customer',
-      accessor: (j) => j.customer,
+      Header: 'Property',
+      accessor: (j) => j.propertySystemId,
       Cell: ({ row: { original } }) => (
-        <Link to={{ pathname: `/customer/${original.customer?.id}` }}>{`${original.customer?.firstName} ${original.customer?.lastName}`}</Link>
+        <Link to={{ pathname: `/property/${original.property?.id}` }}>{`${original.property?.displayName}`}</Link>
       ),
     },
     {
       Header: 'Address',
-      accessor: (j) => j.customer.address,
+      accessor: (j) => j.property,
       Cell: ({ row: { original } }) => (
-        <a rel="noopener noreferrer" target="_blank" href={Formatting.directionLink(original.customer?.address)}>{original.customer?.address?.addressLine1}</a>
+        <a rel="noopener noreferrer" target="_blank" href={Formatting.directionLink(original.property)}>{original.property?.addressLine1}</a>
       ),
     },
     {
@@ -62,7 +62,7 @@ function AssignedJobs({ userObj }) {
       Header: ' ',
       accessor: (j) => j.id,
       Cell: ({ row: { original } }) => (
-        <Link to={{ pathname: `/new-report/${original?.customerSystem?.id}` }} className="btn btn-info">Make a Report</Link>
+        <Link to={{ pathname: `/new-report/${original?.propertySystemId}` }} className="btn btn-info">Make a Report</Link>
       ),
     },
   ], []);

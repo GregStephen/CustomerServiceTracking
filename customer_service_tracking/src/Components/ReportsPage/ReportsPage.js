@@ -26,10 +26,10 @@ function ReportsPage({ userObj }) {
       accessor: (r) => r.technician,
     },
     {
-      Header: 'Customer',
-      accessor: (r) => r.customer.id,
+      Header: 'Property',
+      accessor: (r) => r.property.id,
       Cell: ({ row: { original } }) => (
-        <Link to={{ pathname: `/customer/${original.customer?.id}` }}>{original.customer?.firstName} {original.customer?.lastName}</Link>
+        <Link to={{ pathname: `/property/${original.propertyId}` }}>{original.property?.displayName}</Link>
       ),
     },
     {
@@ -38,7 +38,7 @@ function ReportsPage({ userObj }) {
     },
     {
       Header: 'Search',
-      accessor: (r) => r.serviceDate + r.technician + r.customer?.firstName + r.customer?.lastName + r.type,
+      accessor: (r) => r.serviceDate + r.technician + r.property?.displayName + r.type,
     },
   ], []);
 

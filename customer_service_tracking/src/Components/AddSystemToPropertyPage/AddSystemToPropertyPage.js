@@ -14,7 +14,7 @@ import * as Yup from 'yup';
 import { useHistory, useParams } from 'react-router-dom';
 import { Header, Page } from '../Global';
 
-import { useAddNewCustomerSystem } from '../../Helpers/Data/CustomerRequests';
+import { useAddNewPropertySystem } from '../../Helpers/Data/PropertyRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
@@ -37,13 +37,13 @@ const newInstallReportValidationSchema = Yup.object().shape({
   sold: Yup.bool().required(),
 });
 
-function AddSystemToCustomerPage({ userObj }) {
+function AddSystemToPropertyPage({ userObj }) {
   const { id } = useParams();
   const history = useHistory();
   const systemOptions = useGetSystemsForBusiness(userObj.businessId);
   const jobTypeOptions = useGetJobTypeOptions();
   const addNewReport = useAddNewReport();
-  const addNewCustomerSystem = useAddNewCustomerSystem();
+  const addNewCustomerSystem = useAddNewPropertySystem();
   const today = moment().format('YYYY-MM-DD');
 
   useEffect(() => {
@@ -217,4 +217,4 @@ function AddSystemToCustomerPage({ userObj }) {
   );
 }
 
-export default AddSystemToCustomerPage;
+export default AddSystemToPropertyPage;

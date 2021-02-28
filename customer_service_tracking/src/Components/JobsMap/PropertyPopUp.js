@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { Popup } from 'react-leaflet';
 import Formatting from '../../Helpers/Functions/Formatting';
 
-function CustomerPopUp({ marker }) {
+function PropertyPopUp({ marker }) {
   return (
     <Popup>
       <div className="popup">
-        <p>Customer: <Link
+        <p>Property: <Link
           className="popup-business-name"
-          to={{ pathname: marker.customerLink }}>
+          to={{ pathname: marker.propertyLink }}>
           {marker.title}
         </Link>
         </p>
@@ -20,4 +20,4 @@ function CustomerPopUp({ marker }) {
   );
 }
 
-export default CustomerPopUp;
+export default PropertyPopUp;

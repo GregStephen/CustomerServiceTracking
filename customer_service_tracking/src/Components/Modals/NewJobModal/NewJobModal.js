@@ -17,7 +17,7 @@ import * as Yup from 'yup';
 import moment from 'moment';
 
 import { useCreateNewJob } from '../../../Helpers/Data/JobRequests';
-import { useGetCustomerForBusiness } from '../../../Helpers/Data/CustomerRequests';
+import { useGetPropertiesForBusiness } from '../../../Helpers/Data/PropertyRequests';
 import { useGetRegisteredEmployees } from '../../../Helpers/Data/BusinessRequests';
 import useGetJobTypes from '../../../Helpers/Data/JobTypeRequests';
 
@@ -45,7 +45,7 @@ function NewJobModal({
 }) {
   const [isToggled, setIsToggled] = useState(false);
   const createNewJob = useCreateNewJob();
-  const customerOptions = useGetCustomerForBusiness(userObj.businessId).data;
+  const propertyOptions = useGetPropertiesForBusiness(userObj.businessId).data;
   const employeeOptions = useGetRegisteredEmployees(userObj.businessId).data;
   const jobTypeOptions = useGetJobTypes().data;
 
@@ -56,10 +56,10 @@ function NewJobModal({
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
       submission.dateAssigned = moment();
-      const chosenCustomer = customerOptions.find((customer) => customer.id === formValues.customerId);
-      submission.customerSystemId = chosenCustomer.systems[0].id;
-      chosenCustomer.systems.forEach((system) => {
-        if (system.id !== submission.customerSystemId) {
+      const chosenProperty = propertyOptions.find((property) => property.id === formValues.propertyId);
+      submission.propertySystemId = chosenProperty.systems[0].id;
+      chosenProperty.systems.forEach((system) => {
+        if (system.id !== submission.propertySystemId) {
           submission.otherSystemIds.push(system.id);
         }
       });
@@ -76,19 +76,19 @@ function NewJobModal({
       <Form className="col-8" onSubmit={formik.handleSubmit}>
         <ModalBody>
         <FormGroup>
-            <Label htmlFor="customerId">Which Customer?</Label>
+            <Label htmlFor="propertyId">Which property?</Label>
             <Input
               type="select"
-              name="customerId"
-              id="customerId"
-              {...formik.getFieldProps('customerId')}>
-              <option value="">Select a customer</option>
-              {customerOptions?.map((customer) => (
-                <option key={customer.id} value={customer.id}>{customer.firstName} {customer.lastName}</option>
+              name="propertyId"
+              id="propertyId"
+              {...formik.getFieldProps('propertyId')}>
+              <option value="">Select a property</option>
+              {propertyOptions?.map((property) => (
+                <option key={property.id} value={property.id}>{property.displayName}</option>
               ))}
             </Input>
-            {formik.touched.customerId
-              && <FormFeedback className="d-block">{formik.errors?.customerId}</FormFeedback>}
+            {formik.touched.propertyId
+              && <FormFeedback className="d-block">{formik.errors?.propertyId}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label htmlFor="jobTypeId">What Type of Job?</Label>
@@ -102,8 +102,8 @@ function NewJobModal({
                 <option key={jobType.id} value={jobType.id}>{jobType.type}</option>
               ))}
             </Input>
-            {formik.touched.customerId
-              && <FormFeedback className="d-block">{formik.errors?.customerId}</FormFeedback>}
+            {formik.touched.jobTypeId
+              && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label htmlFor="technicianId">Assign a technician</Label>

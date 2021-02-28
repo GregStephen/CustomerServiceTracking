@@ -3,29 +3,29 @@ import { useHistory } from 'react-router-dom';
 import {
   Modal, ModalHeader, Button, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useDeleteCustomer } from '../../../Helpers/Data/CustomerRequests';
+import { useDeleteProperty } from '../../../Helpers/Data/PropertyRequests';
 
-function DeleteCustomerModal({ customer }) {
+function DeletePropertyModal({ property }) {
   const history = useHistory();
   const [isToggled, setIsToggled] = useState(false);
-  const deleteCustomer = useDeleteCustomer();
+  const deleteProperty = useDeleteProperty();
 
   useEffect(() => {
-    if (deleteCustomer.isSuccess) {
-      history.push('/customers');
+    if (deleteProperty.isSuccess) {
+      history.push('/properties');
     }
-  }, [deleteCustomer, history]);
+  }, [deleteProperty, history]);
 
   return (<>
     <button className="btn btn-danger" onClick={() => setIsToggled(true)}>Delete</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>Confirm Deletion</ModalHeader>
       <ModalBody>
-        <h1>Are you sure you want to delete this customer?</h1>
+        <h1>Are you sure you want to delete this property?</h1>
         <h2>All records will be deleted and this cannot be undone</h2>
       </ModalBody>
       <ModalFooter>
-        <Button type="submit" onClick={() => deleteCustomer.mutate(customer.id)} color="danger">Delete Customer</Button>{' '}
+        <Button type="submit" onClick={() => deleteProperty.mutate(property.id)} color="danger">Delete Property</Button>{' '}
         <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
       </ModalFooter>
     </Modal>
@@ -33,4 +33,4 @@ function DeleteCustomerModal({ customer }) {
   );
 }
 
-export default DeleteCustomerModal;
+export default DeletePropertyModal;

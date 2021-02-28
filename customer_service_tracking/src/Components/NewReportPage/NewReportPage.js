@@ -16,7 +16,7 @@ import moment from 'moment';
 import { Header, Page } from '../Global';
 
 import defaults from '../../Helpers/defaults';
-import { useGetCustomerFromCustomerId, useGetCustomerSystemFromCustomerSystemId } from '../../Helpers/Data/CustomerRequests';
+import { useGetPropertyFromPropertyId, useGetPropertySystemFromPropertySystemId } from '../../Helpers/Data/PropertyRequests';
 import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
@@ -34,8 +34,8 @@ const newReportValidationSchema = Yup.object().shape({
 
 function NewReportPage({ userObj }) {
   const { id } = useParams();
-  const customerSystem = useGetCustomerSystemFromCustomerSystemId(id);
-  const customer = useGetCustomerFromCustomerId(customerSystem?.data?.customerId);
+  const propertySystem = useGetPropertySystemFromPropertySystemId(id);
+  const property = useGetPropertyFromPropertyId(propertySystem?.data?.propertyId);
   const jobTypeOptions = useGetJobTypeOptions();
   const history = useHistory();
   const deleteJob = useDeleteJob();
@@ -60,8 +60,8 @@ function NewReportPage({ userObj }) {
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
       submission.technicianId = userObj.id;
-      submission.customerId = customerSystem?.customerId;
-      submission.systemId = customerSystem?.id;
+      submission.propertyId = propertySystem?.propertyId;
+      submission.systemId = propertySystem?.id;
       submission.amountRemaining = parseInt(submission.amountRemaining, 10);
       submission.inchesAdded = parseInt(submission.inchesAdded, 10);
       submission.serviceDate = moment(submission.serviceDate).format('YYYY-MM-DD');
@@ -72,21 +72,21 @@ function NewReportPage({ userObj }) {
     },
   });
 
-  const maxInches = customerSystem?.systemInfo?.inches;
+  const maxInches = propertySystem?.systemInfo?.inches;
   const today = moment().format('YYYY-MM-DD');
   return (
     <Page>
       <Header title="New Report" />
       <div className="widget col-10 d-flex justify-content-center mb-4">
         <Form className="col-8" onSubmit={formik.handleSubmit}>
-          <h3>{customer?.data?.firstName} {customer?.data?.lastName}</h3>
-          <h3>{customer?.address?.addressLine1}</h3>
-          {customer?.address?.addressLine2 ? <h3>{customer?.address?.addressLine2} </h3> : ''}
-          <h3>{customer?.address?.city}, {customer?.address?.state} {customer?.address?.zipCode}</h3>
-          {customerSystem?.notes
+          <h3>{property?.data?.displayName}</h3>
+          <h3>{property?.addressLine1}</h3>
+          {property?.addressLine2 ? <h3>{property?.addressLine2} </h3> : ''}
+          <h3>{property?.city}, {property?.state} {property?.zipCode}</h3>
+          {propertySystem?.notes
             ? <div>
               <h3>Notes on System</h3>
-              <p>{customerSystem?.notes}</p>
+              <p>{propertySystem?.notes}</p>
             </div>
             : ''}
           <FormGroup>

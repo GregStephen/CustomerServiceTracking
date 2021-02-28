@@ -61,7 +61,7 @@ class NavigationBar extends React.Component {
           <NavLink tag={RRNavLink} to='/reports'>Reports</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink tag={RRNavLink} to='/customers'>Customers</NavLink>
+          <NavLink tag={RRNavLink} to='/properties'>Properties</NavLink>
         </NavItem>
         <UncontrolledDropdown nav inNavbar>
           <DropdownToggle nav caret className="navbar-user-button">

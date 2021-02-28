@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { Header, GlobalTable } from '../../Global';
 
-function CustomerReports({ reports }) {
+function PropertyReports({ reports }) {
   const tableData = useMemo(() => (reports || []), [reports]);
   const tableColums = useMemo(() => [
     {
@@ -28,7 +28,7 @@ function CustomerReports({ reports }) {
     },
   ], []);
   return (
-    <div className="CustomerReports widget col-10 pt-0">
+    <div className="PropertyReports widget col-10 pt-0">
       <Header title="Reports" icon="fa-file-signature" />
       {reports.length > 0
         && <GlobalTable
@@ -40,4 +40,4 @@ function CustomerReports({ reports }) {
   );
 }
 
-export default CustomerReports;
+export default PropertyReports;

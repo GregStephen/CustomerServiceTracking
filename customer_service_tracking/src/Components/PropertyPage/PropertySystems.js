@@ -9,14 +9,14 @@ import moment from 'moment';
 import { Header, GlobalTable } from '../Global';
 // import DeleteCustomerSystemModal from '../Modals/DeleteCustomerSystemModal/DeleteCustomerSystemModal';
 
-function CustomerSystems({ customer, deleteThisCustomerSystem }) {
+function PropertySystems({ property, deleteThisPropertySystem }) {
   const [systems, getSystems] = useState();
   // const [deleteCustomerSystemModalIsOpen, getDeleteCustomerSystemModalIsOpen] = useState();
-  const addSystemLink = `/add-system-to-customer/${customer.id}`;
+  const addSystemLink = `/add-system-to-property/${property.id}`;
 
   useEffect(() => {
-    getSystems(customer.systems);
-  }, [customer.systems]);
+    getSystems(property.systems);
+  }, [property.systems]);
 
   // const deleteTheSystem = (systemId) => {
   //   deleteThisCustomerSystem(systemId);
@@ -99,4 +99,4 @@ function CustomerSystems({ customer, deleteThisCustomerSystem }) {
   );
 }
 
-export default CustomerSystems;
+export default PropertySystems;

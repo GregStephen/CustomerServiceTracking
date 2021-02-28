@@ -5,16 +5,15 @@ const baseUrl = 'https://localhost:44324/api/customer';
 
 // GETS
 
-//  Sends Business ID and returns a system array.
-export function useGetCustomerFromCustomerId(customerId) {
-  const url = `${baseUrl}/customerId/${customerId}`;
+export function useGetPropertyFromPropertyId(propertyId) {
+  const url = `${baseUrl}/propertyId/${propertyId}`;
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });
 }
 
-export function useGetCustomerForBusiness(businessId) {
+export function useGetPropertiesForBusiness(businessId) {
   const url = `${baseUrl}/businessId/${businessId}`;
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
@@ -22,15 +21,15 @@ export function useGetCustomerForBusiness(businessId) {
   });
 }
 
-export function useGetCustomerSystemFromCustomerSystemId(customerSystemId) {
-  const url = `${baseUrl}/customerSystemId/${customerSystemId}`;
+export function useGetPropertySystemFromPropertySystemId(propertySystemId) {
+  const url = `${baseUrl}/propertySystemId/${propertySystemId}`;
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });
 }
 
-export function useAddNewCustomer() {
+export function useAddNewProperty() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
   return useMutation((customer) => axios.post(url, customer), {
@@ -45,10 +44,10 @@ export function useAddNewCustomer() {
   });
 }
 
-export function useUpdateCustomer() {
-  const url = `${baseUrl}/updateCustomer`;
+export function useUpdateProperty() {
+  const url = `${baseUrl}/updateProperty`;
   const queryClient = useQueryClient();
-  return useMutation((updatedCustomer) => axios.put(url, updatedCustomer), {
+  return useMutation((updatedProperty) => axios.put(url, updatedProperty), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -60,10 +59,10 @@ export function useUpdateCustomer() {
   });
 }
 
-export function useUpdateCustomerAddress() {
-  const url = `${baseUrl}/updateCustomerAddress`;
+export function useUpdateContact() {
+  const url = `${baseUrl}/updateContact`;
   const queryClient = useQueryClient();
-  return useMutation((newAddress) => axios.put(url, newAddress), {
+  return useMutation((newContact) => axios.put(url, newContact), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -76,10 +75,10 @@ export function useUpdateCustomerAddress() {
 }
 
 
-export function useUpdateCustomerSystem() {
-  const url = `${baseUrl}/updateCustomerSystem`;
+export function useUpdatePropertySystem() {
+  const url = `${baseUrl}/updatePropertySystem`;
   const queryClient = useQueryClient();
-  return useMutation((updatedCustomerSystem) => axios.post(url, updatedCustomerSystem), {
+  return useMutation((updatedPropertySystem) => axios.post(url, updatedPropertySystem), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -91,10 +90,10 @@ export function useUpdateCustomerSystem() {
   });
 }
 
-export function useUpdateCustomerStatus() {
-  const url = `${baseUrl}/updateCustomerStatus`;
+export function useUpdatePropertyStatus() {
+  const url = `${baseUrl}/updatePropertyStatus`;
   const queryClient = useQueryClient();
-  return useMutation((customerToUpdate) => axios.put(url, customerToUpdate), {
+  return useMutation((propertyToUpdate) => axios.put(url, propertyToUpdate), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -106,10 +105,10 @@ export function useUpdateCustomerStatus() {
   });
 }
 
-export function useDeleteCustomer() {
+export function useDeleteProperty() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation((customerToDeleteId) => axios.delete(`${url}/${customerToDeleteId}`), {
+  return useMutation((propertyToDeleteId) => axios.delete(`${url}/${propertyToDeleteId}`), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -121,10 +120,10 @@ export function useDeleteCustomer() {
   });
 }
 
-export function useDeleteCustomerSystem() {
-  const url = `${baseUrl}/customerSystem`;
+export function useDeletePropertySystem() {
+  const url = `${baseUrl}/propertySystem`;
   const queryClient = useQueryClient();
-  return useMutation((customerSystemId) => axios.delete(`${url}/${customerSystemId}`), {
+  return useMutation((propertySystemId) => axios.delete(`${url}/${propertySystemId}`), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -136,10 +135,10 @@ export function useDeleteCustomerSystem() {
   });
 }
 
-export function useAddNewCustomerSystem() {
+export function useAddNewPropertySystem() {
   const url = `${baseUrl}/addSystem`;
   const queryClient = useQueryClient();
-  return useMutation((customerSystem) => axios.post(url, customerSystem), {
+  return useMutation((propertySystem) => axios.post(url, propertySystem), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
