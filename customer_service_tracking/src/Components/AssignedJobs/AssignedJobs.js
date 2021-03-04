@@ -1,15 +1,22 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useState,
+  useContext,
+} from 'react';
 import { Link } from 'react-router-dom';
 
 import { Header, GlobalTable } from '../Global';
 import JobsMap from '../JobsMap/JobsMap';
 import JobNotesModal from '../Modals/JobNotesModal/JobNotesModal';
 import Formatting from '../../Helpers/Functions/Formatting';
-
+import UserContext from '../../Contexts/UserContext';
 import { useJobsAssignedTo } from '../../Helpers/Data/JobRequests';
 
-function AssignedJobs({ userObj }) {
-  const jobsAssigned = useJobsAssignedTo(userObj.id);
+function AssignedJobs() {
+  const userObj = useContext(UserContext);
+
+  const jobsAssigned = useJobsAssignedTo(userObj?.id);
   const [markersData, setMarkersData] = useState([]);
 
   const tableData = useMemo(() => (jobsAssigned.data ? jobsAssigned.data : []), [jobsAssigned.data]);
@@ -73,7 +80,7 @@ function AssignedJobs({ userObj }) {
       <JobsMap
         getLocation={true}
         markersData={markersData}
-        businessAddress={userObj.business.address}/>
+        businessAddress={userObj?.business}/>
       <GlobalTable
         columns={tableColumns}
         data={tableData}

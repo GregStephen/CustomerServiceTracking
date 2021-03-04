@@ -1,4 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useContext,
+} from 'react';
 import { Link } from 'react-router-dom';
 import {
   FormGroup,
@@ -22,13 +27,14 @@ import {
   useEditJob,
 } from '../../Helpers/Data/JobRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
-
+import UserContext from '../../Contexts/UserContext';
 import './ServiceNeededReport.scss';
 
-function ServiceNeededReport({ userObj }) {
+function ServiceNeededReport() {
+  const userObj = useContext(UserContext);
   const [markersData, setMarkersData] = useState([]);
   const [daysOut, getDaysOut] = useState(7);
-  const systemsNeedingService = useJobsNeedingAssignment(userObj.business.id, daysOut);
+  const systemsNeedingService = useJobsNeedingAssignment(userObj.business?.id, daysOut);
   const jobTypeOptions = useGetJobTypeOptions();
   const deleteJob = useDeleteJob();
   const createNewJob = useCreateNewJob();

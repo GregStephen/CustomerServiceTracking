@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useQuery } from 'react-query';
 
 const baseUrl = 'https://localhost:44324/api/user';
 
@@ -15,12 +16,13 @@ axios.interceptors.request.use((request) => {
 // GETS
 
 // User log in calls this function, sends their firebase ID and returns their user object.
-const getUserByFirebaseUid = (uid) => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/uid/${uid}`)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
-
+export function useUserByFirebaseUid(uid, authenticated) {
+  const url = `${baseUrl}/${uid}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  }, { enabled: authenticated && !!uid });
+}
 
 // POSTS
 
@@ -44,7 +46,6 @@ const addUnregisteredEmployee = (unregisteredEmployeeObject) => new Promise((res
 });
 
 export default {
-  getUserByFirebaseUid,
   addNewUser,
   addNewPersonalUser,
   addUnregisteredEmployee,

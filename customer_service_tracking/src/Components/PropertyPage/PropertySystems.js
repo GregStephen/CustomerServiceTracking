@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 // import {
@@ -10,19 +10,14 @@ import { Header, GlobalTable } from '../Global';
 // import DeleteCustomerSystemModal from '../Modals/DeleteCustomerSystemModal/DeleteCustomerSystemModal';
 
 function PropertySystems({ property, deleteThisPropertySystem }) {
-  const [systems, getSystems] = useState();
   // const [deleteCustomerSystemModalIsOpen, getDeleteCustomerSystemModalIsOpen] = useState();
   const addSystemLink = `/add-system-to-property/${property.id}`;
-
-  useEffect(() => {
-    getSystems(property.systems);
-  }, [property.systems]);
 
   // const deleteTheSystem = (systemId) => {
   //   deleteThisCustomerSystem(systemId);
   // };
 
-  const tableData = useMemo(() => (systems || []), [systems]);
+  const tableData = useMemo(() => (property.systems || []), [property.systems]);
 
   const tableColumns = useMemo(() => [
     {
@@ -56,7 +51,7 @@ function PropertySystems({ property, deleteThisPropertySystem }) {
       Header: 'Edit',
       accessor: (s) => s.id,
       Cell: ({ row: { original } }) => (
-        <Link className="btn btn-info" tag={Link} to={`/edit-customer-system/${original.id}`}>Change settings</Link>
+        <Link className="btn btn-info" tag={Link} to={`/edit-property-system/${original.id}`}>Change settings</Link>
       ),
     },
     {

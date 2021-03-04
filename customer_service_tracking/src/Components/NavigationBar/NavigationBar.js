@@ -100,10 +100,10 @@ class NavigationBar extends React.Component {
       && <div className="NavigationBar">
         <Navbar dark color="dark" expand="md">
           <NavbarBrand className="navbar-brand" tag={RRNavLink} to='/home'>Home</NavbarBrand>
-          {authorized && <NavbarText>{userObj.businessName}</NavbarText>}
+          {authorized && <NavbarText>{userObj?.businessName}</NavbarText>}
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
-            {userObj.admin ? buildAdminNavbar()
+            {userObj?.admin ? buildAdminNavbar()
               : buildRegularNavbar()
             }
           </Collapse>

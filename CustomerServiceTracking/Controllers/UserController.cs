@@ -23,9 +23,13 @@ namespace CustomerServiceTracking.Controllers
             _repo = repo;
         }
 
-        [HttpGet("uid/{firebaseId}")]
+        [HttpGet("{firebaseId}")]
         public IActionResult GetUserByFirebaseId(string firebaseId)
         {
+            if (firebaseId == null)
+            {
+                return NotFound();
+            }
             var user = _repo.GetUserByFirebaseId(firebaseId);
             if (user == null)
             {

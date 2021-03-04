@@ -30,7 +30,7 @@ function PropertyPage({ userObj }) {
               </Badge>
             }
           />
-          <div className="customer-info widget col-10 mb-4 pt-0">
+          <div className="property-info widget col-5 mb-4 pt-0">
             <Header title="Info" icon="fas fa-address-card" />
             <div className="row">
               <div className="col-6">
@@ -43,11 +43,11 @@ function PropertyPage({ userObj }) {
               </div>
               <div className="offset-1 col-4">
                 <JobsMap
-                getLocation={false}
-                dragging={false}
-                businessAddress={property.data}
-                hideMainMarkerPopup={true}
-                soloMarker={true}
+                  getLocation={false}
+                  dragging={false}
+                  businessAddress={property.data}
+                  hideMainMarkerPopup={true}
+                  soloMarker={true}
                 />
               </div>
             </div>

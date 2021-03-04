@@ -25,7 +25,7 @@ function PropertiesPage({ userObj }) {
   };
 
   useEffect(() => {
-    if (properties?.data) {
+    if (properties.data) {
       const numberOfInactiveCustomers = properties.data.filter((p) => !p.enabled).length;
       getInactiveProperties(numberOfInactiveCustomers);
     }
@@ -38,14 +38,14 @@ function PropertiesPage({ userObj }) {
       Header: 'Property Display Name',
       accessor: (r) => r.displayName,
       Cell: ({ row: { original } }) => (
-        <Link to={{ pathname: `/customer/${original.id}` }}>{`${original.displayName}`}</Link>
+        <Link to={{ pathname: `/property/${original.id}` }}>{`${original.displayName}`}</Link>
       ),
     },
-    {
-      Header: 'Primary Contact',
-      accessor: (r) => r.id,
-      Cell: ({ row: { original } }) => (returnPrimaryContactName(original.contacts)),
-    },
+    // {
+    //   Header: 'Primary Contact',
+    //   accessor: (r) => r.id,
+    //   Cell: ({ row: { original } }) => (returnPrimaryContactName(original.contacts)),
+    // },
     {
       Header: 'City',
       accessor: (r) => r.city,
