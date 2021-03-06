@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useContext } from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Row, Col, Input } from 'reactstrap';
-
+import UserContext from '../../Contexts/UserContext';
 import { Page, Header, GlobalTable } from '../Global';
 
 import './ReportsPage.scss';
@@ -10,7 +10,8 @@ import './ReportsPage.scss';
 import { useGetAllReportsByBusinessId } from '../../Helpers/Data/ReportRequests';
 
 
-function ReportsPage({ userObj }) {
+function ReportsPage() {
+  const userObj = useContext(UserContext);
   const reports = useGetAllReportsByBusinessId(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
 

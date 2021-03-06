@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import {
   Modal,
   ModalHeader,
@@ -14,8 +14,10 @@ import { useGetRegisteredAndUnregisteredEmployees } from '../../Helpers/Data/Bus
 import UserRequests from '../../Helpers/Data/UserRequests';
 
 import './TeamPage.scss';
+import UserContext from '../../Contexts/UserContext';
 
-function TeamPage({ userObj }) {
+function TeamPage() {
+  const userObj = useContext(UserContext);
   const teamMembers = useGetRegisteredAndUnregisteredEmployees(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
   const [addTeamMemberModalIsOpen, getAddTeamMemberModalIsOpen] = useState();

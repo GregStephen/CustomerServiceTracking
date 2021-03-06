@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Modal,
@@ -11,8 +11,10 @@ import EditSystemModal from '../Modals/EditSystemModal/EditSystemModal';
 import { useDeleteSystemById, useEditSystem, useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 import './SystemsPage.scss';
+import UserContext from '../../Contexts/UserContext';
 
-function SystemsPage({ userObj }) {
+function SystemsPage() {
+  const userObj = useContext(UserContext);
   const systems = useGetSystemsForBusiness(userObj.businessId);
   const [editSystemModalIsOpen, getEditSystemModalIsOpen] = useState();
   const editTheSystem = useEditSystem();

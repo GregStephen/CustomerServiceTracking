@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import {
   Col,
   Row,
@@ -16,6 +16,7 @@ import { useAddNewProperty } from '../../Helpers/Data/PropertyRequests';
 import useSearchAddresses from '../../Helpers/Data/TomTomRequests';
 
 import './NewCustomerPage.scss';
+import UserContext from '../../Contexts/UserContext';
 
 const defaultCustomerAddress = {
   city: '',
@@ -50,7 +51,8 @@ const newCustomerValidationSchema = Yup.object().shape({
   }),
 });
 
-function NewCustomerPage({ userObj }) {
+function NewCustomerPage() {
+  const userObj = useContext(UserContext);
   const history = useHistory();
   const addNewCustomer = useAddNewProperty();
 

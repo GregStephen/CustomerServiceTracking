@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Form,
   FormGroup,
@@ -13,7 +13,7 @@ import moment from 'moment';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useParams, useHistory } from 'react-router-dom';
-
+import UserContext from '../../Contexts/UserContext';
 import { Page, Header } from '../Global';
 import { useUpdatePropertySystem, useGetPropertySystemFromPropertySystemId } from '../../Helpers/Data/PropertyRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
@@ -28,7 +28,8 @@ const editPropertySystemValidationSchema = Yup.object().shape({
 });
 
 
-function EditPropertySystemPage({ userObj }) {
+function EditPropertySystemPage() {
+  const userObj = useContext(UserContext);
   const { id } = useParams();
   const history = useHistory();
   const systemOptions = useGetSystemsForBusiness(userObj.businessId);

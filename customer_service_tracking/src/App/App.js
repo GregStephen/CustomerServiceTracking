@@ -54,9 +54,7 @@ function App() {
         <BrowserRouter>
           {authorized && userUid
             && (
-
               <ServiceTracker userUid={userUid} authorized={authorized} />
-
             )
           } {
             !authorized

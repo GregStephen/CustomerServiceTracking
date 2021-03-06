@@ -13,7 +13,7 @@ import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
 import Formatting from '../../Helpers/Functions/Formatting';
 import JobsMap from '../JobsMap/JobsMap';
 
-function PropertyPage({ userObj }) {
+function PropertyPage() {
   const { id } = useParams();
   const reports = useGetReportsByPropertyId(id);
   const property = useGetPropertyFromPropertyId(id);

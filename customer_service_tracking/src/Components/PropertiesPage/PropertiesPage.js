@@ -1,4 +1,9 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useState,
+  useContext,
+} from 'react';
 import { Link } from 'react-router-dom';
 import {
   Row,
@@ -6,11 +11,12 @@ import {
   Badge,
   Input,
 } from 'reactstrap';
-
+import UserContext from '../../Contexts/UserContext';
 import { Page, Header, GlobalTable } from '../Global';
 import { useGetPropertiesForBusiness } from '../../Helpers/Data/PropertyRequests';
 
-function PropertiesPage({ userObj }) {
+function PropertiesPage() {
+  const userObj = useContext(UserContext);
   const properties = useGetPropertiesForBusiness(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
   const [inactiveProperties, getInactiveProperties] = useState();
@@ -77,7 +83,7 @@ function PropertiesPage({ userObj }) {
       <div className="PropertiesPage">
         <Header title="Properties" icon="fa-house-user" />
         <div className="d-flex justify-content-end">
-          <Link className="btn btn-info mr-4 mb-2" to={'/new-customer'}>Add a new Property</Link>
+          <Link className="btn btn-info mr-4 mb-2" to={'/new-property'}>Add a new Property</Link>
         </div>
         <div className="d-flex justify-content-end">
           <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>

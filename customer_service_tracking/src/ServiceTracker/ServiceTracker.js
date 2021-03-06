@@ -38,30 +38,48 @@ function ServiceTracker({ userUid, authorized }) {
   return (
     <div className="ServiceTracker">
       <UserContext.Provider value={userContextValues}>
-      <NavigationBar authorized={authorized} userObj={userObj} />
-      {userObj.isSuccess
-        && <Switch>
-        <Route path='/home'>
-          <HomePage />
-        </Route>
-        <Route path='/systems'>
-          <SystemsPage userObj={userObj.data} />
-        </Route>
-        <Route path='/new-system'>
-          <NewSystemPage userObj={userObj.data} />
-        </Route>
-          <Route path='/properties' component={PropertiesPage} authorized={authorized} userObj={userObj} />
-          <Route path='/new-property' component={NewPropertyPage} authorized={authorized} userObj={userObj} />
-          <Route path='/property/:id' component={PropertyPage} authorized={authorized} userObj={userObj} />
-          <Route path='/report/:reportId' component={ReportPage} authorized={authorized} userObj={userObj} />
-          <Route path='/reports' component={ReportsPage} authorized={authorized} userObj={userObj} />
-          <Route path='/new-report/:id' component={NewReportPage} authorized={authorized} userObj={userObj} />
-          <Route path='/add-system-to-property/:id' component={AddSystemToPropertyPage} authorized={authorized} userObj={userObj} />
-          <Route path='/edit-property-system/:id' component={EditPropertySystemPage} authorized={authorized} userObj={userObj} />
-          <Route path='/team' component={TeamPage} authorized={authorized} userObj={userObj} />
-        </Switch>
+        <NavigationBar authorized={authorized} userObj={userContextValues} />
+        {userObj.isSuccess
+          && <Switch>
+            <Route path='/home'>
+              <HomePage />
+            </Route>
+            <Route path='/systems'>
+              <SystemsPage />
+            </Route>
+            <Route path='/new-system'>
+              <NewSystemPage />
+            </Route>
+            <Route path='/properties'>
+              <PropertiesPage />
+            </Route>
+            <Route path='/new-property'>
+              <NewPropertyPage />
+            </Route>
+            <Route path='/property/:id'>
+              <PropertyPage />
+            </Route>
+            <Route path='/report/:reportId'>
+              <ReportPage />
+            </Route>
+            <Route path='/reports'>
+              <ReportsPage />
+            </Route>
+            <Route path='/new-report/:id'>
+              <NewReportPage />
+            </Route>
+            <Route path='/add-system-to-property/:id'>
+              <AddSystemToPropertyPage />
+            </Route>
+            <Route path='/edit-property-system/:id'>
+              <EditPropertySystemPage />
+            </Route>
+            <Route path='/team'>
+              <TeamPage />
+            </Route>
+          </Switch>
         }
-        </UserContext.Provider>
+      </UserContext.Provider>
     </div>
   );
 }

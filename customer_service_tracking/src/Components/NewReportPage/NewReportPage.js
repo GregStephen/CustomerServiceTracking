@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   Col,
   Row,
@@ -14,7 +14,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import moment from 'moment';
 
 import { Header, Page } from '../Global';
-
+import UserContext from '../../Contexts/UserContext';
 import defaults from '../../Helpers/defaults';
 import { useGetPropertyFromPropertyId, useGetPropertySystemFromPropertySystemId } from '../../Helpers/Data/PropertyRequests';
 import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
@@ -32,7 +32,8 @@ const newReportValidationSchema = Yup.object().shape({
   serviceDate: Yup.date().required('Service date is required'),
 });
 
-function NewReportPage({ userObj }) {
+function NewReportPage() {
+  const userObj = useContext(UserContext);
   const { id } = useParams();
   const propertySystem = useGetPropertySystemFromPropertySystemId(id);
   const property = useGetPropertyFromPropertyId(propertySystem?.data?.propertyId);

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   Col,
   Row,
@@ -13,6 +13,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory, useParams } from 'react-router-dom';
 import { Header, Page } from '../Global';
+import UserContext from '../../Contexts/UserContext';
 
 import { useAddNewPropertySystem } from '../../Helpers/Data/PropertyRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
@@ -37,7 +38,8 @@ const newInstallReportValidationSchema = Yup.object().shape({
   sold: Yup.bool().required(),
 });
 
-function AddSystemToPropertyPage({ userObj }) {
+function AddSystemToPropertyPage() {
+  const userObj = useContext(UserContext);
   const { id } = useParams();
   const history = useHistory();
   const systemOptions = useGetSystemsForBusiness(userObj.businessId);

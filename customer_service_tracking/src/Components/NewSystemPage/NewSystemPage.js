@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   Col,
   Row,
@@ -13,6 +13,7 @@ import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { Header, Page } from '../Global';
 import { useAddNewSystem } from '../../Helpers/Data/SystemRequests';
+import UserContext from '../../Contexts/UserContext';
 
 import './NewSystemPage.scss';
 
@@ -28,7 +29,8 @@ const newSystemValidationSchema = Yup.object().shape({
   inches: Yup.number().positive().required('Inches are required'),
 });
 
-function NewSystemPage({ userObj }) {
+function NewSystemPage() {
+  const userObj = useContext(UserContext);
   const history = useHistory();
   const addNewSystem = useAddNewSystem();
 
