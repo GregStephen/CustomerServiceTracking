@@ -63,7 +63,7 @@ namespace CustomerServiceTracking.Controllers
         {
             if (_repo.AddNewPropertyToDatabase(newProperty))
             {
-                return Created($"customer/{newProperty.DisplayName}", newProperty);
+                return Created($"customer/{newProperty.Property.DisplayName}", newProperty);
             }
             else
             {

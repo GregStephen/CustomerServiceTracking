@@ -10,7 +10,7 @@ import HomePage from '../Components/HomePage/HomePage';
 
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
 import NewAccountPage from '../Components/NewAccountPage/NewBusinessAccount/NewAccountPage';
-import NewPropertyPage from '../Components/NewCustomerPage/NewCustomerPage';
+import NewPropertyPage from '../Components/NewPropertyPage/NewPropertyPage';
 import NewPersonalAccountPage from '../Components/NewAccountPage/NewPersonalAccountPage/NewPersonalAccountPage';
 import NewPersonalAccountCheckPage from '../Components/NewAccountPage/ChooseBusinessForPersonalPage/ChooseBusinessForPersonalPage';
 import NewReportPage from '../Components/NewReportPage/NewReportPage';
@@ -19,6 +19,7 @@ import ReportPage from '../Components/ReportPage/ReportPage';
 import ReportsPage from '../Components/ReportsPage/ReportsPage';
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
 import TeamPage from '../Components/TeamPage/TeamPage';
+import NewContactPage from '../Components/NewContactPage/NewContactPage';
 
 import { useUserByFirebaseUid } from '../Helpers/Data/UserRequests';
 
@@ -55,6 +56,9 @@ function ServiceTracker({ userUid, authorized }) {
             </Route>
             <Route path='/new-property'>
               <NewPropertyPage />
+          </Route>
+          <Route path='/new-contact/:propertyId'>
+              <NewContactPage />
             </Route>
             <Route path='/property/:id'>
               <PropertyPage />

@@ -114,6 +114,7 @@ namespace CustomerServiceTracking.Repositories
                             [Longitude],
                             [BusinessId]
                             )
+                            OUTPUT INSERTED.Id
                             VALUES
                             (
                             @displayName,
@@ -127,7 +128,11 @@ namespace CustomerServiceTracking.Repositories
                             @longitude,
                             @businessId
                             )";
-                return db.Execute(sql, newPropertyDTO) == 1;
+                var propertyId = db.QueryFirst<Guid>(sql, newPropertyDTO.Property);
+                // try catch and delete the property if contact fails
+                var contact = newPropertyDTO.Contact;
+                contact.PropertyId = propertyId;
+                return AddNewContactToDatabase(contact);
             }
         }
 
@@ -135,7 +140,7 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"INSERT INTO [Property]
+                var sql = @"INSERT INTO [Contact]
                             (
                                 [FirstName],
                                 [LastName],

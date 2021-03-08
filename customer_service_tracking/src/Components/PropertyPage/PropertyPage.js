@@ -1,6 +1,6 @@
 import React from 'react';
 import { Badge } from 'reactstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 import { Page, Header } from '../Global';
 
@@ -29,7 +29,8 @@ function PropertyPage() {
                 {property.data.enabled ? 'Active' : 'Inactive'}
               </Badge>
             }
-          />
+        />
+         <Link className="btn btn-info mr-4 mb-4" to={`/new-contact/${property.data?.id}`}>Create a New Contact</Link>
           <div className="property-info widget col-5 mb-4 pt-0">
             <Header title="Info" icon="fas fa-address-card" />
             <div className="row">

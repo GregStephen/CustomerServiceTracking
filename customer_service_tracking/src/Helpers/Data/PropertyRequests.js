@@ -32,7 +32,22 @@ export function useGetPropertySystemFromPropertySystemId(propertySystemId) {
 export function useAddNewProperty() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation((customer) => axios.post(url, customer), {
+  return useMutation((property) => axios.post(url, property), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}
+
+export function useAddNewContact() {
+  const url = `${baseUrl}/contact`;
+  const queryClient = useQueryClient();
+  return useMutation((contact) => axios.post(url, contact), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -73,7 +88,6 @@ export function useUpdateContact() {
     },
   });
 }
-
 
 export function useUpdatePropertySystem() {
   const url = `${baseUrl}/updatePropertySystem`;
