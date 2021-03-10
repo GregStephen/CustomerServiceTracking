@@ -52,7 +52,7 @@ function EditContactModal({ contact }) {
   });
 
   return (<>
-    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit Contact</button>
+    <button className="btn btn-secondary" onClick={() => setIsToggled(true)}>Edit Contact</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>Edit Contact</ModalHeader>
       <Form onSubmit={formik.handleSubmit}>

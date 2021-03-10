@@ -128,8 +128,9 @@ namespace CustomerServiceTracking.Repositories
                             @longitude,
                             @businessId
                             )";
-                var propertyId = db.QueryFirst<Guid>(sql, newPropertyDTO.Property);
+
                 // try catch and delete the property if contact fails
+                var propertyId = db.QueryFirst<Guid>(sql, newPropertyDTO.Property);
                 var contact = newPropertyDTO.Contact;
                 contact.PropertyId = propertyId;
                 return AddNewContactToDatabase(contact);

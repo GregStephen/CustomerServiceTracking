@@ -1,23 +1,24 @@
 import React from 'react';
 import { Badge } from 'reactstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { Page, Header } from '../Global';
 
 import PropertyReports from './PropertyReports/PropertyReports';
-import EditPropertyModal from '../Modals/EditPropertyModal/EditPropertyModal';
+import PropertyInfo from './PropertyInfo';
 import PropertySystems from './PropertySystems';
-import { useGetPropertyFromPropertyId, useUpdatePropertyStatus } from '../../Helpers/Data/PropertyRequests';
-import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
+import PropertyContacts from './PropertyContacts';
 
-import Formatting from '../../Helpers/Functions/Formatting';
+import { useGetPropertyFromPropertyId } from '../../Helpers/Data/PropertyRequests';
+import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
 import JobsMap from '../JobsMap/JobsMap';
+
 
 function PropertyPage() {
   const { id } = useParams();
   const reports = useGetReportsByPropertyId(id);
   const property = useGetPropertyFromPropertyId(id);
-  const updatePropertyStatus = useUpdatePropertyStatus();
+
 
   return (
     <Page>
@@ -29,30 +30,23 @@ function PropertyPage() {
                 {property.data.enabled ? 'Active' : 'Inactive'}
               </Badge>
             }
-        />
-         <Link className="btn btn-info mr-4 mb-4" to={`/new-contact/${property.data?.id}`}>Create a New Contact</Link>
-          <div className="property-info widget col-5 mb-4 pt-0">
-            <Header title="Info" icon="fas fa-address-card" />
-            <div className="row">
-              <div className="col-6">
-                {Formatting.formatAddressObj(property.data)}
-                <EditPropertyModal property={property.data} />
-                <button className={`btn btn-${property.data.enabled ? 'danger' : 'success'}`}
-                  onClick={() => updatePropertyStatus.mutate(property.data)}>
-                  {property.data.enabled ? 'Deactivate' : 'Activate'}
-                </button>
-              </div>
-              <div className="offset-1 col-4">
-                <JobsMap
-                  getLocation={false}
-                  dragging={false}
-                  businessAddress={property.data}
-                  hideMainMarkerPopup={true}
-                  soloMarker={true}
-                />
-              </div>
+          />
+        <div className="d-flex row justify-content-center align-items-start">
+          <div className="col-6">
+            <PropertyInfo property={property.data} />
+            <PropertyContacts property={property.data} />
+          </div>
+            <div className="col-4 mt-4">
+              <JobsMap
+                getLocation={false}
+                dragging={false}
+                businessAddress={property.data}
+                hideMainMarkerPopup={true}
+                soloMarker={true}
+              />
             </div>
           </div>
+
           <PropertySystems property={property.data} />
           {reports?.data
             && <PropertyReports reports={reports.data} />}
