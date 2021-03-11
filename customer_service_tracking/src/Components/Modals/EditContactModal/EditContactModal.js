@@ -11,50 +11,74 @@ import {
   FormFeedback,
   FormGroup,
 } from 'reactstrap';
+import { useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useUpdateContact } from '../../../Helpers/Data/PropertyRequests';
+import Formatting from '../../../Helpers/Functions/Formatting';
+import { useUpdateContact, useAddNewContact } from '../../../Helpers/Data/PropertyRequests';
+
+const phoneRegEx = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const editContactValidationSchema = Yup.object().shape({
   firstName: Yup.string().required('First Name is required'),
   lastName: Yup.string().required('Last Name is required'),
-  homePhone: Yup.string().notRequired(),
-  cellPhone: Yup.string().notRequired(),
-  workPhone: Yup.string().notRequired(),
+  workPhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
+  homePhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
+  cellPhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
   email: Yup.string().notRequired(),
+  primary: Yup.bool(),
 });
 
 
 function EditContactModal({ contact }) {
   const [isToggled, setIsToggled] = useState(false);
+  const { propertyId } = useParams();
   const updateCustomer = useUpdateContact();
+  const addNewContact = useAddNewContact();
+  const updatingContact = contact !== null;
 
   const defaultContact = useMemo(() => ({
     id: contact?.id ?? '',
     firstName: contact?.firstName ?? '',
     lastName: contact?.lastName ?? '',
-    homePhone: contact?.homePhone ?? '',
-    cellPhone: contact?.cellPhone ?? '',
+    homePhone: Formatting.formatPhoneNumber(contact?.homePhone) ?? '',
+    cellPhone: Formatting.formatPhoneNumber(contact?.cellPhone) ?? '',
     workPhone: contact?.workPhone ?? '',
     email: contact?.email ?? '',
+    primary: contact?.primary ?? false,
   }), [contact]);
 
   const formik = useFormik({
     initialValues: defaultContact,
     enableReinitialize: true,
     validationSchema: editContactValidationSchema,
-    onSubmit: (formValues, { setSubmitting }) => {
-      const submission = { ...contact, ...formValues };
-      updateCustomer.mutate(submission);
+    onSubmit: (formValues, { setSubmitting, setValues }) => {
+      let submission = { ...formValues };
+      if (updatingContact) {
+        submission = { ...contact, ...formValues };
+        submission.propertyId = propertyId;
+        updateCustomer.mutate(submission, {
+          onSuccess: () => {
+            setIsToggled(false);
+          },
+        });
+      } else {
+        submission.propertyId = propertyId;
+        setValues(submission);
+        addNewContact.mutate(submission, {
+          onSuccess: () => {
+            setIsToggled(false);
+          },
+        });
+      }
       setSubmitting(false);
-      setIsToggled(false);
     },
   });
 
   return (<>
-    <button className="btn btn-secondary" onClick={() => setIsToggled(true)}>Edit Contact</button>
+    <button className={updatingContact ? 'btn btn-secondary' : 'btn btn-info mr-4 mb-2'} onClick={() => setIsToggled(true)}>{updatingContact ? 'Edit' : 'Create New'}</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
-      <ModalHeader toggle={() => setIsToggled(false)}>Edit Contact</ModalHeader>
+      <ModalHeader toggle={() => setIsToggled(false)}>{updatingContact ? 'Edit' : 'Create New'} Contact</ModalHeader>
       <Form onSubmit={formik.handleSubmit}>
         <ModalBody>
           <FormGroup>
@@ -74,10 +98,19 @@ function EditContactModal({ contact }) {
               type="input"
               className="form-control"
               id="lastName"
-              {...formik.getFieldProps('lastName')}
-            />
+              {...formik.getFieldProps('lastName')} />
             {formik.touched.lastName
               && <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label for="email">Email</Label>
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              {...formik.getFieldProps('email')} />
+            {formik.touched.email
+              && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label for="homePhone">Home Phone</Label>
@@ -86,7 +119,6 @@ function EditContactModal({ contact }) {
               name="homePhone"
               id="homePhone"
               {...formik.getFieldProps('homePhone')} />
-
             {formik.touched.homePhone
               && <FormFeedback className="d-block">{formik.errors?.homePhone}</FormFeedback>}
           </FormGroup>
@@ -97,7 +129,6 @@ function EditContactModal({ contact }) {
               name="cellPhone"
               id="cellPhone"
               {...formik.getFieldProps('cellPhone')} />
-
             {formik.touched.cellPhone
               && <FormFeedback className="d-block">{formik.errors?.cellPhone}</FormFeedback>}
           </FormGroup>
@@ -108,24 +139,20 @@ function EditContactModal({ contact }) {
               name="workPhone"
               id="workPhone"
               {...formik.getFieldProps('workPhone')} />
-
             {formik.touched.workPhone
               && <FormFeedback className="d-block">{formik.errors?.workPhone}</FormFeedback>}
           </FormGroup>
-          <FormGroup>
-            <Label for="email">Email</Label>
-            <Input
-              type="email"
-              name="email"
-              id="email"
-              {...formik.getFieldProps('email')} />
-
-            {formik.touched.email
-              && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
-          </FormGroup>
+          {(!contact?.primary || !updatingContact)
+            && <FormGroup check>
+              <Input
+                id="primary"
+                type="checkbox"
+                {...formik.getFieldProps('primary')} />
+              <Label for="primary" check>Set as Primary</Label>
+            </FormGroup>}
         </ModalBody>
         <ModalFooter>
-          <Button type="submit" color="primary">Edit Contact</Button>{' '}
+          <Button type="submit" color="primary">{updatingContact ? 'Edit' : 'Create New'} Contact</Button>{' '}
           <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
         </ModalFooter>
       </Form>

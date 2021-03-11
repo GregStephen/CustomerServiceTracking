@@ -141,6 +141,14 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
+                if (newContactDTO.Primary)
+                {
+                    var currentPrimaryId = GetPrimaryContactId(newContactDTO.PropertyId);
+                    if (currentPrimaryId != default)
+                    {
+                        RemoveContactPrimary(currentPrimaryId);
+                    }
+                }
                 var sql = @"INSERT INTO [Contact]
                             (
                                 [FirstName],
@@ -166,6 +174,28 @@ namespace CustomerServiceTracking.Repositories
                 return db.Execute(sql, newContactDTO) == 1;
             }
         }
+
+        public Guid GetPrimaryContactId(Guid PropertyId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT [Id]
+                            FROM [Contact]
+                            WHERE [Primary] = 1 AND [PropertyId] = @PropertyId";
+                return db.QueryFirstOrDefault<Guid>(sql, PropertyId);
+            }
+        }
+        public bool RemoveContactPrimary(Guid contactId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Contact]
+                            [Primary] = 0
+                            WHERE [Id] = @contactId";
+                return (db.Execute(sql, contactId) == 1);
+            }
+        }
+
         public Guid AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO)
         {
             using (var db = new SqlConnection(_connectionString))
@@ -224,6 +254,14 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
+                if (updatedContact.Primary)
+                {
+                    var currentPrimaryId = GetPrimaryContactId(updatedContact.PropertyId);
+                    if (currentPrimaryId != updatedContact.Id)
+                    {
+                        RemoveContactPrimary(currentPrimaryId);
+                    }
+                }
                 var sql = @"UPDATE [Contact]
                             SET 
                                 [FirstName] = @firstName,
@@ -231,7 +269,8 @@ namespace CustomerServiceTracking.Repositories
                                 [Email] = @email,
                                 [HomePhone] = @homePhone,
                                 [CellPhone] = @cellPhone,
-                                [WorkPhone] = @workPhone
+                                [WorkPhone] = @workPhone,
+                                [Primary] = @primary
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedContact) == 1);
             }

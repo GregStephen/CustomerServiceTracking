@@ -42,7 +42,7 @@ function ServiceTracker({ userUid, authorized }) {
         <NavigationBar authorized={authorized} userObj={userContextValues} />
         {userObj.isSuccess
           && <Switch>
-            <Route path='/home'>
+            <Route exact path='/'>
               <HomePage />
             </Route>
             <Route path='/systems'>
@@ -60,7 +60,7 @@ function ServiceTracker({ userUid, authorized }) {
           <Route path='/new-contact/:propertyId'>
               <NewContactPage />
             </Route>
-            <Route path='/property/:id'>
+            <Route path='/property/:propertyId'>
               <PropertyPage />
             </Route>
             <Route path='/report/:reportId'>

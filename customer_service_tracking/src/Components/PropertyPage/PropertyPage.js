@@ -15,9 +15,9 @@ import JobsMap from '../JobsMap/JobsMap';
 
 
 function PropertyPage() {
-  const { id } = useParams();
-  const reports = useGetReportsByPropertyId(id);
-  const property = useGetPropertyFromPropertyId(id);
+  const { propertyId } = useParams();
+  const reports = useGetReportsByPropertyId(propertyId);
+  const property = useGetPropertyFromPropertyId(propertyId);
 
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Col,
   Row,
@@ -12,45 +12,61 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory, useParams } from 'react-router-dom';
 import { Header, Page } from '../Global';
-import { useAddNewContact } from '../../Helpers/Data/PropertyRequests';
+import { useAddNewContact, useUpdateContact } from '../../Helpers/Data/PropertyRequests';
 
-const defaultContact = {
-  firstName: '',
-  lastName: '',
-  workPhone: '',
-  homePhone: '',
-  cellPhone: '',
-  email: '',
-};
+
+const phoneRegEx = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const newContactValidationSchema = Yup.object().shape({
   firstName: Yup.string().required('First Name is required'),
   lastName: Yup.string().required('Last Name is required'),
-  workPhone: Yup.string().length(10).notRequired(),
-  homePhone: Yup.string().length(10).notRequired(),
-  cellPhone: Yup.string().length(10).notRequired(),
+  workPhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
+  homePhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
+  cellPhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
   email: Yup.string().notRequired(),
+  primary: Yup.bool(),
 });
 
-function NewCustomerPage() {
+function NewCustomerPage({ contact }) {
   const { propertyId } = useParams();
   const history = useHistory();
   const addNewContact = useAddNewContact();
+  const updateCustomer = useUpdateContact();
 
+  const defaultContact = useMemo(() => ({
+    id: contact?.id ?? '',
+    firstName: contact?.firstName ?? '',
+    lastName: contact?.lastName ?? '',
+    homePhone: contact?.homePhone ?? '',
+    cellPhone: contact?.cellPhone ?? '',
+    workPhone: contact?.workPhone ?? '',
+    email: contact?.email ?? '',
+    primary: contact?.primary ?? false,
+  }), [contact]);
 
   const formik = useFormik({
     initialValues: defaultContact,
     enableReinitialize: true,
     validationSchema: newContactValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
-      const stuff = { ...formValues };
-      stuff.propertyId = propertyId;
-      setValues(stuff);
-      addNewContact.mutate(stuff, {
-        onSuccess: () => {
-          history.push('/properties');
-        },
-      });
+      let submission = { ...formValues };
+      if (contact.id) {
+        submission = { ...contact, ...formValues };
+        submission.propertyId = propertyId;
+        updateCustomer.mutate(submission, {
+          onSuccess: () => {
+            history.push('/properties');
+          },
+        });
+      } else {
+        submission.propertyId = propertyId;
+        setValues(submission);
+        addNewContact.mutate(submission, {
+          onSuccess: () => {
+            history.push('/properties');
+          },
+        });
+      }
       setSubmitting(false);
     },
   });
@@ -87,6 +103,16 @@ function NewCustomerPage() {
             </Col>
           </Row>
           <FormGroup>
+            <Label for="email">Email</Label>
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              {...formik.getFieldProps('email')} />
+            {formik.touched.email
+              && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
             <Label for="homePhone">Home Phone</Label>
             <Input
               type="text"
@@ -115,19 +141,15 @@ function NewCustomerPage() {
               name="workPhone"
               id="workPhone"
               {...formik.getFieldProps('workPhone')} />
-
             {formik.touched.workPhone
               && <FormFeedback className="d-block">{formik.errors?.workPhone}</FormFeedback>}
           </FormGroup>
-          <FormGroup>
-            <Label for="email">Email</Label>
+          <FormGroup check>
             <Input
-              type="email"
-              name="email"
-              id="email"
-              {...formik.getFieldProps('email')} />
-            {formik.touched.email
-              && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
+              id="primary"
+              type="checkbox"
+              {...formik.getFieldProps('primary')} />
+            <Label for="primary" check>Set as Primary</Label>
           </FormGroup>
           <button type="submit" className="btn btn-success">Add New Contact</button>
         </Form>
