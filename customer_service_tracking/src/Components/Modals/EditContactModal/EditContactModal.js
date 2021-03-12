@@ -43,7 +43,7 @@ function EditContactModal({ contact }) {
     lastName: contact?.lastName ?? '',
     homePhone: Formatting.formatPhoneNumber(contact?.homePhone) ?? '',
     cellPhone: Formatting.formatPhoneNumber(contact?.cellPhone) ?? '',
-    workPhone: contact?.workPhone ?? '',
+    workPhone: Formatting.formatPhoneNumber(contact?.workPhone) ?? '',
     email: contact?.email ?? '',
     primary: contact?.primary ?? false,
   }), [contact]);
@@ -57,6 +57,9 @@ function EditContactModal({ contact }) {
       if (updatingContact) {
         submission = { ...contact, ...formValues };
         submission.propertyId = propertyId;
+        submission.cellPhone = submission.cellPhone.replace(/[^\d]/g, '');
+        submission.workPhone = submission.workPhone.replace(/[^\d]/g, '');
+        submission.homePhone = submission.homePhone.replace(/[^\d]/g, '');
         updateCustomer.mutate(submission, {
           onSuccess: () => {
             setIsToggled(false);

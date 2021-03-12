@@ -182,7 +182,8 @@ namespace CustomerServiceTracking.Repositories
                 var sql = @"SELECT [Id]
                             FROM [Contact]
                             WHERE [Primary] = 1 AND [PropertyId] = @PropertyId";
-                return db.QueryFirstOrDefault<Guid>(sql, PropertyId);
+                var parameters = new { PropertyId };
+                return db.QueryFirstOrDefault<Guid>(sql, parameters);
             }
         }
         public bool RemoveContactPrimary(Guid contactId)
@@ -190,9 +191,10 @@ namespace CustomerServiceTracking.Repositories
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"UPDATE [Contact]
-                            [Primary] = 0
+                            SET [Primary] = 0
                             WHERE [Id] = @contactId";
-                return (db.Execute(sql, contactId) == 1);
+                var parameters = new { contactId };
+                return (db.Execute(sql, parameters) == 1);
             }
         }
 
@@ -238,14 +240,14 @@ namespace CustomerServiceTracking.Repositories
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"UPDATE [Property]
-                            [DisplayName] = @displayName,
+                            SET [DisplayName] = @displayName,
                             [City] = @city,
                             [State] = @state,
                             [AddressLine1] = @addressLine1,
                             [AddressLine2] = @addressLine2,
                             [ZipCode] = @zipCode,
                             [Latitude] = @latitude,
-                            [Longitude] = @longitude,
+                            [Longitude] = @longitude
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedProperty) == 1);
             }
