@@ -34,11 +34,14 @@ function EditPropertyModal({
     initialValues: property,
     enableReinitialize: true,
     validationSchema: editPropertyValidationSchema,
-    onSubmit: ({ setSubmitting }) => {
-      const submission = { ...property };
-      updateProperty.mutate(submission);
+    onSubmit: (formValues, { setSubmitting }) => {
+      const submission = { ...formValues };
+      updateProperty.mutate(submission, {
+        onSuccess: () => {
+          setIsToggled(false);
+        },
+      });
       setSubmitting(false);
-      setIsToggled(false);
     },
   });
 

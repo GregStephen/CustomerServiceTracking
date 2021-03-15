@@ -35,7 +35,7 @@ namespace CustomerServiceTracking.Repositories
 
         bool UpdatePropertySystem(PropertySystem updatedPropertySystem);
 
-        bool UpdatePropertySystemDayTankDepleted(Guid systemId, DateTime dateTankWillBeEmptied);
+        bool UpdatePropertySystemDayTankDepleted(NewReportDTO newReport);
 
         bool DeleteContact(Guid contactId);
 

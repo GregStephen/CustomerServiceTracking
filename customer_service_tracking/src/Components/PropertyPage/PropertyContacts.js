@@ -12,7 +12,7 @@ function PropertyContacts({ property }) {
         <EditContactModal contact={null}/>
         {false && <Link className="btn btn-info mr-4 mb-2" to={`/new-contact/${property.id}`}>Create a New Contact</Link>}
       </div>
-      <div className="d-flex justify-content-start">
+      <div className="d-flex justify-content-center row">
           {property.contacts.map((contact) => (
             <ContactCard contact={contact} />
           ))}

@@ -21,6 +21,7 @@ function GlobalTable({
   sortable = true,
   sortColumns,
   defaultSortColumn = '',
+  sortDesc = false,
   filters = [],
   hiddenColumns,
   emptyTableMessage = 'No data to display',
@@ -36,13 +37,13 @@ function GlobalTable({
     if (sortColumns) {
       state.sortBy = sortColumns;
     } else if (defaultSortColumn) {
-      state.sortBy = [{ id: defaultSortColumn, desc: false }];
+      state.sortBy = [{ id: defaultSortColumn, desc: sortDesc }];
     }
     if (hiddenColumns) {
       state.hiddenColumns = hiddenColumns;
     }
     return state;
-  }, [defaultSortColumn, pageRowCount, filters, hiddenColumns, sortColumns]);
+  }, [defaultSortColumn, pageRowCount, filters, hiddenColumns, sortColumns, sortDesc]);
 
 
   const defaultColumn = useMemo(() => ({

@@ -18,11 +18,13 @@ namespace CustomerServiceTracking.Controllers
     {
         private readonly ILogger<ReportController> _logger;
         private readonly IReportRepository _repo;
+        private readonly ICustomerRepository _custRepo;
 
-        public ReportController(ILogger<ReportController> logger, IReportRepository repo)
+        public ReportController(ILogger<ReportController> logger, IReportRepository repo, ICustomerRepository custRepo)
         {
             _logger = logger;
             _repo = repo;
+            _custRepo = custRepo;
         }
 
         [HttpGet("businessId/{businessId}")]
@@ -54,6 +56,7 @@ namespace CustomerServiceTracking.Controllers
         {
             if (_repo.AddReport(report))
             {
+                _custRepo.UpdatePropertySystemDayTankDepleted(report);
                 return Created($"report/{report.ServiceDate}", report);
             }
             else

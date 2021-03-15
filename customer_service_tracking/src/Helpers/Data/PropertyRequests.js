@@ -134,6 +134,21 @@ export function useDeleteProperty() {
   });
 }
 
+export function useDeleteContact() {
+  const url = `${baseUrl}/contact`;
+  const queryClient = useQueryClient();
+  return useMutation((contactToDeleteId) => axios.delete(`${url}/${contactToDeleteId}`), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}
+
 export function useDeletePropertySystem() {
   const url = `${baseUrl}/propertySystem`;
   const queryClient = useQueryClient();

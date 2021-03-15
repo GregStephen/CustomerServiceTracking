@@ -19,7 +19,6 @@ function PropertyPage() {
   const reports = useGetReportsByPropertyId(propertyId);
   const property = useGetPropertyFromPropertyId(propertyId);
 
-
   return (
     <Page>
       {property?.data
@@ -31,22 +30,23 @@ function PropertyPage() {
               </Badge>
             }
           />
-        <div className="d-flex row justify-content-center align-items-start">
-          <div className="col-6">
+          <div className="d-flex row justify-content-center">
+            <div className="col-6 row justify-content-end">
             <PropertyInfo property={property.data} />
-            <PropertyContacts property={property.data} />
-          </div>
-            <div className="col-4 mt-4">
-              <JobsMap
-                getLocation={false}
-                dragging={false}
-                businessAddress={property.data}
-                hideMainMarkerPopup={true}
-                soloMarker={true}
-              />
+              <div className="col-10">
+                <JobsMap
+                  getLocation={false}
+                  dragging={false}
+                  businessAddress={property.data}
+                  hideMainMarkerPopup={true}
+                  soloMarker={true}
+                />
+              </div>
+            </div>
+            <div className="col-6 justify-content-center">
+              <PropertyContacts property={property.data} />
             </div>
           </div>
-
           <PropertySystems property={property.data} />
           {reports?.data
             && <PropertyReports reports={reports.data} />}

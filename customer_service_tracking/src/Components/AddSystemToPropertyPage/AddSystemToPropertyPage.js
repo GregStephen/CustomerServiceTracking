@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useMemo, useContext } from 'react';
 import {
   Col,
   Row,
@@ -17,7 +17,6 @@ import UserContext from '../../Contexts/UserContext';
 
 import { useAddNewPropertySystem } from '../../Helpers/Data/PropertyRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
-import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 import defaults from '../../Helpers/defaults';
@@ -44,15 +43,8 @@ function AddSystemToPropertyPage() {
   const history = useHistory();
   const systemOptions = useGetSystemsForBusiness(userObj.businessId);
   const jobTypeOptions = useGetJobTypeOptions();
-  const addNewReport = useAddNewReport();
-  const addNewCustomerSystem = useAddNewPropertySystem();
+  const addNewPropertySystem = useAddNewPropertySystem();
   const today = moment().format('YYYY-MM-DD');
-
-  useEffect(() => {
-    if (addNewReport.isSuccess) {
-      history.push(`/customer/${id}`);
-    }
-  }, [addNewReport, history, id]);
 
   const formik = useFormik({
     initialValues: { ...defaultReport, ...defaultSystem },
@@ -62,11 +54,11 @@ function AddSystemToPropertyPage() {
       const submission = { ...formValues };
       const jTOptions = jobTypeOptions?.data;
       const installId = jTOptions.find((x) => x.type === 'Install').id;
-      const newCustomerSystem = {
-        customerId: id,
+      const newPropertySystem = {
+        propertyId: id,
         nozzles: parseInt(submission.nozzles, 10),
         sprayCycles: parseInt(submission.sprayCycles, 10),
-        sprayDuration: parseInt(submission.sprayCycles, 10),
+        sprayDuration: parseInt(submission.sprayDuration, 10),
         serialNumber: submission.serialNumber,
         sold: submission.sold,
         notes: submission.notes,
@@ -74,7 +66,7 @@ function AddSystemToPropertyPage() {
         installDate: moment(submission.installDate).format('YYYY-MM-DD'),
       };
       const newInstallReport = {
-        customerId: id,
+        propertyId: id,
         jobTypeId: installId,
         amountRemaining: 0,
         inchesAdded: parseInt(submission.inchesAdded, 10),
@@ -83,58 +75,88 @@ function AddSystemToPropertyPage() {
         technicianId: userObj.id,
         notes: '',
       };
-      addNewCustomerSystem.mutate(newCustomerSystem, {
-        onSuccess: (data, variables, context) => {
-          newInstallReport.systemId = data.data;
-          addNewReport.mutate(newInstallReport);
+      const dataToSend = {
+        system: newPropertySystem,
+        report: newInstallReport,
+      };
+      addNewPropertySystem.mutate(dataToSend, {
+        onSuccess: () => {
+          history.push(`/property/${id}`);
         },
       });
       setSubmitting(false);
     },
   });
 
+  const systemMax = useMemo(() => {
+    if (formik.values.systemId) {
+      return systemOptions?.data?.find((x) => x.id === formik.values.systemId).inches;
+    }
+    return 0;
+  }, [formik.values.systemId, systemOptions]);
+
   return (
     <Page>
-      <Header title="Add System for Customer" />
+      <Header title="Add System for Property" />
       <div className="widget col-10 d-flex justify-content-center mb-4">
         <Form className="col-8" onSubmit={formik.handleSubmit}>
-          <FormGroup>
-            <Label htmlFor="systemId">Which system did you install?</Label>
-            <Input
-              type="select"
-              name="systemId"
-              id="systemId"
-              {...formik.getFieldProps('systemId')}>
-              <option value="">Select a system</option>
-              {systemOptions?.data?.map((object) => (
-                <option key={object.id} value={object.id}>{object.type}</option>
-              ))}
-            </Input>
-            {formik.touched.systemId
-              && <FormFeedback className="d-block">{formik.errors?.systemId}</FormFeedback>}
-          </FormGroup>
-          <FormGroup>
-            <Label for="installDate">Install Date</Label>
-            <Input
-              type="date"
-              id="installDate"
-              name="installDate"
-              max={today}
-              {...formik.getFieldProps('installDate')} />
-            {formik.touched.installDate
-              && <FormFeedback className="d-block">{formik.errors?.installDate}</FormFeedback>}
-          </FormGroup>
-          <FormGroup>
-            <Label for="serialNumber">Serial number</Label>
-            <Input
-              type="input"
-              id="serialNumber"
-              name="serialNumber"
-              max={today}
-              {...formik.getFieldProps('serialNumber')} />
-            {formik.touched.serialNumber
-              && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
-          </FormGroup>
+          <Row form className="align-items-center">
+            <Col md={10}>
+              <FormGroup>
+                <Label htmlFor="systemId">Which of your systems did you install?</Label>
+                <Input
+                  type="select"
+                  name="systemId"
+                  id="systemId"
+                  {...formik.getFieldProps('systemId')}>
+                  <option value="">Select a system</option>
+                  {systemOptions?.data?.map((object) => (
+                    <option key={object.id} value={object.id}>{object.type}</option>
+                  ))}
+                </Input>
+                {formik.touched.systemId
+                  && <FormFeedback className="d-block">{formik.errors?.systemId}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col md={2}>
+              <FormGroup check>
+                <Input
+                  type="checkbox"
+                  id="sold"
+                  {...formik.getFieldProps('sold')} />
+                <Label for="sold" check>Sold</Label>
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row form>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="installDate">Install Date</Label>
+                <Input
+                  type="date"
+                  id="installDate"
+                  name="installDate"
+                  max={today}
+                  {...formik.getFieldProps('installDate')} />
+                {formik.touched.installDate
+                  && <FormFeedback className="d-block">{formik.errors?.installDate}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="serialNumber">Serial number</Label>
+                <Input
+                  type="input"
+                  id="serialNumber"
+                  name="serialNumber"
+                  max={today}
+                  {...formik.getFieldProps('serialNumber')} />
+                {formik.touched.serialNumber
+                  && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
+              </FormGroup>
+            </Col>
+
+          </Row>
           <Row form>
             <Col md={4}>
               <FormGroup>
@@ -174,44 +196,43 @@ function AddSystemToPropertyPage() {
             </Col>
           </Row>
           <FormGroup>
-            <Label for="sold">Sold</Label>
-            <Input
-              type="checkbox"
-              id="sold"
-              {...formik.getFieldProps('sold')} />
-          </FormGroup>
-          <FormGroup>
             <Label for="notes">Notes for the System</Label>
             <Input
-              type="input"
+              type="textarea"
               id="notes"
               {...formik.getFieldProps('notes')} />
             {formik.touched.notes
               && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
           </FormGroup>
           {formik.values.systemId
-            && <FormGroup>
-              <Label for="inchesAdded">Inches Added</Label>
-              <Input
-                type="number"
-                min="0"
-                id="inchesAdded"
-                max={systemOptions?.data?.data?.find((x) => x.id === formik.values.systemId).inches}
-                {...formik.getFieldProps('inchesAdded')} />
-              {formik.touched.inchesAdded
-                && <FormFeedback className="d-block">{formik.errors?.inchesAdded}</FormFeedback>}
-            </FormGroup>
+            && <Row form>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="inchesAdded">Inches Added</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  id="inchesAdded"
+                  max={systemMax}
+                  {...formik.getFieldProps('inchesAdded')} />
+                  {formik.touched.inchesAdded
+                    && <FormFeedback className="d-block">{formik.errors?.inchesAdded}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="solutionAdded">Solution Added</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    id="solutionAdded"
+                    {...formik.getFieldProps('solutionAdded')} />
+                  {formik.touched.solutionAdded
+                    && <FormFeedback className="d-block">{formik.errors?.solutionAdded}</FormFeedback>}
+                </FormGroup>
+              </Col>
+            </Row>
           }
-          <FormGroup>
-            <Label for="solutionAdded">Solution Added</Label>
-            <Input
-              type="number"
-              min="0"
-              id="solutionAdded"
-              {...formik.getFieldProps('solutionAdded')} />
-            {formik.touched.solutionAdded
-              && <FormFeedback className="d-block">{formik.errors?.solutionAdded}</FormFeedback>}
-          </FormGroup>
           <button type="submit" className="btn btn-success">Add New System</button>
         </Form>
       </div>

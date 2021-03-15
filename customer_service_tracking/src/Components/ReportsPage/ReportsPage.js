@@ -20,7 +20,10 @@ function ReportsPage() {
   const tableColumns = useMemo(() => [
     {
       Header: 'Service Date',
-      accessor: (r) => moment(r.serviceDate).format('L'),
+      accessor: (r) => r.serviceDate,
+      Cell: ({ row: { original } }) => (
+        moment(original.serviceDate).format('L')
+      ),
     },
     {
       Header: 'Technician',
@@ -75,6 +78,7 @@ function ReportsPage() {
             data={tableData}
             hidePagination={tableData?.length < 10}
             defaultSortColumn='Service Date'
+            sortDesc={true}
             hiddenColumns={hiddenColumns}
             filters={filters}
           />

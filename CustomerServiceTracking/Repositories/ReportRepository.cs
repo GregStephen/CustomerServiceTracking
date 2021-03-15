@@ -13,13 +13,11 @@ namespace CustomerServiceTracking.Repositories
     public class ReportRepository : IReportRepository
     {
         string _connectionString;
-        ISystemRepository _systemRepo;
         ICustomerRepository _customerRepo;
 
-        public ReportRepository(IConfiguration configuration, ISystemRepository systemRepo, ICustomerRepository customerRepo)
+        public ReportRepository(IConfiguration configuration, ICustomerRepository customerRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
-            _systemRepo = systemRepo;
             _customerRepo = customerRepo;
         }
         public IEnumerable<ReportToSendDTO> GetAllReportsByBusinessId(Guid businessId)
@@ -91,51 +89,15 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        private DateTime GetTheDateTheTankWillBeDepleted(NewReportDTO newReportDTO)
-        {
-            // How many inches of water are in the tank once the report is done
-            int totalInchesInSystem = newReportDTO.AmountRemaining + newReportDTO.InchesAdded;
-
-            // gets the exact system being checked
-            PropertySystem systemToDoMath = _systemRepo.GetPropertySystemBySystemId(newReportDTO.SystemId);
-
-            // 0.03 is the amount per oz that a single nozzle shoots out in a second at 200 psi
-            var ozPerNozzlePerSprayDuration = systemToDoMath.SprayDuration * 0.03;
-            
-            //converts that to gallons
-            var gallonsPerSprayDurationPerNozzle = ozPerNozzlePerSprayDuration / 128;
-
-            // calculates how many gallons are used in a single day
-            var dailyUsageInGallons = gallonsPerSprayDurationPerNozzle * systemToDoMath.SprayCycles * systemToDoMath.Nozzles;
-            
-            // calculates how many gallons are in a single inch of this specific tank
-            var volumePerInchOfHeight = (float)systemToDoMath.SystemInfo.Gallons / (float)systemToDoMath.SystemInfo.Inches;
-
-            // calculates the total amount of gallons in the tank once the report is done
-            var totalGallonsInTank = totalInchesInSystem * volumePerInchOfHeight;
-
-            // calculates the days remaining until all the gallons of water in the tank are gone, rounded down
-            int daysUntilDepleted = (int)(totalGallonsInTank / dailyUsageInGallons);
-
-            // Gets todays day, adds the days remaining until the tank is depleted, returns new Datetime
-            var today = DateTime.Now;
-            DateTime dayUntilDepleted = today.AddDays(daysUntilDepleted);
-            return dayUntilDepleted;
-
-
-        }
-
         public bool AddReport(NewReportDTO newReportDTO)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var dateTankWillBeEmptied = GetTheDateTheTankWillBeDepleted(newReportDTO);
-                _customerRepo.UpdatePropertySystemDayTankDepleted(newReportDTO.SystemId, dateTankWillBeEmptied);
 
                 var sql = @"INSERT INTO [Report]
                             (
                                 [AmountRemaining],
-                                [CustomerId],
+                                [PropertyId],
                                 [InchesAdded],
                                 [JobTypeId],
                                 [Notes],
@@ -147,7 +109,7 @@ namespace CustomerServiceTracking.Repositories
                             VALUES
                             (
                                 @amountRemaining,
-                                @customerId,
+                                @propertyId,
                                 @inchesAdded,
                                 @jobTypeId,
                                 @notes,

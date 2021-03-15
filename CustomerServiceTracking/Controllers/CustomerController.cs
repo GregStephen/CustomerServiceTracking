@@ -17,11 +17,13 @@ namespace CustomerServiceTracking.Controllers
     {
         private readonly ILogger<CustomerController> _logger;
         private readonly ICustomerRepository _repo;
+        private readonly IReportRepository _reportRepo;
 
-        public CustomerController(ILogger<CustomerController> logger, ICustomerRepository repo)
+        public CustomerController(ILogger<CustomerController> logger, ICustomerRepository repo, IReportRepository reportRepo)
         {
             _logger = logger;
             _repo = repo;
+            _reportRepo = reportRepo;
         }
 
         [HttpGet("businessId/{businessId}")]
@@ -87,15 +89,16 @@ namespace CustomerServiceTracking.Controllers
         [HttpPost("addSystem")]
         public IActionResult AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO)
         {
-            var propertySystemId = _repo.AddNewSystemToProperty(newPropertySystemDTO);
-            if (propertySystemId != null)
+            newPropertySystemDTO.Report.SystemId = _repo.AddNewSystemToProperty(newPropertySystemDTO);
+
+            if (newPropertySystemDTO.Report.SystemId != null)
             {
-                return Ok(propertySystemId);
+                if (_reportRepo.AddReport(newPropertySystemDTO.Report))
+                {
+                    return Ok();
+                }
             }
-            else
-            {
-                return BadRequest();
-            }
+            return BadRequest();
         }
         [HttpPut("updateContact")]
         public IActionResult UpdateContact(Contact updateContact)
@@ -149,7 +152,7 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
-        [HttpDelete("{contactId}")]
+        [HttpDelete("contact/{contactId}")]
         public IActionResult DeleteContact(Guid contactId)
         {
             if (_repo.DeleteContact(contactId))

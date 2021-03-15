@@ -16,6 +16,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Formatting from '../../../Helpers/Functions/Formatting';
 import { useUpdateContact, useAddNewContact } from '../../../Helpers/Data/PropertyRequests';
+import DeleteContactModal from '../DeleteContactModal/DeleteContactModal';
 
 const phoneRegEx = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -33,8 +34,9 @@ const editContactValidationSchema = Yup.object().shape({
 function EditContactModal({ contact }) {
   const [isToggled, setIsToggled] = useState(false);
   const { propertyId } = useParams();
-  const updateCustomer = useUpdateContact();
+  const updateContact = useUpdateContact();
   const addNewContact = useAddNewContact();
+
   const updatingContact = contact !== null;
 
   const defaultContact = useMemo(() => ({
@@ -60,7 +62,7 @@ function EditContactModal({ contact }) {
         submission.cellPhone = submission.cellPhone.replace(/[^\d]/g, '');
         submission.workPhone = submission.workPhone.replace(/[^\d]/g, '');
         submission.homePhone = submission.homePhone.replace(/[^\d]/g, '');
-        updateCustomer.mutate(submission, {
+        updateContact.mutate(submission, {
           onSuccess: () => {
             setIsToggled(false);
           },
@@ -157,6 +159,7 @@ function EditContactModal({ contact }) {
         <ModalFooter>
           <Button type="submit" color="primary">{updatingContact ? 'Edit' : 'Create New'} Contact</Button>{' '}
           <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
+          <DeleteContactModal contact={contact} />
         </ModalFooter>
       </Form>
     </Modal>

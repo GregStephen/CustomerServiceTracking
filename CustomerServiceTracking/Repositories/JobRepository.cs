@@ -81,7 +81,7 @@ namespace CustomerServiceTracking.Repositories
                 foreach (var propertySystemNeedingService in propertySystemsNeedingService)
                 {
                     ServiceNeed SystemNeedingService = new ServiceNeed();
-                    SystemNeedingService.DaysUntilEmpty = (new DateTime() - propertySystemNeedingService.DayTankDepleted).Days;
+                    SystemNeedingService.DaysUntilEmpty = (propertySystemNeedingService.DayTankDepleted - DateTime.Now).Days;
                     SystemNeedingService.Property = _customerRepo.GetPropertyByPropertyId(propertySystemNeedingService.PropertyId);
                     SystemNeedingService.System = propertySystemNeedingService;
                     SystemNeedingService.EmployeeOptions = employeeOptions;

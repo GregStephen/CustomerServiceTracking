@@ -45,7 +45,8 @@ namespace CustomerServiceTracking.Repositories
             {
                 var sql = @"SELECT *
                             FROM [Contact]
-                            WHERE [PropertyId] = @propertyId";
+                            WHERE [PropertyId] = @propertyId
+                            ORDER BY [Primary] DESC";
                 var parameters = new { propertyId };
                 return db.Query<Contact>(sql, parameters);
             }
@@ -186,6 +187,7 @@ namespace CustomerServiceTracking.Repositories
                 return db.QueryFirstOrDefault<Guid>(sql, parameters);
             }
         }
+
         public bool RemoveContactPrimary(Guid contactId)
         {
             using (var db = new SqlConnection(_connectionString))
@@ -198,10 +200,43 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        private DateTime GetTheDateTheTankWillBeDepleted(PropertySystem system, NewReportDTO report)
+        {
+            // How many inches of water are in the tank once the report is done
+            int totalInchesInSystem = report.AmountRemaining + report.InchesAdded;
+
+            // gets the exact system being checked
+            BusinessSystem systemToDoMath = _systemRepo.GetSystemInfoBySystemId(system.SystemId);
+
+            // 0.03 is the amount per oz that a single nozzle shoots out in a second at 200 psi
+            var ozPerNozzlePerSprayDuration = system.SprayDuration * 0.03;
+
+            //converts that to gallons
+            var gallonsPerSprayDurationPerNozzle = ozPerNozzlePerSprayDuration / 128;
+
+            // calculates how many gallons are used in a single day
+            var dailyUsageInGallons = gallonsPerSprayDurationPerNozzle * system.SprayCycles * system.Nozzles;
+
+            // calculates how many gallons are in a single inch of this specific tank
+            var volumePerInchOfHeight = (float)systemToDoMath.Gallons / (float)systemToDoMath.Inches;
+
+            // calculates the total amount of gallons in the tank once the report is done
+            var totalGallonsInTank = totalInchesInSystem * volumePerInchOfHeight;
+
+            // calculates the days remaining until all the gallons of water in the tank are gone, rounded down
+            int daysUntilDepleted = (int)(totalGallonsInTank / dailyUsageInGallons);
+
+            // Gets todays day, adds the days remaining until the tank is depleted, returns new Datetime
+            var today = DateTime.Now;
+            DateTime dayUntilDepleted = today.AddDays(daysUntilDepleted);
+            return dayUntilDepleted;
+        }
+
         public Guid AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO)
         {
             using (var db = new SqlConnection(_connectionString))
             {
+                newPropertySystemDTO.System.DayTankDepleted = GetTheDateTheTankWillBeDepleted(newPropertySystemDTO.System, newPropertySystemDTO.Report);
                 var sql = @"INSERT INTO [PropertySystem]
                             (
                             [PropertyId],
@@ -219,7 +254,7 @@ namespace CustomerServiceTracking.Repositories
                             OUTPUT INSERTED.Id
                             VALUES
                             (
-                            @customerId,
+                            @propertyId,
                             1,
                             @installDate,
                             @notes,
@@ -231,7 +266,7 @@ namespace CustomerServiceTracking.Repositories
                             @systemId,
                             @dayTankDepleted
                             )";
-                return db.QueryFirst<Guid>(sql, newPropertySystemDTO);
+                return db.QueryFirst<Guid>(sql, newPropertySystemDTO.System);
             }
         }
 
@@ -338,15 +373,17 @@ namespace CustomerServiceTracking.Repositories
                 return db.Execute(sql, parameters) == 1;
             }
         }
-        public bool UpdatePropertySystemDayTankDepleted(Guid systemId, DateTime dateTankWillBeEmptied)
+        public bool UpdatePropertySystemDayTankDepleted(NewReportDTO newReport)
         {
             using (var db = new SqlConnection(_connectionString))
             {
+                var system = GetPropertySystemByPropertySystemId(newReport.SystemId);
+                var dateTankWillBeDepleted = GetTheDateTheTankWillBeDepleted(system, newReport);
                 var sql = @"UPDATE [PropertySystem]
                             SET
-                                [DayTankDepleted] = @dateTankWillBeEmptied
+                                [DayTankDepleted] = @dateTankWillBeDepleted
                             WHERE [Id] = @systemId";
-                var parameters = new { systemId, dateTankWillBeEmptied };
+                var parameters = new { newReport.SystemId, dateTankWillBeDepleted };
                 return (db.Execute(sql, parameters) == 1);
             }
         }

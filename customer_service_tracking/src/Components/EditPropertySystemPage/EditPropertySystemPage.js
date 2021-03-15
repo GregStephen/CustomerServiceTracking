@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import {
   Form,
   FormGroup,
@@ -37,17 +37,17 @@ function EditPropertySystemPage() {
   const today = moment().format('YYYY-MM-DD');
   const updatePropertySystem = useUpdatePropertySystem();
 
-  const defaultPropertySystem = {
-    customerId: currentSystem?.customerId ?? '',
-    systemId: currentSystem?.systemId ?? '',
-    notes: currentSystem?.notes ?? '',
-    installDate: currentSystem?.installDate ? moment(currentSystem?.installDate).format('YYYY-MM-DD') : '',
-    nozzles: currentSystem?.nozzles ?? 0,
-    serialNumber: currentSystem?.serialNumber ?? '',
-    sold: currentSystem?.sold ?? false,
-    sprayCycles: currentSystem?.sprayCycles ?? 0,
-    sprayDuration: currentSystem?.sprayDuration ?? 0,
-  };
+  const defaultPropertySystem = useMemo(() => ({
+    customerId: currentSystem?.data?.customerId ?? '',
+    systemId: currentSystem?.data?.systemId ?? '',
+    notes: currentSystem?.data?.notes ?? '',
+    installDate: currentSystem?.data?.installDate ? moment(currentSystem?.data?.installDate).format('YYYY-MM-DD') : '',
+    nozzles: currentSystem?.data?.nozzles ?? 0,
+    serialNumber: currentSystem?.data?.serialNumber ?? '',
+    sold: currentSystem?.data?.sold ?? false,
+    sprayCycles: currentSystem?.data?.sprayCycles ?? 0,
+    sprayDuration: currentSystem?.data?.sprayDuration ?? 0,
+  }), [currentSystem]);
 
   const formik = useFormik({
     initialValues: defaultPropertySystem,
@@ -73,43 +73,63 @@ function EditPropertySystemPage() {
       <Header title="Edit System" />
       <div className="widget col-10 d-flex justify-content-center mb-4">
         <Form className="col-8" onSubmit={formik.handleSubmit}>
-          <FormGroup>
-            <Label htmlFor="systemId">Which system did you install?</Label>
-            <Input
-              type="select"
-              name="systemId"
-              id="systemId"
-              {...formik.getFieldProps('systemId')}>
-              <option value="">Select a system</option>
-              {systemOptions?.data?.data?.map((object) => (
-                <option key={object.id} value={object.id}>{object.type}</option>
-              ))}
-            </Input>
-            {formik.touched.systemId
-              && <FormFeedback className="d-block">{formik.errors?.systemId}</FormFeedback>}
-          </FormGroup>
-          <FormGroup>
-            <Label for="installDate">Install Date</Label>
-            <Input
-              type="date"
-              id="installDate"
-              name="installDate"
-              max={today}
-              {...formik.getFieldProps('installDate')} />
-            {formik.touched.installDate
-              && <FormFeedback className="d-block">{formik.errors?.installDate}</FormFeedback>}
-          </FormGroup>
-          <FormGroup>
-            <Label for="serialNumber">Serial number</Label>
-            <Input
-              type="input"
-              id="serialNumber"
-              name="serialNumber"
-              max={today}
-              {...formik.getFieldProps('serialNumber')} />
-            {formik.touched.serialNumber
-              && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
-          </FormGroup>
+        <Row form className="align-items-center">
+            <Col md={10}>
+              <FormGroup>
+                <Label htmlFor="systemId">Which of your systems did you install?</Label>
+                <Input
+                  type="select"
+                  name="systemId"
+                  id="systemId"
+                  {...formik.getFieldProps('systemId')}>
+                  <option value="">Select a system</option>
+                  {systemOptions?.data?.map((object) => (
+                    <option key={object.id} value={object.id}>{object.type}</option>
+                  ))}
+                </Input>
+                {formik.touched.systemId
+                  && <FormFeedback className="d-block">{formik.errors?.systemId}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col md={2}>
+              <FormGroup check>
+                <Input
+                  type="checkbox"
+                  id="sold"
+                  {...formik.getFieldProps('sold')} />
+                <Label for="sold" check>Sold</Label>
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row form>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="installDate">Install Date</Label>
+                <Input
+                  type="date"
+                  id="installDate"
+                  name="installDate"
+                  max={today}
+                  {...formik.getFieldProps('installDate')} />
+                {formik.touched.installDate
+                  && <FormFeedback className="d-block">{formik.errors?.installDate}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="serialNumber">Serial number</Label>
+                <Input
+                  type="input"
+                  id="serialNumber"
+                  name="serialNumber"
+                  max={today}
+                  {...formik.getFieldProps('serialNumber')} />
+                {formik.touched.serialNumber
+                  && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
+              </FormGroup>
+            </Col>
+
+          </Row>
           <Row form>
             <Col md={4}>
               <FormGroup>
@@ -149,16 +169,9 @@ function EditPropertySystemPage() {
             </Col>
           </Row>
           <FormGroup>
-            <Label for="sold">Sold</Label>
-            <Input
-              type="checkbox"
-              id="sold"
-              {...formik.getFieldProps('sold')} />
-          </FormGroup>
-          <FormGroup>
             <Label for="notes">Notes for the System</Label>
             <Input
-              type="input"
+              type="textarea"
               id="notes"
               {...formik.getFieldProps('notes')} />
             {formik.touched.notes
