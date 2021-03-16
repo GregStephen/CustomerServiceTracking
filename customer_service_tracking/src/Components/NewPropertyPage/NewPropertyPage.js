@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import {
   Col,
   Row,
@@ -8,12 +8,15 @@ import {
   Label,
   Input,
 } from 'reactstrap';
+import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useHistory } from 'react-router-dom';
 import { Header, Page } from '../Global';
-import { useAddNewProperty } from '../../Helpers/Data/PropertyRequests';
+
 import UserContext from '../../Contexts/UserContext';
+import { useAddNewProperty } from '../../Helpers/Data/PropertyRequests';
+import usePropertyGeo from '../../Helpers/Data/GeocodingRequests';
+import ConfirmAddressModal from '../Modals/ConfimAddressModal/ConfirmAddressModal';
 
 const defaultPrimaryContact = {
   firstName: '',
@@ -33,8 +36,8 @@ const defaultNewProperty = {
     zipCode: '',
     addressLine1: '',
     addressLine2: '',
-    latitude: '36.033115',
-    longitude: '-86.782776',
+    latitude: '',
+    longitude: '',
   },
   contact: defaultPrimaryContact,
 };
@@ -60,7 +63,10 @@ const newPropertyValidationSchema = Yup.object().shape({
 function NewPropertyPage() {
   const userObj = useContext(UserContext);
   const history = useHistory();
+  const [confirmAddressModalIsToggled, setConfirmAddressModalIsToggled] = useState(false);
+  const [geocodingAddress, setGeocodingAddress] = useState();
   const addnewProperty = useAddNewProperty();
+  const getPropertyGeo = usePropertyGeo();
 
   const formik = useFormik({
     initialValues: defaultNewProperty,
@@ -68,16 +74,33 @@ function NewPropertyPage() {
     validationSchema: newPropertyValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const newProperty = { ...formValues };
-      newProperty.property.businessId = userObj.businessId;
       setValues(newProperty);
-      addnewProperty.mutate(newProperty, {
-        onSuccess: () => {
-          history.push('/properties');
+      getPropertyGeo.mutate(newProperty.property, {
+        onSuccess: (data) => {
+          setGeocodingAddress(data.data.results[0]);
+          setConfirmAddressModalIsToggled(true);
         },
       });
-      setSubmitting(false);
     },
   });
+
+  const createProperty = useCallback(() => {
+    const propertyToConfirm = { ...defaultNewProperty, ...formik.values };
+    propertyToConfirm.property.businessId = userObj.businessId;
+    propertyToConfirm.property.latitude = geocodingAddress.location.lat.toString();
+    propertyToConfirm.property.longitude = geocodingAddress.location.lng.toString();
+    const addressLine1 = `${geocodingAddress.address_components.number} ${geocodingAddress.address_components.street} ${geocodingAddress.address_components.suffix}`;
+    propertyToConfirm.property.addressLine1 = addressLine1;
+    propertyToConfirm.property.city = geocodingAddress.address_components.city;
+    propertyToConfirm.property.state = geocodingAddress.address_components.state;
+    propertyToConfirm.property.zipCode = geocodingAddress.address_components.zip;
+    addnewProperty.mutate(propertyToConfirm, {
+      onSuccess: () => {
+        setConfirmAddressModalIsToggled(false);
+        history.push('/properties');
+      },
+    });
+  }, [userObj, geocodingAddress, addnewProperty, history, formik]);
 
   return (
     <Page>
@@ -228,6 +251,13 @@ function NewPropertyPage() {
           <button type="submit" className="btn btn-success">Add New Property</button>
         </Form>
       </div>
+      <ConfirmAddressModal
+        address={geocodingAddress}
+        newProperty={formik.values}
+        setConfirmAddressModalIsToggled={setConfirmAddressModalIsToggled}
+        confirmAddressModalIsToggled={confirmAddressModalIsToggled}
+        onSuccessFunction={createProperty}
+      />
     </Page>
   );
 }

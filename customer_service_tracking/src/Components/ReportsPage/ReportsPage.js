@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useContext } from 'react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Row, Col, Input } from 'reactstrap';
 import UserContext from '../../Contexts/UserContext';
 import { Page, Header, GlobalTable } from '../Global';
@@ -14,31 +14,30 @@ function ReportsPage() {
   const userObj = useContext(UserContext);
   const reports = useGetAllReportsByBusinessId(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
+  const history = useHistory();
 
   const tableData = useMemo(() => (reports?.data ? reports.data : []), [reports]);
 
   const tableColumns = useMemo(() => [
     {
       Header: 'Service Date',
-      accessor: (r) => r.serviceDate,
+      accessor: 'serviceDate',
       Cell: ({ row: { original } }) => (
         moment(original.serviceDate).format('L')
       ),
     },
     {
       Header: 'Technician',
-      accessor: (r) => r.technician,
+      accessor: 'technician',
     },
     {
       Header: 'Property',
       accessor: (r) => r.property.id,
-      Cell: ({ row: { original } }) => (
-        <Link to={{ pathname: `/property/${original.propertyId}` }}>{original.property?.displayName}</Link>
-      ),
+      Cell: ({ row: { original } }) => (original.property?.displayName),
     },
     {
       Header: 'Type',
-      accessor: (r) => r.type,
+      accessor: 'type',
     },
     {
       Header: 'Search',
@@ -74,6 +73,15 @@ function ReportsPage() {
             </Col>
           </Row>
           <GlobalTable
+            hover
+            striped
+            customRowProps={(row) => ({
+              className: 'cursor-pointer',
+              onClick: () => {
+                history.push(`/report/${row.original.id}`);
+              },
+            })}
+            emptyTableMessage="No Reports to show"
             columns={tableColumns}
             data={tableData}
             hidePagination={tableData?.length < 10}

@@ -31,7 +31,7 @@ const editContactValidationSchema = Yup.object().shape({
 });
 
 
-function EditContactModal({ contact }) {
+function EditContactModal({ contact, deleteEnabled }) {
   const [isToggled, setIsToggled] = useState(false);
   const { propertyId } = useParams();
   const updateContact = useUpdateContact();
@@ -84,6 +84,7 @@ function EditContactModal({ contact }) {
     <button className={updatingContact ? 'btn btn-secondary' : 'btn btn-info mr-4 mb-2'} onClick={() => setIsToggled(true)}>{updatingContact ? 'Edit' : 'Create New'}</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>{updatingContact ? 'Edit' : 'Create New'} Contact</ModalHeader>
+      <DeleteContactModal contact={contact} deleteEnabled={deleteEnabled} />
       <Form onSubmit={formik.handleSubmit}>
         <ModalBody>
           <FormGroup>
@@ -157,9 +158,9 @@ function EditContactModal({ contact }) {
             </FormGroup>}
         </ModalBody>
         <ModalFooter>
-          <Button type="submit" color="primary">{updatingContact ? 'Edit' : 'Create New'} Contact</Button>{' '}
+          <Button type="submit" color="primary">{updatingContact ? 'Save' : 'Create New'} Contact</Button>{' '}
           <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
-          <DeleteContactModal contact={contact} />
+
         </ModalFooter>
       </Form>
     </Modal>

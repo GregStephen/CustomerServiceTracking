@@ -30,7 +30,7 @@ function PropertyPage() {
               </Badge>
             }
           />
-          <div className="d-flex row justify-content-center">
+          <div className="d-flex row justify-content-center ml-0 mr-0">
             <div className="col-6 row justify-content-end">
             <PropertyInfo property={property.data} />
               <div className="col-10">

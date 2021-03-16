@@ -7,7 +7,7 @@ import {
 import Formatting from '../../Helpers/Functions/Formatting';
 import EditContactModal from '../Modals/EditContactModal/EditContactModal';
 
-function ContactCard({ contact }) {
+function ContactCard({ contact, deleteEnabled }) {
   return (
     <div className="col-10 mb-2">
       <Card body>
@@ -16,7 +16,7 @@ function ContactCard({ contact }) {
             {contact.primary && <i className="mr-1 fas fa-star" />}
             <h6 className="ml-2">{contact.firstName} {contact.lastName}</h6>
             <div className="ml-auto d-flex justify-content-end align-items-baseline">
-              <EditContactModal contact={contact} />
+              <EditContactModal contact={contact} deleteEnabled={deleteEnabled} />
             </div>
           </div>
         </CardHeader>

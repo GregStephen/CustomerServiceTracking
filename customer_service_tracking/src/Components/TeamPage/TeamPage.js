@@ -80,6 +80,7 @@ function TeamPage() {
           <GlobalTable
             columns={tableColumns}
             data={tableData}
+            hiddenColumns={hiddenColumns}
           />
         </div>
         <Modal isOpen={addTeamMemberModalIsOpen} toggle={() => getAddTeamMemberModalIsOpen(!addTeamMemberModalIsOpen)}>

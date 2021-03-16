@@ -14,6 +14,20 @@ import {
   useFilters,
 } from 'react-table';
 
+const renderHeaderStyles = (column, customStyles = {}) => {
+  const styles = { ...customStyles };
+  if (column.minWidth) {
+    styles.minWidth = column.minWidth;
+  }
+  if (column.maxWidth && column.maxWidth !== Number.MAX_SAFE_INTEGER) {
+    styles.maxWidth = column.maxWidth;
+  }
+  if (column.width !== 150) {
+    styles.width = column.width;
+  }
+  return styles;
+};
+
 function GlobalTable({
   columns,
   data,
@@ -24,10 +38,26 @@ function GlobalTable({
   sortDesc = false,
   filters = [],
   hiddenColumns,
+  bordered = true,
+  striped = true,
+  hover = false,
+  small = true,
+  className = '',
+  enableOverflow = false,
+  customHeaderProps = () => ({}),
+  customRowProps = () => ({}),
+  customCellProps = () => ({}),
+  customColumnProps = () => ({}),
   emptyTableMessage = 'No data to display',
   pageRowCount = 10,
   pageCountOptions = [10, 25, 50, 100],
 }) {
+  const allRowPros = (row) => {
+    const props = row.getRowProps(customRowProps(row));
+    props.className = `${props.className ?? ''}`;
+    return props;
+  };
+
   const initialTableState = useMemo(() => {
     const state = {
       sortBy: [],
@@ -80,6 +110,26 @@ function GlobalTable({
     usePagination,
   );
 
+  const tableClasses = useMemo(() => {
+    let classes = 'table mb-0';
+    if (bordered) {
+      classes += 'table-borderd ';
+    }
+    if (striped) {
+      classes += 'table-striped ';
+    }
+    if (small) {
+      classes += 'table-sm ';
+    }
+    if (hover) {
+      classes += 'table-hover ';
+    }
+    if (className) {
+      classes += className;
+    }
+    return classes;
+  }, [bordered, striped, small, hover, className]);
+
   useEffect(() => {
     if (hiddenColumns) {
       setHiddenColumns(hiddenColumns);
@@ -93,13 +143,21 @@ function GlobalTable({
   }, [filters, setAllFilters]);
   return (
     <>
-      <div className="col-12">
-        <table {...getTableProps()}>
+      <div className="col-12" style={enableOverflow ? { overflowX: 'visible' } : {}}>
+        <table {...getTableProps({ className: tableClasses })}>
           <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+            {headerGroups.map((headerGroup, i) => (
+              <tr key={i} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, h) => (
+                  <th key={h} {...column.getHeaderProps([
+                    {
+                      className: `${column.canSort ? 'cursor-pointer' : ''} ${column.headerClassName ?? ''}`,
+                      style: renderHeaderStyles(column, column.headerStyle),
+                    },
+                    customColumnProps(column),
+                    customHeaderProps(column),
+                    column.getSortByToggleProps(),
+                  ])}>
                     {column.canSort
                       ? (<span className="d-flex align-items-center">
                         <div className="mr-2">
@@ -131,12 +189,20 @@ function GlobalTable({
           <tbody {...getTableBodyProps()}>
             {page.length > 0
               ? page.map(
-                (row, i) => {
+                (row, r) => {
                   prepareRow(row);
                   return (
-                    <tr {...row.getRowProps()}>
-                      {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    <tr {...allRowPros(row)}>
+                      {row.cells.map((cell, c) => (
+                        <td key={c} {...cell.getCellProps([
+                          {
+                            className: cell.column.cellClassName,
+                            style: cell.column.cellStyle,
+                          },
+                          customColumnProps(cell.column),
+                          customCellProps(cell),
+                        ])}>
+                          {cell.render('Cell')}</td>
                       ))}
                     </tr>
                   );

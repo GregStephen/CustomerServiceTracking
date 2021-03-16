@@ -9,10 +9,7 @@ import EditPropertySystemPage from '../Components/EditPropertySystemPage/EditPro
 import HomePage from '../Components/HomePage/HomePage';
 
 import NavigationBar from '../Components/NavigationBar/NavigationBar';
-import NewAccountPage from '../Components/NewAccountPage/NewBusinessAccount/NewAccountPage';
 import NewPropertyPage from '../Components/NewPropertyPage/NewPropertyPage';
-import NewPersonalAccountPage from '../Components/NewAccountPage/NewPersonalAccountPage/NewPersonalAccountPage';
-import NewPersonalAccountCheckPage from '../Components/NewAccountPage/ChooseBusinessForPersonalPage/ChooseBusinessForPersonalPage';
 import NewReportPage from '../Components/NewReportPage/NewReportPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
 import ReportPage from '../Components/ReportPage/ReportPage';
@@ -56,8 +53,8 @@ function ServiceTracker({ userUid, authorized }) {
             </Route>
             <Route path='/new-property'>
               <NewPropertyPage />
-          </Route>
-          <Route path='/new-contact/:propertyId'>
+            </Route>
+            <Route path='/new-contact/:propertyId'>
               <NewContactPage />
             </Route>
             <Route path='/property/:propertyId'>
@@ -89,7 +86,3 @@ function ServiceTracker({ userUid, authorized }) {
 }
 
 export default ServiceTracker;
-
-//            <Route path='/new-business-account' component={NewAccountPage} authorized={authorized} logIn={logIn} />
-// <Route path='/new-personal-account/:id' component={NewPersonalAccountPage} authorized={authorized} logIn={logIn} />
-// <Route path='/select-business' component={NewPersonalAccountCheckPage} authorized={authorized} />

@@ -4,7 +4,7 @@ import React, {
   useState,
   useContext,
 } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   Row,
   Col,
@@ -17,6 +17,7 @@ import { useGetPropertiesForBusiness } from '../../Helpers/Data/PropertyRequests
 
 function PropertiesPage() {
   const userObj = useContext(UserContext);
+  const history = useHistory();
   const properties = useGetPropertiesForBusiness(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
   const [inactiveProperties, getInactiveProperties] = useState();
@@ -42,10 +43,7 @@ function PropertiesPage() {
   const tableColumns = useMemo(() => [
     {
       Header: 'Property Display Name',
-      accessor: (r) => r.displayName,
-      Cell: ({ row: { original } }) => (
-        <Link to={{ pathname: `/property/${original.id}` }}>{`${original.displayName}`}</Link>
-      ),
+      accessor: 'displayName',
     },
     // {
     //   Header: 'Primary Contact',
@@ -54,11 +52,11 @@ function PropertiesPage() {
     // },
     {
       Header: 'City',
-      accessor: (r) => r.city,
+      accessor: 'city',
     },
     {
       Header: 'Active',
-      accessor: (r) => r.enabled,
+      accessor: 'enabled',
       Cell: ({ row: { original } }) => (
         <h5><Badge color={original.enabled ? 'success' : 'danger'}>{original.enabled ? 'Active' : 'Inactive'}</Badge></h5>
       ),
@@ -104,11 +102,19 @@ function PropertiesPage() {
           </Row>
           <GlobalTable
             columns={tableColumns}
+            hover
+            striped
             data={tableData}
             hidePagination={tableData.length < 10}
             defaultSortColumn='Property Display Name'
             hiddenColumns={hiddenColumns}
             filters={filters}
+            customRowProps={(row) => ({
+              className: 'cursor-pointer',
+              onClick: () => {
+                history.push(`/property/${row.original.id}`);
+              },
+            })}
           />
         </div>
       </div>

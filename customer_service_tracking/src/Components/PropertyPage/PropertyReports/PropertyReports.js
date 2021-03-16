@@ -1,41 +1,42 @@
 import React, { useMemo } from 'react';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
-
+import { useHistory } from 'react-router-dom';
 import { Header, GlobalTable } from '../../Global';
 
 function PropertyReports({ reports }) {
+  const history = useHistory();
   const tableData = useMemo(() => (reports || []), [reports]);
   const tableColums = useMemo(() => [
     {
       Header: 'Date',
-      accessor: (r) => moment(r.serviceDate).format('L'),
+      accessor: 'serviceDate',
+      Cell: ({ value }) => moment(value).format('L'),
     },
     {
       Header: 'Technician',
-      accessor: (r) => r.technician,
+      accessor: 'technician',
     },
     {
       Header: 'Type',
-      accessor: (r) => r.type,
-    },
-    {
-      Header: 'Inspect',
-      accessor: (r) => r.id,
-      Cell: ({ row: { original } }) => (
-        <Link className="btn btn-info" tag={Link} to={`/report/${original.id}`}>Inspect</Link>
-      ),
+      accessor: 'type',
     },
   ], []);
   return (
     <div className="PropertyReports widget col-10 pt-0">
       <Header title="Reports" icon="fa-file-signature" />
-      {reports.length > 0
-        && <GlobalTable
-          columns={tableColums}
-          data={tableData}
-        />
-      }
+      <GlobalTable
+        hover
+        emptyTableMessage="No Reports to show"
+        columns={tableColums}
+        data={tableData}
+        defaultSortColumn='Date'
+        customRowProps={(row) => ({
+          className: 'cursor-pointer',
+          onClick: () => {
+            history.push(`/report/${row.original.id}`);
+          },
+        })}
+      />
     </div>
   );
 }

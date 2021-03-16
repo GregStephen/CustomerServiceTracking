@@ -84,11 +84,12 @@ function PropertySystems({ property, deleteThisPropertySystem }) {
       <div className="widget col-10 mb-4 pt-0">
         <Header title="Systems" />
         <div className="d-flex justify-content-end mb-4">
-        <Link className="btn btn-info" tag={Link} to={addSystemLink}>Add System</Link>
+        <Link className="btn btn-info mr-4" tag={Link} to={addSystemLink}>Add System</Link>
         </div>
-          <GlobalTable
+      <GlobalTable
             columns={tableColumns}
-            data={tableData}
+        data={tableData}
+        emptyTableMessage="No Systems to show"
           />
       </div>
   );

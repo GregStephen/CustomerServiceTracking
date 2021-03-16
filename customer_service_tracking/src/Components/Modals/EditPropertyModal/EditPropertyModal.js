@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Form,
   FormFeedback,
@@ -13,7 +13,10 @@ import {
 } from 'reactstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+
+import usePropertyGeo from '../../../Helpers/Data/GeocodingRequests';
 import { useUpdateProperty } from '../../../Helpers/Data/PropertyRequests';
+import ConfirmAddressModal from '../ConfimAddressModal/ConfirmAddressModal';
 
 const editPropertyValidationSchema = Yup.object().shape({
   displayName: Yup.string().required('Display Name is required'),
@@ -24,11 +27,13 @@ const editPropertyValidationSchema = Yup.object().shape({
   zipCode: Yup.string().length(5).required('Zip Code is required'),
 });
 
-function EditPropertyModal({
-  property,
-}) {
+function EditPropertyModal({ property }) {
   const [isToggled, setIsToggled] = useState(false);
   const updateProperty = useUpdateProperty();
+  const [confirmAddressModalIsToggled, setConfirmAddressModalIsToggled] = useState(false);
+  const [geocodingAddress, setGeocodingAddress] = useState();
+
+  const getPropertyGeo = usePropertyGeo();
 
   const formik = useFormik({
     initialValues: property,
@@ -36,14 +41,31 @@ function EditPropertyModal({
     validationSchema: editPropertyValidationSchema,
     onSubmit: (formValues, { setSubmitting }) => {
       const submission = { ...formValues };
-      updateProperty.mutate(submission, {
-        onSuccess: () => {
-          setIsToggled(false);
+      getPropertyGeo.mutate(submission, {
+        onSuccess: (data) => {
+          setGeocodingAddress(data.data.results[0]);
+          setConfirmAddressModalIsToggled(true);
         },
       });
-      setSubmitting(false);
     },
   });
+
+  const updatePropertyFunction = useCallback(() => {
+    const propertyToConfirm = { ...property, ...formik.values };
+    propertyToConfirm.latitude = geocodingAddress.location.lat.toString();
+    propertyToConfirm.longitude = geocodingAddress.location.lng.toString();
+    const addressLine1 = `${geocodingAddress.address_components.number} ${geocodingAddress.address_components.street} ${geocodingAddress.address_components.suffix}`;
+    propertyToConfirm.addressLine1 = addressLine1;
+    propertyToConfirm.city = geocodingAddress.address_components.city;
+    propertyToConfirm.state = geocodingAddress.address_components.state;
+    propertyToConfirm.zipCode = geocodingAddress.address_components.zip;
+    updateProperty.mutate(propertyToConfirm, {
+      onSuccess: () => {
+        setConfirmAddressModalIsToggled(false);
+        setIsToggled(false);
+      },
+    });
+  }, [property, updateProperty, geocodingAddress, formik]);
 
   return (<>
     <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit Property</button>
@@ -118,6 +140,13 @@ function EditPropertyModal({
             {formik.touched.zipCode
               && <FormFeedback className="d-block">{formik.errors?.zipCode}</FormFeedback>}
           </FormGroup>
+          <ConfirmAddressModal
+        address={geocodingAddress}
+        newProperty={formik.values}
+        setConfirmAddressModalIsToggled={setConfirmAddressModalIsToggled}
+        confirmAddressModalIsToggled={confirmAddressModalIsToggled}
+        onSuccessFunction={updatePropertyFunction}
+      />
         </ModalBody>
         <ModalFooter>
           <Button type="submit" color="primary">Edit Property</Button>{' '}
