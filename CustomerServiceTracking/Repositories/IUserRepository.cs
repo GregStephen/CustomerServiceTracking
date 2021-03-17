@@ -11,11 +11,7 @@ namespace CustomerServiceTracking.Repositories
     {
         User GetUserByFirebaseId(string firebaseId);
 
-        Guid AddNewUserToDatabase(User newUser);
-        //bool AddNewAdminUserToDatabase(NewAdminUserDTO newUser);
-        //Guid AddNewPersonalUserToDatabase(NewPersonalUserDTO newUser);
-        //bool AddUnregisteredEmployeeToDatabase(NewUnregisteredEmployeeDTO unregisteredEmployee);
-        //bool UpdateUnregisteredUserToRegisteredUser(NewPersonalUserDTO newUser);
+        bool AddNewUserToDatabase(NewUserDTO newUser);
 
     }
 }

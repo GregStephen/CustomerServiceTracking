@@ -46,7 +46,7 @@ namespace CustomerServiceTracking.Repositories
             {
                 List<ServiceNeed> ListOfSystemsNeedingService = new List<ServiceNeed>();
                 // get all employees from businessId
-                List<Employee> employeeOptions = _businessRepo.GetRegisteredEmployees(businessId).ToList();
+                List<Employee> employeeOptions = _businessRepo.GetAllEmployees(businessId).ToList();
 
                 var sql = @"SELECT ps.*
                             FROM [PropertySystem] ps

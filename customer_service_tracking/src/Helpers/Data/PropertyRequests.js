@@ -74,6 +74,20 @@ export function useUpdateProperty() {
   });
 }
 
+export function useUpdatePropertyName() {
+  const url = `${baseUrl}/updatePropertyName`;
+  const queryClient = useQueryClient();
+  return useMutation((updatedProperty) => axios.put(url, updatedProperty), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}`);
+        },
+      });
+    },
+  });
+}
 export function useUpdateContact() {
   const url = `${baseUrl}/updateContact`;
   const queryClient = useQueryClient();

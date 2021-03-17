@@ -12,6 +12,7 @@ import PropertyContacts from './PropertyContacts';
 import { useGetPropertyFromPropertyId } from '../../Helpers/Data/PropertyRequests';
 import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
 import JobsMap from '../JobsMap/JobsMap';
+import EditPropertyNameModal from '../Modals/EditPropertyNameModal/EditPropertyNameModal';
 
 
 function PropertyPage() {
@@ -24,10 +25,12 @@ function PropertyPage() {
       {property?.data
         && <div className="PropertyPage">
           <Header title={property.data?.displayName}
-            description={
+            description={<>
               <Badge color={property.data.enabled ? 'success' : 'danger'}>
                 {property.data.enabled ? 'Active' : 'Inactive'}
               </Badge>
+              <EditPropertyNameModal property={property.data}/>
+              </>
             }
           />
           <div className="d-flex row justify-content-center ml-0 mr-0">

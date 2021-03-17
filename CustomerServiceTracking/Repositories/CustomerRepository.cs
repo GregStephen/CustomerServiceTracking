@@ -270,12 +270,12 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        public bool UpdateProperty(Property updatedProperty)
+        public bool UpdatePropertyAddress(Property updatedProperty)
         {
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"UPDATE [Property]
-                            SET [DisplayName] = @displayName,
+                            SET
                             [City] = @city,
                             [State] = @state,
                             [AddressLine1] = @addressLine1,
@@ -283,6 +283,16 @@ namespace CustomerServiceTracking.Repositories
                             [ZipCode] = @zipCode,
                             [Latitude] = @latitude,
                             [Longitude] = @longitude
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedProperty) == 1);
+            }
+        }
+        public bool UpdatePropertyName(Property updatedProperty)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [Property]
+                            SET [DisplayName] = @displayName,
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedProperty) == 1);
             }
@@ -328,6 +338,17 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public bool MassUpdatePropertySystemEnabled(Guid propertyId, bool enabled)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [PropertySystem]
+                            SET [Enable] = @enabled
+                            WHERE [PropertyId] = @propertyId";
+                var parameters = new { propertyId, enabled };
+                return db.Execute(sql, parameters) == 1;
+            }
+        }
         public bool UpdatePropertySystemEnabledOrDisabled(PropertySystem updatedPropertySystem)
         {
             using (var db = new SqlConnection(_connectionString))

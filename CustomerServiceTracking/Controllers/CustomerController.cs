@@ -126,6 +126,20 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
+        [HttpPut("updatePropertyName")]
+        public IActionResult UpdatePropertyName(Property updatedProperty)
+        {
+            if (_repo.UpdateProperty(updatedProperty))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+
         [HttpPut("updatePropertyStatus")]
         public IActionResult UpdatePropertyStatus(Property property)
         {

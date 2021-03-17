@@ -19,7 +19,6 @@ import { useUpdateProperty } from '../../../Helpers/Data/PropertyRequests';
 import ConfirmAddressModal from '../ConfimAddressModal/ConfirmAddressModal';
 
 const editPropertyValidationSchema = Yup.object().shape({
-  displayName: Yup.string().required('Display Name is required'),
   addressLine1: Yup.string().required('Address is required'),
   addressLine2: Yup.string().notRequired().nullable(),
   city: Yup.string().required('City is required'),
@@ -73,18 +72,6 @@ function EditPropertyModal({ property }) {
       <ModalHeader toggle={() => setIsToggled(false)}>Edit Property</ModalHeader>
       <Form onSubmit={formik.handleSubmit}>
         <ModalBody>
-        <FormGroup>
-            <Label htmlFor="displayName">Display Name</Label>
-            <Input
-              type="input"
-              className="form-control"
-              id="displayName"
-              placeholder="'Smith Town House', '123 Fake Street', 'Johnson Beach House', etc..."
-              {...formik.getFieldProps('displayName')}
-            />
-            {formik.touched.displayName
-              && <FormFeedback className="d-block">{formik.errors?.displayName}</FormFeedback>}
-          </FormGroup>
           <FormGroup>
             <Label htmlFor="addressLine1">Address</Label>
             <Input

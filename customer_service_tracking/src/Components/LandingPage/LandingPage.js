@@ -20,8 +20,8 @@ class LandingPage extends React.Component {
     return (
       <div className="LandingPage">
         <div className="container">
-          <div className="page row">
-            <div className="welcome col-12 col-md-8 col-lg-6 row justify-content-center">
+          <div className="page row justify-content-center">
+            <div className="welcome col-12 col-md-8 col-lg-6">
               <h2 className="welcome-header">Service Tracker</h2>
               <p className="welcome-text">Start doing the things</p>
             </div>

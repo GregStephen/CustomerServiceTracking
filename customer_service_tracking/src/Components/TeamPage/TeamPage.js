@@ -1,44 +1,31 @@
 import React, { useState, useMemo, useContext } from 'react';
 import {
-  Modal,
-  ModalHeader,
   Input,
   Col,
   Row,
+  Badge,
 } from 'reactstrap';
 
 import { Page, Header, GlobalTable } from '../Global';
-
-import AddTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
 import { useGetRegisteredAndUnregisteredEmployees } from '../../Helpers/Data/BusinessRequests';
-import UserRequests from '../../Helpers/Data/UserRequests';
 
 import './TeamPage.scss';
 import UserContext from '../../Contexts/UserContext';
+import NewTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
 
 function TeamPage() {
   const userObj = useContext(UserContext);
   const teamMembers = useGetRegisteredAndUnregisteredEmployees(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
-  const [addTeamMemberModalIsOpen, getAddTeamMemberModalIsOpen] = useState();
 
-  const addTeamMember = (teamMember) => {
-    UserRequests.addUnregisteredEmployee(teamMember)
-      .then()
-      .catch((err) => console.error(err));
-  };
   const tableData = useMemo(() => (teamMembers?.data ? teamMembers.data : []), [teamMembers]);
 
   const tableColumns = useMemo(() => [
     {
       Header: 'Name',
-      accessor: (e) => e.fullName,
-    },
-    {
-      Header: 'Registered',
-      accessor: (e) => e.registered,
+      accessor: 'fullName',
       Cell: ({ row: { original } }) => (
-        original.registered ? <i className="fas fa-check"/> : <i className="fas fa-times"/>
+        <p>{original.fullName} {original.admin ? <Badge color="success">Admin</Badge> : ''}</p>
       ),
     },
     {
@@ -61,10 +48,10 @@ function TeamPage() {
       <div className="TeamPage">
         <Header title='Team' icon='fa-users' />
         <div className="d-flex row justify-content-end">
-          <button className="btn btn-info mr-4 mb-4" onClick={() => getAddTeamMemberModalIsOpen(!addTeamMemberModalIsOpen)}><i className="fa fa-user-plus" />Add a Team Member</button>
+          <NewTeamMemberModal />
         </div>
         <div className="widget col-10">
-        <Row className="mb-3">
+          <Row className="mb-3">
             <Col className="d-flex justify-content-between">
               <div className="ml-4">
                 <Input
@@ -80,23 +67,11 @@ function TeamPage() {
           <GlobalTable
             columns={tableColumns}
             data={tableData}
-            hiddenColumns={hiddenColumns}
-          />
-        </div>
-        <Modal isOpen={addTeamMemberModalIsOpen} toggle={() => getAddTeamMemberModalIsOpen(!addTeamMemberModalIsOpen)}>
-          <ModalHeader toggle={() => getAddTeamMemberModalIsOpen(!addTeamMemberModalIsOpen)}>
-            Add Team Member
-          </ModalHeader>
-          <AddTeamMemberModal
-            toggleModalOpen={getAddTeamMemberModalIsOpen}
-            modalIsOpen={addTeamMemberModalIsOpen}
-            businessId={userObj.businessId}
-            addTeamMember={addTeamMember}
             defaultSortColumn='Name'
             hiddenColumns={hiddenColumns}
             filters={filters}
           />
-        </Modal>
+        </div>
       </div>
     </Page>
   );

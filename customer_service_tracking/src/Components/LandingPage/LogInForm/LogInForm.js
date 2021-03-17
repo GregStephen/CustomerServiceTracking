@@ -47,7 +47,7 @@ class LogInForm extends React.Component {
   render() {
     const { email, password, errorMessage } = this.state;
     return (
-      <div className="LogInForm col-12 col-md-8 col-lg-4">
+      <div className="LogInForm col-12 col-md-6 col-lg-4">
         <form className="sign-in-form" onSubmit={this.logInFromLandingPage}>
           <h3 className="sign-in-header">Log In</h3>
           <div className="form-group">

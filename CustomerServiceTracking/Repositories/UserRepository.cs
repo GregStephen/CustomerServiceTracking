@@ -39,7 +39,7 @@ namespace CustomerServiceTracking.Repositories
                 return userFromDb;
             }
         }
-        public Guid AddNewUserToDatabase(User newUser)
+        public bool AddNewUserToDatabase(NewUserDTO newUser)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -51,7 +51,6 @@ namespace CustomerServiceTracking.Repositories
                              [Admin],
                              [BusinessId]
                             )
-                            OUTPUT INSERTED.Id
                             VALUES
                             (
                             @firstName,
@@ -60,51 +59,8 @@ namespace CustomerServiceTracking.Repositories
                             @admin,
                             @businessId
                             )";
-                return (db.QueryFirst<Guid>(sql, newUser));
+                return db.Execute(sql, newUser) == 1;
             }
         }
-
-        //public bool AddUnregisteredEmployeeToDatabase(NewUnregisteredEmployeeDTO unregisteredEmployee)
-        //{
-        //    using (var db = new SqlConnection(_connectionString))
-        //    {
-        //        var personalUser = new NewPersonalUserDTO
-        //        {
-        //            BusinessId = unregisteredEmployee.BusinessId,
-        //            FirstName = unregisteredEmployee.FirstName,
-        //            LastName = unregisteredEmployee.LastName,
-        //            FirebaseUid = null,
-        //            Admin = false,
-        //        };
-        //        var userId = AddNewPersonalUserToDatabase(personalUser);
-        //        if (userId != null)
-        //        {
-        //            var userToAdd = new UnregisteredEmployee
-        //            {
-        //                FirstName = unregisteredEmployee.FirstName,
-        //                LastName = unregisteredEmployee.LastName,
-        //                BusinessId = unregisteredEmployee.BusinessId,
-        //                UserId = userId,
-        //                Email = unregisteredEmployee.Email
-        //            };
-        //            return (_unregisteredEmployeeRepo.AddUnregisteredEmployeeToDatabase(userToAdd));
-
-        //        }
-        //        return false;
-        //    }
-        //}
-        //public bool UpdateUnregisteredUserToRegisteredUser(NewPersonalUserDTO newUser)
-        //{
-        //    using (var db = new SqlConnection(_connectionString))
-        //    {
-        //        var sql = @"UPDATE [User]
-        //                    SET [FirebaseUid] = @firebaseUid,
-        //                    [FirstName] = @firstName,
-        //                    [LastName] = @lastName
-        //                    WHERE [Id] = @userId";
-        //        db.Execute(sql, newUser);
-        //        return (_unregisteredEmployeeRepo.DeleteUnregisteredEmployee(newUser.UnregisteredUserId));
-        //    }
-        //}
     }
 }

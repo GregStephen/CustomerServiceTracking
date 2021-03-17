@@ -38,37 +38,6 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetAllEmployees(businessId));
         }
 
-        [HttpGet("registeredEmployees/{businessId}")]
-        public IActionResult GetRegisteredEmployees(Guid businessId)
-        {
-            return Ok(_repo.GetRegisteredEmployees(businessId));
-        }
-
-        [HttpGet("unregisteredEmployees/{businessId}")]
-        public IActionResult GetBusinessesUnRegisteredEmployees(Guid businessId)
-        {
-            return Ok(_unregisteredEmployeeRepo.GetUnregisteredEmployeesByBusinessId(businessId));
-        }
-
-        [HttpGet("unregisteredEmployee/email={email}/businessId={businessId}")]
-        public IActionResult CheckIfBusinessHasEmailOfUnregisteredEmployee(string email, Guid businessId)
-        {
-            var unregisteredEmployeeId = _unregisteredEmployeeRepo.CheckIfBusinessHasEmailOfUnregisteredEmployee(email, businessId);
-            if (unregisteredEmployeeId == default(Guid))
-            {
-                return Ok();
-            }
-            else
-            {
-                return Ok(unregisteredEmployeeId);
-            }
-        }
-
-        [HttpGet("unregisteredEmployee/{id}")]
-        public IActionResult GetUnregisteredEmployeeById(Guid id)
-        {
-            return Ok(_unregisteredEmployeeRepo.GetUnregisteredEmployeeById(id));
-        }
 
         [HttpDelete("{unregisteredId}")]
         public IActionResult DeleteCustomer(Guid unregisteredId)
