@@ -14,6 +14,7 @@ import NewReportPage from '../Components/NewReportPage/NewReportPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
 import ReportPage from '../Components/ReportPage/ReportPage';
 import ReportsPage from '../Components/ReportsPage/ReportsPage';
+import SystemPage from '../Components/SystemPage/SystemPage';
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
 import TeamPage from '../Components/TeamPage/TeamPage';
 import NewContactPage from '../Components/NewContactPage/NewContactPage';
@@ -44,6 +45,9 @@ function ServiceTracker({ userUid, authorized }) {
             </Route>
             <Route path='/systems'>
               <SystemsPage />
+            </Route>
+            <Route path='/system/:systemId'>
+              <SystemPage />
             </Route>
             <Route path='/new-system'>
               <NewSystemPage />

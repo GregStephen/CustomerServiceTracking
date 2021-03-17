@@ -292,7 +292,7 @@ namespace CustomerServiceTracking.Repositories
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"UPDATE [Property]
-                            SET [DisplayName] = @displayName,
+                            SET [DisplayName] = @displayName
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedProperty) == 1);
             }
@@ -323,7 +323,7 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        public bool UpdatePropertyEnabledOrDisabled(Property updatedProperty)
+        public async Task<bool> UpdatePropertyEnabledOrDisabled(Property updatedProperty)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -334,19 +334,20 @@ namespace CustomerServiceTracking.Repositories
                                 [Enabled] = @enabled
                             WHERE [Id] = @id";
                 var parameters = new { id, enabled };
+                await MassUpdatePropertySystemEnabled(id, enabled);
                 return (db.Execute(sql, parameters) == 1);
             }
         }
 
-        public bool MassUpdatePropertySystemEnabled(Guid propertyId, bool enabled)
+        public async Task<bool> MassUpdatePropertySystemEnabled(Guid propertyId, bool enabled)
         {
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"UPDATE [PropertySystem]
-                            SET [Enable] = @enabled
+                            SET [Enabled] = @enabled
                             WHERE [PropertyId] = @propertyId";
                 var parameters = new { propertyId, enabled };
-                return db.Execute(sql, parameters) == 1;
+                return await db.ExecuteAsync(sql, parameters) == 1;
             }
         }
         public bool UpdatePropertySystemEnabledOrDisabled(PropertySystem updatedPropertySystem)

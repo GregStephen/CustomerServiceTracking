@@ -25,11 +25,13 @@ namespace CustomerServiceTracking.Repositories
 
         Guid AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO);
 
-        bool UpdateProperty(Property updatedProperty);
+        bool UpdatePropertyAddress(Property updatedProperty);
+
+        bool UpdatePropertyName(Property updatedProperty);
 
         bool UpdateContact(Contact updatedContact);
 
-        bool UpdatePropertyEnabledOrDisabled(Property updatedProperty);
+        Task<bool> UpdatePropertyEnabledOrDisabled(Property updatedProperty);
 
         bool UpdatePropertySystemEnabledOrDisabled(PropertySystem updatedPropertySystem);
 

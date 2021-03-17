@@ -116,7 +116,7 @@ namespace CustomerServiceTracking.Controllers
         [HttpPut("updateProperty")]
         public IActionResult UpdateProperty(Property updatedProperty)
         {
-            if (_repo.UpdateProperty(updatedProperty))
+            if (_repo.UpdatePropertyAddress(updatedProperty))
             {
                 return Ok();
             }
@@ -129,7 +129,7 @@ namespace CustomerServiceTracking.Controllers
         [HttpPut("updatePropertyName")]
         public IActionResult UpdatePropertyName(Property updatedProperty)
         {
-            if (_repo.UpdateProperty(updatedProperty))
+            if (_repo.UpdatePropertyName(updatedProperty))
             {
                 return Ok();
             }
@@ -141,9 +141,9 @@ namespace CustomerServiceTracking.Controllers
 
 
         [HttpPut("updatePropertyStatus")]
-        public IActionResult UpdatePropertyStatus(Property property)
+        public async Task<IActionResult> UpdatePropertyStatus(Property property)
         {
-            if (_repo.UpdatePropertyEnabledOrDisabled(property))
+            if (await _repo.UpdatePropertyEnabledOrDisabled(property))
             {
                 return Ok();
             }

@@ -19,21 +19,18 @@ function HomePage() {
       <div className="HomePage">
         {user?.admin
           && (<>
-          <div className="d-flex row justify-content-end">
-            <div className="col">
-              <NewJobModal userObj={user} />
+            <div className="d-flex row justify-content-end">
+              <div className="col">
+                <NewJobModal userObj={user} />
               </div>
             </div>
             <div className="systems-needing-service">
               <ServiceNeededReport />
             </div>
           </>)}
-        {!user?.admin
-          && (<>
-            <div className="jobs-assigned">
-              <AssignedJobs userObj={user} />
-            </div>
-          </>)}
+        <div className="jobs-assigned">
+          <AssignedJobs userObj={user} />
+        </div>
       </div>
     </Page>
   );
