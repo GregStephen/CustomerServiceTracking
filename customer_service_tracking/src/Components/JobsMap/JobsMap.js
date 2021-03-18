@@ -2,7 +2,7 @@ import React, {
   useEffect,
   useState,
   useMemo,
-  useRef,
+  useContext,
 } from 'react';
 import L from 'leaflet';
 import {
@@ -11,11 +11,13 @@ import {
   Marker,
   Popup,
   useMap,
+  useMapEvents,
 } from 'react-leaflet';
 
 import PropertyMarker from './PropertyMarker';
 
 import './JobsMap.scss';
+import UserContext from '../../Contexts/UserContext';
 
 function JobsMap({
   getLocation,
@@ -26,32 +28,30 @@ function JobsMap({
   soloMarker = false,
 }) {
   const [centerMarker, setCenterMarker] = useState([0, 0]);
-  const mapRef = useRef(null);
-  const [refAquired, setRefAquired] = useState(false);
-
-  useEffect(() => {
-    setRefAquired(true);
-  }, []);
-
+  const user = useContext(UserContext);
   const userMarker = (
     <Marker position={centerMarker}>
-      {!hideMainMarkerPopup && <Popup>You are here</Popup>}
+      {!hideMainMarkerPopup && <Popup>{getLocation ? 'You are here' : user.businessName }</Popup>}
     </Marker>
   );
 
-  function handleOnLocationFound(e) {
-    setCenterMarker(e.latlng);
+  function GetLocation() {
+    const map = useMapEvents({
+      click: () => {
+        map.locate();
+      },
+      locationfound: (location) => {
+        setCenterMarker(location.latlng);
+      },
+    });
+    return null;
   }
 
   useEffect(() => {
-    if (getLocation && refAquired && mapRef.current) {
-      const { current = {} } = mapRef;
-      const { leafletElement: map } = current;
-      map.locate();
-    } else if (businessAddress) {
+    if (!getLocation && businessAddress) {
       setCenterMarker([businessAddress.latitude, businessAddress.longitude]);
     }
-  }, [getLocation, businessAddress, refAquired]);
+  }, [getLocation, businessAddress]);
 
   const allSiteBounds = useMemo(() => {
     const bounds = L.latLngBounds();
@@ -64,8 +64,8 @@ function JobsMap({
 
   const updateMarkers = () => {
     if (markersData?.length > 0) {
-      const markersToShow = markersData.map((marker) => (<PropertyMarker
-          key={marker.key}
+      const markersToShow = markersData.map((marker, i) => (<PropertyMarker
+          key={i}
           marker={marker}
         />));
       return markersToShow;
@@ -75,12 +75,14 @@ function JobsMap({
 
   function ChangeView({ center, zoom }) {
     const map = useMap();
+    map.invalidateSize();
     map.setView(center, zoom);
     return null;
   }
 
   function ChangeBounds({ allBounds }) {
     const map = useMap();
+    map.invalidateSize();
     map.locate();
     if (allBounds // 👈 null and undefined check
       && Object.keys(allBounds).length !== 0 && allBounds.constructor === Object) {
@@ -95,8 +97,8 @@ function JobsMap({
         center={centerMarker}
         zoom={13}
         scrollWheelZoom={true}
-        onLocationfound={handleOnLocationFound}
         dragging={dragging}>
+        {getLocation && <GetLocation />}
         {soloMarker && <ChangeView center={centerMarker} zoom={13} />}
         {markersData && <ChangeBounds allBounds={allSiteBounds} />}
         <TileLayer

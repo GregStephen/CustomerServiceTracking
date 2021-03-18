@@ -10,8 +10,11 @@ import {
   Col,
   Badge,
   Input,
+  Collapse,
+  Button,
 } from 'reactstrap';
 import UserContext from '../../Contexts/UserContext';
+import JobsMap from '../JobsMap/JobsMap';
 import { Page, Header, GlobalTable } from '../Global';
 import { useGetPropertiesForBusiness } from '../../Helpers/Data/PropertyRequests';
 
@@ -20,16 +23,37 @@ function PropertiesPage() {
   const history = useHistory();
   const properties = useGetPropertiesForBusiness(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
+  const [markersData, setMarkersData] = useState([]);
   const [inactiveProperties, getInactiveProperties] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
 
   const returnPrimaryContactName = (contacts) => {
-    contacts.forEach((contact) => {
-      if (contact.primary === true) {
-        return <p>{contact.firstName}</p>;
-      }
-      return '';
-    });
+    const primary = contacts.find((contact) => contact.primary);
+    return `${primary.firstName} ${primary.lastName}`;
   };
+
+  useEffect(() => {
+    const markers = [];
+    if (properties.data) {
+      properties.data.forEach((element) => {
+        const newMarker = {
+          title: `${element?.displayName}`,
+          propertyLink: `/property/${element?.id}`,
+          latLng: {
+            lat: element?.latitude,
+            lng: element?.longitude,
+          },
+          color: 'green',
+          tech: '',
+          address: element,
+        };
+        markers.push(newMarker);
+      });
+    }
+    setMarkersData(markers);
+  }, [properties.data]);
 
   useEffect(() => {
     if (properties.data) {
@@ -42,28 +66,36 @@ function PropertiesPage() {
 
   const tableColumns = useMemo(() => [
     {
-      Header: 'Property Display Name',
+      Header: 'Name',
       accessor: 'displayName',
+      Cell: ({ row: { original } }) => (
+        <p>{original.displayName} {!original.enabled ? <Badge color='danger'>Inactive</Badge> : ''}</p>
+      ),
     },
-    // {
-    //   Header: 'Primary Contact',
-    //   accessor: (r) => r.id,
-    //   Cell: ({ row: { original } }) => (returnPrimaryContactName(original.contacts)),
-    // },
+    {
+      Header: 'Primary Contact',
+      accessor: (r) => r.id,
+      Cell: ({ row: { original } }) => (returnPrimaryContactName(original.contacts)),
+    },
+    {
+      Header: 'Address',
+      accessor: 'addressLine1',
+    },
     {
       Header: 'City',
       accessor: 'city',
     },
     {
-      Header: 'Active',
-      accessor: 'enabled',
-      Cell: ({ row: { original } }) => (
-        <h5><Badge color={original.enabled ? 'success' : 'danger'}>{original.enabled ? 'Active' : 'Inactive'}</Badge></h5>
-      ),
+      Header: 'State',
+      accessor: 'state',
+    },
+    {
+      Header: 'Zip Code',
+      accessor: 'zipCode',
     },
     {
       Header: 'Search',
-      accessor: (r) => r.city + r.displayName,
+      accessor: (r) => r.city + r.displayName + r.zipCode + r.state + r.addressLine1,
     },
   ], []);
 
@@ -81,10 +113,24 @@ function PropertiesPage() {
       <div className="PropertiesPage">
         <Header title="Properties" icon="fa-house-user" />
         <div className="d-flex justify-content-end">
+          <Button color="primary" onClick={toggle} className="mr-3">{isOpen ? 'Close Map' : 'Show Map'}</Button>
           <Link className="btn btn-info mr-4 mb-2" to={'/new-property'}>Add a new Property</Link>
         </div>
         <div className="d-flex justify-content-end">
           <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>
+        </div>
+        <div>
+          <Collapse isOpen={isOpen}>
+            <div className="d-flex justify-content-center">
+              <div className="col-10 mt-3">
+                <JobsMap
+                  getLocation={false}
+                  businessAddress={userObj.business}
+                  markersData={markersData}
+                />
+              </div>
+            </div>
+          </Collapse>
         </div>
         <div className="widget col-10">
           <Row className="mb-3">
@@ -106,7 +152,7 @@ function PropertiesPage() {
             striped
             data={tableData}
             hidePagination={tableData.length < 10}
-            defaultSortColumn='Property Display Name'
+            defaultSortColumn='displayName'
             hiddenColumns={hiddenColumns}
             filters={filters}
             customRowProps={(row) => ({

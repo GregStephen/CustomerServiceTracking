@@ -18,7 +18,7 @@ import moment from 'moment';
 
 import { useCreateNewJob } from '../../../Helpers/Data/JobRequests';
 import { useGetPropertiesForBusiness } from '../../../Helpers/Data/PropertyRequests';
-import { useGetRegisteredEmployees } from '../../../Helpers/Data/BusinessRequests';
+import { useGetRegisteredAndUnregisteredEmployees } from '../../../Helpers/Data/BusinessRequests';
 import useGetJobTypes from '../../../Helpers/Data/JobTypeRequests';
 
 const validationSchema = Yup.object().shape({
@@ -46,7 +46,7 @@ function NewJobModal({
   const [isToggled, setIsToggled] = useState(false);
   const createNewJob = useCreateNewJob();
   const propertyOptions = useGetPropertiesForBusiness(userObj.businessId).data;
-  const employeeOptions = useGetRegisteredEmployees(userObj.businessId).data;
+  const employeeOptions = useGetRegisteredAndUnregisteredEmployees(userObj.businessId).data;
   const jobTypeOptions = useGetJobTypes().data;
 
   const formik = useFormik({
@@ -70,7 +70,7 @@ function NewJobModal({
     },
   });
   return (<>
-    <button className="btn btn-info mb-3" onClick={() => setIsToggled(true)}>New Job</button>
+    <button className="btn btn-info mr-3" onClick={() => setIsToggled(true)}>New Job</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>New Job</ModalHeader>
       <Form className="col-8" onSubmit={formik.handleSubmit}>

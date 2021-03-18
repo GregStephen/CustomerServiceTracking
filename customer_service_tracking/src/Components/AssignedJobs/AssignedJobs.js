@@ -5,6 +5,7 @@ import React, {
   useContext,
 } from 'react';
 import { Link } from 'react-router-dom';
+import { Collapse, Button } from 'reactstrap';
 
 import { Header, GlobalTable } from '../Global';
 import JobsMap from '../JobsMap/JobsMap';
@@ -15,9 +16,11 @@ import { useJobsAssignedTo } from '../../Helpers/Data/JobRequests';
 
 function AssignedJobs() {
   const userObj = useContext(UserContext);
-
   const jobsAssigned = useJobsAssignedTo(userObj?.id);
   const [markersData, setMarkersData] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
 
   const tableData = useMemo(() => (jobsAssigned.data ? jobsAssigned.data : []), [jobsAssigned.data]);
 
@@ -63,7 +66,7 @@ function AssignedJobs() {
     {
       Header: 'Notes',
       accessor: 'note',
-      Cell: ({ value }) => (value ? <JobNotesModal note={value}/> : 'No Notes'),
+      Cell: ({ value }) => (value ? <JobNotesModal note={value} /> : 'No Notes'),
     },
     {
       Header: ' ',
@@ -77,15 +80,22 @@ function AssignedJobs() {
   return (
     <div className="AssignedJobs widget col-10 pt-0">
       <Header title="Jobs" />
-      <JobsMap
-        getLocation={true}
-        markersData={markersData}
-        businessAddress={userObj?.business}/>
+      <div className="d-flex justify-content-end">
+        <Button color="primary" onClick={toggle} className="mr-3 mb-3">{isOpen ? 'Close Map' : 'Show Map'}</Button>
+      </div>
+      <Collapse isOpen={isOpen}>
+        <JobsMap
+          getLocation={true}
+          markersData={markersData}
+          businessAddress={userObj?.business}
+        />
+      </Collapse>
+
       <GlobalTable
         columns={tableColumns}
         data={tableData}
-        />
-      </div>
+      />
+    </div>
   );
 }
 

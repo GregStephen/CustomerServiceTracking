@@ -11,6 +11,10 @@
   position: relative;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 body {
   background-color: $favColor;
   direction: ltr;

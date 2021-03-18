@@ -85,7 +85,7 @@ function ReportsPage() {
             columns={tableColumns}
             data={tableData}
             hidePagination={tableData?.length < 10}
-            defaultSortColumn='Service Date'
+            defaultSortColumn='serviceDate'
             sortDesc={true}
             hiddenColumns={hiddenColumns}
             filters={filters}

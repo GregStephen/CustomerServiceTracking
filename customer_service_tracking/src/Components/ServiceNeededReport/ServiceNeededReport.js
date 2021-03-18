@@ -11,13 +11,15 @@ import {
   Input,
   Row,
   Col,
+  Button,
+  Collapse,
 } from 'reactstrap';
 import moment from 'moment';
 
 import JobsMap from '../JobsMap/JobsMap';
 import { GlobalTable } from '../Global';
 import EditJobModal from '../Modals/EditJobModal/EditJobModal';
-
+import NewJobModal from '../Modals/NewJobModal/NewJobModal';
 import Formatting from '../../Helpers/Functions/Formatting';
 
 import {
@@ -39,6 +41,9 @@ function ServiceNeededReport() {
   const deleteJob = useDeleteJob();
   const createNewJob = useCreateNewJob();
   const editTheJob = useEditJob();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
 
   const tableData = useMemo(() => (systemsNeedingService.data ? systemsNeedingService.data : []), [systemsNeedingService.data]);
 
@@ -104,11 +109,22 @@ function ServiceNeededReport() {
   ], [jobTypeOptions, deleteJob, createNewJob, editTheJob]);
 
   return (
-    <div className="ServiceNeededReport widget col-10">
-      <JobsMap
-        getLocation={false}
-        businessAddress={userObj.business}
-        markersData={markersData} />
+    <div className="ServiceNeededReport widget col-10 mb-4">
+      <div className="d-flex justify-content-end">
+        <NewJobModal userObj={userObj} />
+        <Button color="primary" onClick={toggle} className="mr-3">{isOpen ? 'Close Map' : 'Show Map'}</Button>
+      </div>
+
+      <Collapse isOpen={isOpen}>
+        <div className="mt-3">
+        <JobsMap
+          getLocation={false}
+          businessAddress={userObj.business}
+          markersData={markersData}
+          />
+          </div>
+      </Collapse>
+
       <Row className="ml-4">
         <Col sm={12} md={3}>
           <FormGroup>
