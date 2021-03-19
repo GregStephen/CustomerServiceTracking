@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Form,
   FormGroup,
@@ -14,8 +14,6 @@ import {
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
-import { useGetRegisteredAndUnregisteredEmployees } from '../../../Helpers/Data/BusinessRequests';
-import UserContext from '../../../Contexts/UserContext';
 
 const editJobValidationSchema = Yup.object().shape({
   technicianId: Yup.string().required('Technician is required'),
@@ -24,27 +22,24 @@ const editJobValidationSchema = Yup.object().shape({
   includeNotes: Yup.bool().required(),
 });
 
-function EditJobModal({
-  systemNeedingService: job,
-  editJob,
-  deleteJob,
+function CreateNewJobModal({
+  systemNeedingService,
+  createJob,
   jobTypeOptions,
 }) {
-  const userObj = useContext(UserContext);
   const [isToggled, setIsToggled] = useState(false);
-  const employeeOptions = useGetRegisteredAndUnregisteredEmployees(userObj.businessId).data;
 
   const defaultJob = useMemo(() => ({
-    id: job?.id ?? '',
-    propertySystemId: job?.propertySystemId ?? '',
-    dateAssigned: job?.dateAssigned ?? '',
-    technicianId: job?.technicianId ?? '',
-    jobTypeId: job?.jobTypeId ?? '',
-    note: job?.note ?? '',
-    includeOtherSystems: job?.includeOtherSystems ?? false,
+    id: '',
+    propertySystemId: systemNeedingService?.system?.id,
+    dateAssigned: '',
+    technicianId: '',
+    jobTypeId: '',
+    note: '',
+    includeOtherSystems: false,
     otherSystemIds: [],
-    includeNotes: job?.includeNotes ?? false,
-  }), [job]);
+    includeNotes: false,
+  }), [systemNeedingService]);
 
   const formik = useFormik({
     initialValues: defaultJob,
@@ -52,9 +47,18 @@ function EditJobModal({
     validationSchema: editJobValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
+      submission.jobTypeId = jobTypeOptions.find((x) => x.type === 'Service').id;
       submission.dateAssigned = moment();
+      if (submission.includeOtherSystems === true) {
+        const systems = systemNeedingService?.property?.systems;
+        systems.forEach((system) => {
+          if (system.id !== submission.propertySystemId) {
+            submission.otherSystemIds.push(system.id);
+          }
+        });
+      }
       setValues(submission);
-      editJob.mutate(submission, {
+      createJob.mutate(submission, {
         onSuccess: () => {
           setIsToggled(false);
         },
@@ -63,16 +67,8 @@ function EditJobModal({
     },
   });
 
-  const deleteThisJob = (JobId) => {
-    deleteJob.mutate(JobId, {
-      onSuccess: () => {
-        setIsToggled(false);
-      },
-    });
-  };
-
   return (<>
-    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit/Delete</button>
+    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Assign</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}></ModalHeader>
       <Form className="col-8" onSubmit={formik.handleSubmit}>
@@ -85,7 +81,7 @@ function EditJobModal({
               id="technicianId"
               {...formik.getFieldProps('technicianId')}>
               <option value="">Select a technician</option>
-              {employeeOptions?.map((object) => (
+              {systemNeedingService?.employeeOptions.map((object) => (
                 <option key={object.id} value={object.id}>{object.fullName}</option>
               ))}
             </Input>
@@ -100,6 +96,15 @@ function EditJobModal({
               id="note"
               {...formik.getFieldProps('note')} />
           </FormGroup>
+<FormGroup>
+              <Label check>
+                <Input
+                  type="checkbox"
+                  id="includeOtherSystems"
+                  {...formik.getFieldProps('includeOtherSystems')} />
+              Create job for other systems on property?
+            </Label>
+            </FormGroup>
           {(formik.values.includeOtherSystems === true)
             && <FormGroup>
               <Label check>
@@ -113,9 +118,8 @@ function EditJobModal({
           }
         </ModalBody>
         <ModalFooter>
-          <Button type="submit" color="primary">Edit Job'</Button>{' '}
+          <Button type="submit" color="primary">Create Job</Button>{' '}
           <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
-          <Button color="danger" value="info" onClick={() => deleteThisJob(job?.job?.id)}>Delete?</Button>
         </ModalFooter>
       </Form>
     </Modal>
@@ -123,4 +127,4 @@ function EditJobModal({
   );
 }
 
-export default EditJobModal;
+export default CreateNewJobModal;

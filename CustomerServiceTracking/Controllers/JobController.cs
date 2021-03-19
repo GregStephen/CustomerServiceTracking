@@ -40,6 +40,12 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetJobsNeedingService(businessId, daysOut));
         }
 
+        [HttpGet("{businessId}")]
+        public IActionResult GetJobs(Guid businessId)
+        {
+            return Ok(_repo.GetJobs(businessId));
+        }
+
         [HttpGet("employeeId/{employeeId}")]
         public IActionResult GetJobsAssignedTo(Guid employeeId)
         {

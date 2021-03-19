@@ -5,7 +5,7 @@ import {
   Row,
   Badge,
 } from 'reactstrap';
-
+import { useHistory } from 'react-router-dom';
 import { Page, Header, GlobalTable } from '../Global';
 import { useGetRegisteredAndUnregisteredEmployees } from '../../Helpers/Data/BusinessRequests';
 
@@ -15,6 +15,7 @@ import NewTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal'
 
 function TeamPage() {
   const userObj = useContext(UserContext);
+  const history = useHistory();
   const teamMembers = useGetRegisteredAndUnregisteredEmployees(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
 
@@ -46,11 +47,8 @@ function TeamPage() {
   return (
     <Page>
       <div className="TeamPage">
+        <div className="widget col-10 mt-4">
         <Header title='Team' icon='fa-users' />
-        <div className="d-flex row justify-content-end">
-          <NewTeamMemberModal />
-        </div>
-        <div className="widget col-10">
           <Row className="mb-3">
             <Col className="d-flex justify-content-between">
               <div className="ml-4">
@@ -58,18 +56,27 @@ function TeamPage() {
                   type="text"
                   value={searchFilter}
                   onChange={(e) => setSearchFilter(e.target.value)}
-                  placeholder="Search Reports"
+                  placeholder="Search Team"
                   style={{ maxWidth: '100%', width: '300px' }}
                 />
               </div>
+              <NewTeamMemberModal />
             </Col>
           </Row>
           <GlobalTable
+            hover
+            striped
             columns={tableColumns}
             data={tableData}
             defaultSortColumn='Name'
             hiddenColumns={hiddenColumns}
             filters={filters}
+            customRowProps={(row) => ({
+              className: 'cursor-pointer',
+              onClick: () => {
+                history.push(`/user/${row.original.id}`);
+              },
+            })}
           />
         </div>
       </div>

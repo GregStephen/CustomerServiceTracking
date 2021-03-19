@@ -110,12 +110,25 @@ function PropertiesPage() {
 
   return (
     <Page>
-      <div className="PropertiesPage">
+      <div className="widget col-10 mt-4">
         <Header title="Properties" icon="fa-house-user" />
-        <div className="d-flex justify-content-end">
-          <Button color="primary" onClick={toggle} className="mr-3">{isOpen ? 'Close Map' : 'Show Map'}</Button>
-          <Link className="btn btn-info mr-4 mb-2" to={'/new-property'}>Add a new Property</Link>
-        </div>
+        <Row className="mb-3">
+          <Col className="d-flex justify-content-between">
+            <div className="ml-4">
+              <Input
+                type="text"
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                placeholder="Search Properties"
+                style={{ maxWidth: '100%', width: '300px' }}
+              />
+            </div>
+            <div className="d-flex justify-content-end">
+              <Button color="primary" onClick={toggle} className="mr-3" style={{ height: '38px' }}>{isOpen ? 'Close Map' : 'Show Map'}</Button>
+              <Link className="btn btn-info mr-4 mb-2" to={'/new-property'}>Add a new Property</Link>
+            </div>
+          </Col>
+        </Row>
         <div className="d-flex justify-content-end">
           <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>
         </div>
@@ -132,37 +145,22 @@ function PropertiesPage() {
             </div>
           </Collapse>
         </div>
-        <div className="widget col-10">
-          <Row className="mb-3">
-            <Col className="d-flex justify-content-between">
-              <div className="ml-4">
-                <Input
-                  type="text"
-                  value={searchFilter}
-                  onChange={(e) => setSearchFilter(e.target.value)}
-                  placeholder="Search Reports"
-                  style={{ maxWidth: '100%', width: '300px' }}
-                />
-              </div>
-            </Col>
-          </Row>
-          <GlobalTable
-            columns={tableColumns}
-            hover
-            striped
-            data={tableData}
-            hidePagination={tableData.length < 10}
-            defaultSortColumn='displayName'
-            hiddenColumns={hiddenColumns}
-            filters={filters}
-            customRowProps={(row) => ({
-              className: 'cursor-pointer',
-              onClick: () => {
-                history.push(`/property/${row.original.id}`);
-              },
-            })}
-          />
-        </div>
+        <GlobalTable
+          columns={tableColumns}
+          hover
+          striped
+          data={tableData}
+          hidePagination={tableData.length < 10}
+          defaultSortColumn='displayName'
+          hiddenColumns={hiddenColumns}
+          filters={filters}
+          customRowProps={(row) => ({
+            className: 'cursor-pointer',
+            onClick: () => {
+              history.push(`/property/${row.original.id}`);
+            },
+          })}
+        />
       </div>
     </Page>
   );

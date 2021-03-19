@@ -85,7 +85,9 @@ namespace CustomerServiceTracking.Repositories
 							ON r.JobTypeId = jt.Id
                             WHERE r.[Id] = @reportId";
                 var parameters = new { reportId };
-                return db.QueryFirst<ReportToSendDTO>(sql, parameters);
+                var report = db.QueryFirst<ReportToSendDTO>(sql, parameters);
+                report.Property = _customerRepo.GetPropertyByPropertyId(report.PropertyId);
+                return report;
             }
         }
 

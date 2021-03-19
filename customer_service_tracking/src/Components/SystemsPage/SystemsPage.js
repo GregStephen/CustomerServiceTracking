@@ -57,18 +57,16 @@ function SystemsPage() {
   ], [editSystemModalIsOpen, deleteTheSystem, editTheSystem]);
   return (
     <Page>
-      <div className="SystemsPage">
+      <div className="widget col-10 mt-4">
         <Header title="Systems" />
         <div className="d-flex justify-content-end">
           <Link className="btn btn-info mr-4 mb-4" to={'/new-system'}>Create a New System</Link>
         </div>
-        <div className="widget col-10">
-          <GlobalTable
-            columns={tableColumns}
-            data={tableData}
-            hidePagination={tableData.length < 10}
-          />
-        </div>
+        <GlobalTable
+          columns={tableColumns}
+          data={tableData}
+          hidePagination={tableData.length < 10}
+        />
       </div>
     </Page>
   );

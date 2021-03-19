@@ -67,7 +67,7 @@ class NavigationBar extends React.Component {
           <DropdownToggle nav caret className="navbar-user-button">
           </DropdownToggle>
           <DropdownMenu right>
-            <DropdownItem tag={Link} to='/profile'>
+            <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
               User Profile
             </DropdownItem>
             <DropdownItem onClick={this.logMeOut}>
@@ -84,7 +84,7 @@ class NavigationBar extends React.Component {
           <DropdownToggle nav caret className="navbar-user-button">
           </DropdownToggle>
           <DropdownMenu right>
-            <DropdownItem tag={Link} to='/profile'>
+            <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
               User Profile
           </DropdownItem>
             <DropdownItem onClick={this.logMeOut}>

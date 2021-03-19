@@ -9,6 +9,7 @@ namespace CustomerServiceTracking.Repositories
     {
         Job GetJobForSystemBySystemId(Guid systemId);
         List<ServiceNeed> GetJobsNeedingService(Guid businessId, int amountOfDays);
+        IEnumerable<JobToShow> GetJobs(Guid businessId);
         IEnumerable<JobToShow> GetJobsAssignedTo(Guid employeeId);
         bool AddJob(NewJobDTO newJobDTO);
         bool EditJob(Job updatedJobDTO);

@@ -11,6 +11,14 @@ export function useJobForSystemBySystemId(systemId) {
   });
 }
 
+export function useJobs(businessId) {
+  const url = `${baseUrl}/${businessId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
+
 export function useJobsNeedingAssignment(businessId, daysOut) {
   const url = `${baseUrl}/upcoming-jobs/${businessId}/${daysOut}`;
   return useQuery([url], async () => {
@@ -35,7 +43,7 @@ export function useCreateNewJob() {
       queryClient.invalidateQueries({
         predicate: (query) => {
           const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}/upcoming-jobs`);
+          return key.startsWith(`${baseUrl}`);
         },
       });
     },
@@ -50,7 +58,7 @@ export function useEditJob() {
       queryClient.invalidateQueries({
         predicate: (query) => {
           const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}/upcoming-jobs`);
+          return key.startsWith(`${baseUrl}`);
         },
       });
     },
@@ -65,7 +73,7 @@ export function useDeleteJob() {
       queryClient.invalidateQueries({
         predicate: (query) => {
           const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}/upcoming-jobs`);
+          return key.startsWith(`${baseUrl}`);
         },
       });
     },

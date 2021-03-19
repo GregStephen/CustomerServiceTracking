@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useContext } from 'react';
 import moment from 'moment';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Row, Col, Input } from 'reactstrap';
 import UserContext from '../../Contexts/UserContext';
 import { Page, Header, GlobalTable } from '../Global';
@@ -56,9 +56,8 @@ function ReportsPage() {
 
   return (
     <Page>
-      <div className="ReportsPage">
+        <div className="widget col-10 mt-4">
         <Header title="Reports" icon="fa-file-signature" />
-        <div className="widget col-10">
           <Row className="mb-3">
             <Col className="d-flex justify-content-between">
               <div className="ml-4">
@@ -91,7 +90,6 @@ function ReportsPage() {
             filters={filters}
           />
         </div>
-      </div>
     </Page>
   );
 }

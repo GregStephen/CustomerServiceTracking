@@ -24,6 +24,14 @@ export function useUserByFirebaseUid(uid, authenticated) {
   }, { enabled: authenticated && !!uid });
 }
 
+
+export function useUserById(id) {
+  const url = `${baseUrl}/user/${id}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  }, { enabled: !!id });
+}
 // POSTS
 
 // Called on user creation, returns a boolean
@@ -33,20 +41,7 @@ const addNewUser = (userobj) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
-const addNewPersonalUser = (userObj) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}/personal`, userObj)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
-
-const addUnregisteredEmployee = (unregisteredEmployeeObject) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}/unregisteredEmployee`, unregisteredEmployeeObject)
-    .then((results) => resolve(results.data))
-    .catch((err) => reject(err));
-});
 
 export default {
   addNewUser,
-  addNewPersonalUser,
-  addUnregisteredEmployee,
 };

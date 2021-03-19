@@ -16,15 +16,8 @@ function HomePage() {
         description={`Welcome ${user?.firstName}`}
       />
       <div className="HomePage">
-        {user?.admin
-          && (
-            <div className="systems-needing-service">
-              <ServiceNeededReport />
-            </div>
-          )}
-        <div className="jobs-assigned">
-          <AssignedJobs userObj={user} />
-        </div>
+        {user?.admin && (<ServiceNeededReport />)}
+        <AssignedJobs userObj={user} />
       </div>
     </Page>
   );

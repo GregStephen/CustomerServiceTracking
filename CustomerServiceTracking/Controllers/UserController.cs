@@ -41,6 +41,20 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
+        [HttpGet("user/{userId}")]
+        public IActionResult GetUserById(Guid userId)
+        {
+            var user = _repo.GetUserById(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(user);
+            }
+        }
+
         [HttpPost]
         public IActionResult AddNewUserToDatabase(NewUserDTO newUser)
         {

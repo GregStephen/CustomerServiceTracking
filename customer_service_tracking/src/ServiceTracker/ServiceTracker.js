@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import UserContext from '../Contexts/UserContext';
 import AddSystemToPropertyPage from '../Components/AddSystemToPropertyPage/AddSystemToPropertyPage';
+import ProfilePage from '../Components/ProfilePage/ProfilePage';
 import PropertyPage from '../Components/PropertyPage/PropertyPage';
 import PropertiesPage from '../Components/PropertiesPage/PropertiesPage';
 import EditPropertySystemPage from '../Components/EditPropertySystemPage/EditPropertySystemPage';
@@ -81,6 +82,9 @@ function ServiceTracker({ userUid, authorized }) {
             </Route>
             <Route path='/team'>
               <TeamPage />
+          </Route>
+          <Route path='/user/:userId'>
+              <ProfilePage />
             </Route>
           </Switch>
         }

@@ -14,15 +14,11 @@ namespace CustomerServiceTracking.Repositories
     {
         string _connectionString;
         private ICustomerRepository _customerRepo;
-        private ISystemRepository _systemRepo;
-        private IJobTypesRepository _jobTypeRepo;
         private IBusinessRepository _businessRepo;
-        public JobRepository(IConfiguration configuration, ICustomerRepository customerRepo, ISystemRepository systemRepo, IJobTypesRepository jobTypeRepo, IBusinessRepository businessRepo)
+        public JobRepository(IConfiguration configuration, ICustomerRepository customerRepo, IBusinessRepository businessRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
             _customerRepo = customerRepo;
-            _systemRepo = systemRepo;
-            _jobTypeRepo = jobTypeRepo;
             _businessRepo = businessRepo;
         }
 
@@ -52,30 +48,9 @@ namespace CustomerServiceTracking.Repositories
                             FROM [PropertySystem] ps
                             JOIN [Property] p
                             on ps.[PropertyId] = p.Id
-                            WHERE p.BusinessId = @businessId AND (DATEDIFF(day, GETDATE(), ps.[DayTankDepleted]) < @amountOfDays)";
-                //foreach (var property in properties)
-                //{ 
-                //    foreach (var propertySystem in property.Systems)
-                //    {
-                //        systemIds.Add(propertySystem.Id);
-                //    }
-                //}
-                //var sqll = @"SELECT TOP(1) Id 
-                //            FROM Report
-                //            WHERE SystemId = @systemId
-                //            ORDER BY ServiceDate DESC";
-
-                //foreach (var systemId in systemIds)
-                //{
-                //    var parameter = new { systemId };
-                //    var reportId = db.QueryFirst<Guid>(sqll, parameter);
-                //    mostRecentReportIds.Add(reportId);
-                //}
-
-                ////search reports and returns list of SystemId, customerId and Days leftwhere dayTankDepleted is within the week and Id is in list of most recent reports
-                //var sql = @"SELECT r.[SystemId], DATEDIFF(day, GETDATE(), r.[DayTankDepleted]) as DaysUntilEmpty, r.[CustomerId]
-                //            FROM [Report] r
-                //            WHERE (DATEDIFF(day, GETDATE(), r.[DayTankDepleted]) < @amountOfDays) AND r.[Id] in @mostRecentReportIds";
+                            LEFT JOIN [Job] j
+                            on j.[PropertySystemId] = ps.Id
+                            WHERE p.BusinessId = @businessId AND (DATEDIFF(day, GETDATE(), ps.[DayTankDepleted]) < @amountOfDays) AND j.[Id] IS NULL";
                 var parameters = new { businessId, amountOfDays };
                 var propertySystemsNeedingService =  db.Query<PropertySystem>(sql, parameters);
                 foreach (var propertySystemNeedingService in propertySystemsNeedingService)
@@ -85,7 +60,6 @@ namespace CustomerServiceTracking.Repositories
                     SystemNeedingService.Property = _customerRepo.GetPropertyByPropertyId(propertySystemNeedingService.PropertyId);
                     SystemNeedingService.System = propertySystemNeedingService;
                     SystemNeedingService.EmployeeOptions = employeeOptions;
-                    SystemNeedingService.Job = GetJobForSystemBySystemId(propertySystemNeedingService.Id);
                     ListOfSystemsNeedingService.Add(SystemNeedingService);
                 }
                 return ListOfSystemsNeedingService;
@@ -96,14 +70,17 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT *
-                            FROM [Job]
+                var sql = @"SELECT j.*, jt.[Type] AS JobType, u.FirstName + ' ' + u.LastName AS TechnicianName
+                            FROM [Job] j
+                            JOIN [JobType] jt
+                            ON j.JobTypeId = jt.Id
+                            JOIN [User] u
+                            ON j.TechnicianId = u.Id
                             WHERE [TechnicianId] = @employeeId";
                 var parameters = new { employeeId };
                 var jobs = db.Query<JobToShow>(sql, parameters);
                 foreach (var job in jobs)
                 {
-                    job.JobType = _jobTypeRepo.GetJobTypeById(job.JobTypeId);
                     job.PropertySystem = _customerRepo.GetPropertySystemByPropertySystemId(job.PropertySystemId);
                     job.Property = _customerRepo.GetPropertyByPropertyId(job.PropertySystem.PropertyId);
                 }
@@ -111,6 +88,27 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public IEnumerable<JobToShow> GetJobs(Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT j.*, jt.[Type] AS JobType, u.FirstName + ' ' + u.LastName AS TechnicianName
+                            FROM [Job] j
+                            JOIN [JobType] jt
+                            ON j.JobTypeId = jt.Id
+                            JOIN [User] u
+                            ON j.TechnicianId = u.Id
+                            WHERE j.[BusinessId] = @businessId";
+                var parameters = new { businessId };
+                var jobs = db.Query<JobToShow>(sql, parameters);
+                foreach (var job in jobs)
+                {
+                    job.PropertySystem = _customerRepo.GetPropertySystemByPropertySystemId(job.PropertySystemId);
+                    job.Property = _customerRepo.GetPropertyByPropertyId(job.PropertySystem.PropertyId);
+                }
+                return jobs;
+            }
+        }
         public bool AddJob(NewJobDTO newJobDTO)
         {
             using (var db = new SqlConnection(_connectionString))

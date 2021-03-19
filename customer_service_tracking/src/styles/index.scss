@@ -16,6 +16,8 @@
 }
 
 body {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: bolder;
   background-color: $favColor;
   direction: ltr;
   text-rendering: optimizeLegibility;
@@ -23,15 +25,25 @@ body {
 
 .widget {
   margin: auto;
-  padding: 0;
-  padding-top: 1em;
-  padding-bottom: 1em;
+  padding: 0; 
+  padding-bottom: 1rem;
   background-color: $background-color-transparent;
   border: 3px solid black;
   border-radius: .5em;
   color: white;
-}
+  .Header {
+    border-top-left-radius: .5em;
+    border-top-right-radius: .5em;
+  }
+  }
 
+.widget-body {
+  padding-top: 1rem
+}
+.widget-list {
+  padding-left: 2em;
+  text-align: start;
+}
 .Header{
  margin-bottom: calc(1.5rem + 0.625rem);
  position: relative;
@@ -39,7 +51,6 @@ body {
  display: flex;
  flex-direction: row;
  align-items: center;
-
  background-color: $background-color-header;
  border-bottom: 2px solid black;
 }

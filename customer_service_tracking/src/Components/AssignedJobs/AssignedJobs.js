@@ -61,7 +61,7 @@ function AssignedJobs() {
     },
     {
       Header: 'Job Type',
-      accessor: (j) => j.jobType?.type,
+      accessor: 'jobType',
     },
     {
       Header: 'Notes',
@@ -79,9 +79,9 @@ function AssignedJobs() {
 
   return (
     <div className="AssignedJobs widget col-10 pt-0">
-      <Header title="Jobs" />
+      <Header title="Your Jobs" />
       <div className="d-flex justify-content-end">
-        <Button color="primary" onClick={toggle} className="mr-3 mb-3">{isOpen ? 'Close Map' : 'Show Map'}</Button>
+        <Button color="primary" onClick={toggle} className="mr-3 mb-3" >{isOpen ? 'Close Map' : 'Show Map'}</Button>
       </div>
       <Collapse isOpen={isOpen}>
         <JobsMap
@@ -94,6 +94,7 @@ function AssignedJobs() {
       <GlobalTable
         columns={tableColumns}
         data={tableData}
+        emptyTableMessage="No jobs currently assigned"
       />
     </div>
   );

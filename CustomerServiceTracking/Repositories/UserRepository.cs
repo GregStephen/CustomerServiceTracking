@@ -39,6 +39,23 @@ namespace CustomerServiceTracking.Repositories
                 return userFromDb;
             }
         }
+
+        public User GetUserById(Guid userId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [User]
+                            WHERE [Id] = @userId";
+                var parameters = new { userId };
+                var userFromDb = db.QueryFirstOrDefault<User>(sql, parameters);
+                var businessInfo = _businessRepo.GetUsersBusiness(userFromDb.BusinessId);
+                userFromDb.Business = businessInfo;
+                userFromDb.BusinessId = businessInfo.Id;
+                userFromDb.BusinessName = businessInfo.BusinessName;
+                return userFromDb;
+            }
+        }
         public bool AddNewUserToDatabase(NewUserDTO newUser)
         {
             using (var db = new SqlConnection(_connectionString))
