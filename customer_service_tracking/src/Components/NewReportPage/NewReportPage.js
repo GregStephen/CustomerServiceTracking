@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import {
   Col,
   Row,
@@ -20,8 +20,7 @@ import { useGetPropertyFromPropertyId, useGetPropertySystemFromPropertySystemId 
 import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
-
-import './NewReportPage.scss';
+import EditPropertySystemModal from '../Modals/EditPropertySystemModal/EditPropertySystemModal';
 
 const newReportValidationSchema = Yup.object().shape({
   amountRemaining: Yup.number().required('Amount remaining is required'),
@@ -29,7 +28,7 @@ const newReportValidationSchema = Yup.object().shape({
   solutionAdded: Yup.number().required('Solution Added is required'),
   notes: Yup.string().notRequired(),
   jobTypeId: Yup.string().notRequired('Job type is required'),
-  serviceDate: Yup.date().required('Service date is required'),
+  serviceDate: Yup.date().notRequired(),
 });
 
 function NewReportPage() {
@@ -42,17 +41,6 @@ function NewReportPage() {
   const deleteJob = useDeleteJob();
   const job = useJobForSystemBySystemId(id);
   const addNewReport = useAddNewReport();
-
-  useEffect(() => {
-    if (addNewReport.isSuccess) {
-      if (job !== '') {
-        deleteJob.mutate(job.id)
-          .then(() => history.push('/home'));
-      } else {
-        history.push('/home');
-      }
-    }
-  }, [addNewReport.isSuccess, deleteJob, history, job]);
 
   const formik = useFormik({
     initialValues: defaults.defaultReport,
@@ -68,11 +56,22 @@ function NewReportPage() {
       submission.serviceDate = moment(submission.serviceDate).format('YYYY-MM-DD');
       submission.solutionAdded = parseInt(submission.solutionAdded, 10);
       setValues(submission);
-      addNewReport.mutate(submission);
+      addNewReport.mutate(submission, {
+        onSuccess: () => {
+          if (job.data.id !== '') {
+            console.log(job);
+            deleteJob.mutate(job.data.id, {
+              onSuccess: () => {
+                history.push('/');
+              },
+            });
+          }
+          history.push('/');
+        },
+      });
       setSubmitting(false);
     },
   });
-
   const maxInches = propertySystem?.data?.systemInfo?.inches;
   const today = moment().format('YYYY-MM-DD');
   return (
@@ -80,6 +79,7 @@ function NewReportPage() {
       <Header title="New Report" />
       {property.isSuccess
         && <div className="widget col-10 d-flex justify-content-center mb-4">
+          <EditPropertySystemModal propertySystem={ propertySystem.data }/>
           <Form className="col-8" onSubmit={formik.handleSubmit}>
             <h3>{property?.data?.displayName}</h3>
             <h3>{property?.data?.addressLine1}</h3>
@@ -105,8 +105,10 @@ function NewReportPage() {
               </Input>
               {formik.touched.jobTypeId
                 && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
-            </FormGroup>
-            <FormGroup>
+          </FormGroup>
+          {userObj.admin
+            && job.data?.id
+            && < FormGroup >
               <Label for="serviceDate">Service Date</Label>
               <Input
                 type="date"
@@ -117,6 +119,7 @@ function NewReportPage() {
               {formik.touched.serviceDate
                 && <FormFeedback className="d-block">{formik.errors?.serviceDate}</FormFeedback>}
             </FormGroup>
+          }
             <Row form>
               <Col md={6}>
                 <FormGroup>
@@ -163,7 +166,8 @@ function NewReportPage() {
                 {...formik.getFieldProps('notes')} />
               {formik.touched.notes
                 && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
-            </FormGroup>
+          </FormGroup>
+
             <button type="submit" className="btn btn-success">Add New Report</button>
           </Form>
         </div>

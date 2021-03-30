@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
-import { NavLink as RRNavLink, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink as RRNavLink, Link, useHistory } from 'react-router-dom';
 import {
   Collapse,
   Navbar,
@@ -15,102 +15,87 @@ import {
   DropdownToggle,
   DropdownItem,
 } from 'reactstrap';
-import PropTypes from 'prop-types';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
 import './NavigationBar.scss';
 
-class NavigationBar extends React.Component {
-  static propTypes = {
-    userObj: PropTypes.object.isRequired,
-    authorized: PropTypes.bool.isRequired,
-  }
+function NavigationBar({ userObj }) {
+  const history = useHistory();
+  const [isOpen, setIsOpen] = useState();
 
-  state = {
-    isOpen: false,
-  }
-
-  static propTypes = {
-    authorized: PropTypes.bool.isRequired,
-    userObj: PropTypes.object,
-  }
-
-  toggle = () => {
-    this.setState({
-      isOpen: !this.state.isOpen,
-    });
-  }
-
-  logMeOut = (e) => {
-    e.preventDefault();
-    firebase.auth().signOut();
+  const toggle = () => {
+    setIsOpen(!isOpen);
   };
 
-  render() {
-    const { authorized, userObj } = this.props;
-    const buildAdminNavbar = () => (
-      <Nav className="ml-auto" navbar>
-        <NavItem>
-          <NavLink tag={RRNavLink} to='/team'>Team</NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink tag={RRNavLink} to='/reports'>Reports</NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink tag={RRNavLink} to='/properties'>Properties</NavLink>
-        </NavItem>
-        <UncontrolledDropdown nav inNavbar>
-          <DropdownToggle nav caret className="navbar-user-button">
-          </DropdownToggle>
-          <DropdownMenu right>
-            <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
-              User Profile
-            </DropdownItem>
-            <DropdownItem onClick={this.logMeOut}>
-              Log Out
-            </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </Nav>
-    );
+  const logMeOut = () => {
+    firebase.auth().signOut()
+      .then(() => history.push('/'));
+  };
 
-    const buildRegularNavbar = () => (
-      <Nav className="ml-auto" navbar>
-        <UncontrolledDropdown nav inNavbar>
-          <DropdownToggle nav caret className="navbar-user-button">
-          </DropdownToggle>
-          <DropdownMenu right>
-            <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
-              User Profile
+  const buildAdminNavbar = () => (
+    <Nav className="ml-auto" navbar>
+      <NavItem>
+        <NavLink tag={RRNavLink} to='/jobs'>Jobs</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink tag={RRNavLink} to='/team'>Team</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink tag={RRNavLink} to='/reports'>Reports</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink tag={RRNavLink} to='/properties'>Properties</NavLink>
+      </NavItem>
+      <UncontrolledDropdown nav inNavbar>
+        <DropdownToggle nav caret className="navbar-user-button">
+        </DropdownToggle>
+        <DropdownMenu right>
+          <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
+            User Profile
           </DropdownItem>
-            <DropdownItem onClick={this.logMeOut}>
-              Log Out
+          <DropdownItem onClick={logMeOut}>
+            Log Out
           </DropdownItem>
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </Nav>
-    );
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    </Nav>
+  );
 
-    return (
-      authorized
-      && <div className="NavigationBar">
-        <Navbar dark color="dark" expand="md">
-          <NavbarBrand className="navbar-brand" tag={RRNavLink} to='/'>Home</NavbarBrand>
-          {authorized && <NavbarText>{userObj?.businessName}</NavbarText>}
-          <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
-            {userObj?.admin ? buildAdminNavbar()
-              : buildRegularNavbar()
-            }
-          </Collapse>
-        </Navbar>
-      </div>
-    );
-  }
+  const buildRegularNavbar = () => (
+    <Nav className="ml-auto" navbar>
+      <UncontrolledDropdown nav inNavbar>
+        <DropdownToggle nav caret className="navbar-user-button">
+        </DropdownToggle>
+        <DropdownMenu right>
+          <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
+            User Profile
+        </DropdownItem>
+          <DropdownItem onClick={logMeOut}>
+            Log Out
+        </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    </Nav>
+  );
+
+  return (
+    <div className="NavigationBar">
+      <Navbar dark color="dark" expand="md">
+        <NavbarBrand className="navbar-brand" tag={RRNavLink} to='/'>Home</NavbarBrand>
+        <NavbarText>{userObj?.businessName}</NavbarText>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>
+          {userObj?.admin ? buildAdminNavbar()
+            : buildRegularNavbar()
+          }
+        </Collapse>
+      </Navbar>
+    </div>
+  );
 }
 
 export default NavigationBar;

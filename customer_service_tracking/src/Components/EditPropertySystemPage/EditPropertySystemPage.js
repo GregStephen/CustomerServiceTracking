@@ -54,7 +54,7 @@ function EditPropertySystemPage() {
     enableReinitialize: true,
     validationSchema: editPropertySystemValidationSchema,
     onSubmit: (formValues, { setSubmitting }) => {
-      const { updatedCustomerSystem: updatedPropertySystem } = { ...formValues };
+      const { updatedPropertySystem } = { ...formValues };
       updatedPropertySystem.nozzles = parseInt(updatedPropertySystem.nozzles, 10);
       updatedPropertySystem.sprayCycles = parseInt(updatedPropertySystem.sprayCycles, 10);
       updatedPropertySystem.sprayDuration = parseInt(updatedPropertySystem.sprayDuration, 10);
@@ -128,7 +128,6 @@ function EditPropertySystemPage() {
                   && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
               </FormGroup>
             </Col>
-
           </Row>
           <Row form>
             <Col md={4}>

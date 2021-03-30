@@ -37,6 +37,7 @@ function EditContactModal({ contact, deleteEnabled }) {
   const updateContact = useUpdateContact();
   const addNewContact = useAddNewContact();
 
+
   const updatingContact = contact !== null;
 
   const defaultContact = useMemo(() => ({
@@ -84,7 +85,7 @@ function EditContactModal({ contact, deleteEnabled }) {
     <button className={updatingContact ? 'btn btn-secondary' : 'btn btn-info mr-4 mb-2'} onClick={() => setIsToggled(true)}>{updatingContact ? 'Edit' : 'Create New'}</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>{updatingContact ? 'Edit' : 'Create New'} Contact</ModalHeader>
-      <DeleteContactModal contact={contact} deleteEnabled={deleteEnabled} />
+      {updatingContact && (<DeleteContactModal contact={contact} deleteEnabled={deleteEnabled} />)}
       <Form onSubmit={formik.handleSubmit}>
         <ModalBody>
           <FormGroup>

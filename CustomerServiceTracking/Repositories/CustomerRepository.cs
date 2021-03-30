@@ -240,7 +240,7 @@ namespace CustomerServiceTracking.Repositories
                 var sql = @"INSERT INTO [PropertySystem]
                             (
                             [PropertyId],
-                            [Enable],
+                            [Enabled],
                             [InstallDate],
                             [Notes],
                             [Nozzles],
@@ -249,7 +249,8 @@ namespace CustomerServiceTracking.Repositories
                             [SprayCycles],
                             [SprayDuration],
                             [SystemId],
-                            [DayTankDepleted]
+                            [DayTankDepleted],
+                            [DisplayName]
                             )
                             OUTPUT INSERTED.Id
                             VALUES
@@ -264,7 +265,8 @@ namespace CustomerServiceTracking.Repositories
                             @sprayCycles,
                             @sprayDuration,
                             @systemId,
-                            @dayTankDepleted
+                            @dayTankDepleted,
+                            @displayName
                             )";
                 return db.QueryFirst<Guid>(sql, newPropertySystemDTO.System);
             }
@@ -370,7 +372,7 @@ namespace CustomerServiceTracking.Repositories
             using (var db = new SqlConnection(_connectionString))
             {
                 var sql = @"UPDATE [PropertySystem]
-                            SET 
+                            SET [DisplayName] = @displayName,
                                 [InstallDate] = @installDate,
                                 [Nozzles] = @nozzles,
                                 [SerialNumber] = @serialNumber,
@@ -380,6 +382,17 @@ namespace CustomerServiceTracking.Repositories
                                 [SystemId] = @systemId,
                                 [Notes] = @notes,
                                 [DayTankDepleted] = @dayTankDepleted
+                            WHERE [Id] = @id";
+                return (db.Execute(sql, updatedPropertySystem) == 1);
+            }
+        }
+
+        public bool UpdatePropertySystemName(PropertySystem updatedPropertySystem)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"UPDATE [PropertySystem]
+                            SET [DisplayName] = @displayName
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedPropertySystem) == 1);
             }

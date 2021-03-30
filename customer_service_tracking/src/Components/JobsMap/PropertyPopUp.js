@@ -13,6 +13,7 @@ function PropertyPopUp({ marker }) {
           {marker.title}
         </Link>
         </p>
+        <p>System: {marker.system}</p>
         {Formatting.formatAddressObj(marker.address)}
         {marker.tech && <p>Tech: {marker.tech}</p>}
       </div>

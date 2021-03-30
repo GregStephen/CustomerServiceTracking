@@ -151,8 +151,8 @@ function GlobalTable({
                 {headerGroup.headers.map((column, h) => (
                   <th key={h} {...column.getHeaderProps([
                     {
-                      className: `${column.canSort ? 'cursor-pointer' : ''} ${column.headerClassName ?? ''}`,
-                      style: renderHeaderStyles(column, column.headerStyle),
+                      className: `${column.canSort ? 'cursor-pointer' : ''} ${column.className ?? ''}`,
+                      style: renderHeaderStyles(column, column.style),
                     },
                     customColumnProps(column),
                     customHeaderProps(column),

@@ -90,8 +90,9 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'PropertySystem')
 	CREATE TABLE [PropertySystem]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[DisplayName] NVARCHAR(255) not null,
 		[PropertyId] UNIQUEIDENTIFIER not null,
-		[Enable] BIT not null,
+		[Enabled] BIT not null,
 		[InstallDate] DATETIME not null,
 		[Notes] NVARCHAR(255) null,
 		[Nozzles] INT not null,	
@@ -119,7 +120,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Report')
 		[ServiceDate] DATETIME not null,
 		[SolutionAdded] INT not null,
 		[SystemId] UNIQUEIDENTIFIER not null,
-		[TechnicianId] UNIQUEIDENTIFIER not null
+		[TechnicianId] UNIQUEIDENTIFIER not null,
+		[TimeSubmitted] DATETIME not null
 	)
 	END
 ELSE
@@ -130,6 +132,7 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Job')
 	CREATE TABLE [Job]
 	(
 		[Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+		[BusinessId] UNIQUEIDENTIFIER not null,
 		[PropertySystemId] UNIQUEIDENTIFIER not null,
 		[DateAssigned] DATETIME not null,
 		[TechnicianId] UNIQUEIDENTIFIER not null,
@@ -195,6 +198,15 @@ IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_User')
 ELSE
 	PRINT 'Foreign key FK_Job_User already exists'
 
+IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_Business')
+	BEGIN
+	ALTER TABLE [Job]
+	ADD CONSTRAINT FK_Job_Business
+		FOREIGN KEY (BusinessId) 
+		REFERENCES [Business] (Id)
+	END
+ELSE
+	PRINT 'Foreign key FK_Job_Business already exists'
 IF not exists (SELECT * FROM sys.foreign_keys WHERE [name] = 'FK_Job_JobType')
 	BEGIN
 	ALTER TABLE [Job]

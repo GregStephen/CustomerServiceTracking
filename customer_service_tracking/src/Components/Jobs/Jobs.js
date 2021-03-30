@@ -18,6 +18,7 @@ function Jobs({ jobs }) {
   const tableColumns = useMemo(() => [
     {
       Header: 'All Assigned Jobs',
+      className: 'top-header',
       columns: [
         {
           Header: 'Property',
@@ -31,6 +32,13 @@ function Jobs({ jobs }) {
           accessor: (j) => j.property,
           Cell: ({ row: { original } }) => (
             <a rel="noopener noreferrer" target="_blank" href={Formatting.directionLink(original.property)}>{original.property?.addressLine1}</a>
+          ),
+        },
+        {
+          Header: 'System',
+          accessor: (j) => j.propertySystem.displayName,
+          Cell: ({ row: { original } }) => (
+            <Link to={{ pathname: `/property/${original.property?.id}/system/${original.propertySystem?.id}` }}>{original.propertySystem.displayName}</Link>
           ),
         },
         {

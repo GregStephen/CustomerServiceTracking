@@ -11,6 +11,13 @@ export function useGetAllReportsByBusinessId(businessId) {
   });
 }
 
+export function useGetAllReportsByBusinessIdLastWeek(businessId) {
+  const url = `${baseUrl}/businessId/${businessId}/week`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
 export function useGetReportsByPropertyId(propertyId) {
   const url = `${baseUrl}/propertyId/${propertyId}`;
   return useQuery([url], async () => {

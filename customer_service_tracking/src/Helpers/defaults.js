@@ -2,29 +2,18 @@ import moment from 'moment';
 
 const today = moment().format('YYYY-MM-DD');
 
-const defaultCustomerSystem = {
-  customerId: '',
-  systemId: '',
-  installDate: '',
-  nozzles: 0,
-  notes: '',
-  serialNumber: '',
-  sold: false,
-  sprayCycles: 0,
-  sprayDuration: 0,
-};
-
 const defaultSystem = {
   id: '',
-  customerId: '',
+  propertyId: '',
   installDate: '',
   notes: '',
-  nozzles: 0,
+  nozzles: '',
   serialNumber: '',
   sold: false,
-  sprayCycles: 0,
-  sprayDuration: 0,
+  sprayCycles: '',
+  sprayDuration: '',
   systemId: '',
+  displayName: '',
   systemInfo: {
     id: '',
     type: '',
@@ -33,31 +22,14 @@ const defaultSystem = {
   },
 };
 
-const defaultCustomer = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  officePhone: '',
-  homePhone: '',
-  address: {
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-  },
-  systems: [
-    defaultSystem,
-  ],
-};
 
 const defaultReport = {
-  amountRemaining: 0,
+  amountRemaining: '',
   customerId: '',
-  inchesAdded: 0,
+  inchesAdded: '',
   notes: '',
   serviceDate: today,
-  solutionAdded: 0,
+  solutionAdded: '',
   systemId: '',
   technicianId: '',
   jobTypeId: '',
@@ -72,6 +44,4 @@ export default {
   defaultJobTypes,
   defaultReport,
   defaultSystem,
-  defaultCustomer,
-  defaultCustomerSystem,
 };

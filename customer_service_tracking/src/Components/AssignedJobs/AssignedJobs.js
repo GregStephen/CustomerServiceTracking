@@ -60,6 +60,10 @@ function AssignedJobs() {
       ),
     },
     {
+      Header: 'System',
+      accessor: (j) => j.propertySystem.displayName,
+    },
+    {
       Header: 'Job Type',
       accessor: 'jobType',
     },
@@ -78,8 +82,10 @@ function AssignedJobs() {
   ], []);
 
   return (
-    <div className="AssignedJobs widget col-10 pt-0">
-      <Header title="Your Jobs" />
+    <div className="AssignedJobs widget col-10 pt-0 mt-4">
+      <Header title="Your Jobs" icon="fa-briefcase" />
+      {jobsAssigned.data?.length > 0
+        && (<>
       <div className="d-flex justify-content-end">
         <Button color="primary" onClick={toggle} className="mr-3 mb-3" >{isOpen ? 'Close Map' : 'Show Map'}</Button>
       </div>
@@ -90,12 +96,15 @@ function AssignedJobs() {
           businessAddress={userObj?.business}
         />
       </Collapse>
-
-      <GlobalTable
+        </>)}
+      {jobsAssigned.isLoading && <p>LOADING</p>}
+      {jobsAssigned.isSuccess
+      && <GlobalTable
         columns={tableColumns}
         data={tableData}
         emptyTableMessage="No jobs currently assigned"
       />
+}
     </div>
   );
 }

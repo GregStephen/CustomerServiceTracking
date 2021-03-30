@@ -23,6 +23,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.top-header {
+  background-color: $background-color-header;
+  color: white;
+}
+
 .widget {
   margin: auto;
   padding: 0; 
@@ -131,7 +136,7 @@ table {
   td {
     margin: 0;
     padding: 0.5rem;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid black !important;
     border-right: 2px solid black;
 
     :last-child {

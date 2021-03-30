@@ -10,7 +10,7 @@ function PropertyContacts({ property }) {
       <Header title="Contacts" icon="fas fa-address-card" />
       <div className="d-flex justify-content-end">
         <EditContactModal contact={null}/>
-        {false && <Link className="btn btn-info mr-4 mb-2" to={`/new-contact/${property.id}`}>Create a New Contact</Link>}
+        {false && <Link className="btn btn-info mr-4 mb-2" to={`property/${property.id}/new-contact`}>Create a New Contact</Link>}
       </div>
       <div className="d-flex justify-content-center row">
           {property.contacts.map((contact) => (

@@ -41,7 +41,7 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        public IEnumerable<ReportToSendDTO> GetReportsByPropertyId(Guid propertyId)
+        public IEnumerable<ReportToSendDTO> GetAllReportsByBusinessIdLastWeek(Guid businessId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -51,6 +51,29 @@ namespace CustomerServiceTracking.Repositories
 							ON r.TechnicianId = u.Id
 							JOIN [JobType] jt
 							ON r.JobTypeId = jt.Id
+                            WHERE u.BusinessId = @businessId AND r.ServiceDate >= DATEADD(day,-7, GETDATE())";
+                var parameters = new { businessId };
+                var reports = db.Query<ReportToSendDTO>(sql, parameters);
+                foreach (var report in reports)
+                {
+                    report.Property = _customerRepo.GetPropertyByPropertyId(report.PropertyId);
+                }
+                return reports;
+            }
+        }
+
+        public IEnumerable<ReportToSendDTO> GetReportsByPropertyId(Guid propertyId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.PropertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type, ps.DisplayName as SystemName
+                            FROM [Report] r
+                            JOIN [User] u
+							ON r.TechnicianId = u.Id
+							JOIN [JobType] jt
+							ON r.JobTypeId = jt.Id
+                            JOIN [PropertySystem] ps
+                            ON r.systemId = ps.Id
                             WHERE r.[PropertyId] = @propertyId";
                 var parameters = new { propertyId };
                 return db.Query<ReportToSendDTO>(sql, parameters);
@@ -61,12 +84,14 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT r.Id, r.AmountRemaining, r.PropertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.PropertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type, ps.DisplayName as SystemName
                             FROM [Report] r
                             JOIN [User] u
 							ON r.TechnicianId = u.Id
 							JOIN [JobType] jt
 							ON r.JobTypeId = jt.Id
+                            JOIN [PropertySystem] ps
+                            ON r.systemId = ps.Id
                             WHERE r.[SystemId] = @propertySystemId";
                 var parameters = new { propertySystemId };
                 return db.Query<ReportToSendDTO>(sql, parameters);
@@ -77,12 +102,14 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                var sql = @"SELECT r.Id, r.AmountRemaining, r.propertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.propertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type, ps.DisplayName as SystemName
                             FROM [Report] r
                             JOIN [User] u
 							ON r.TechnicianId = u.Id
 							JOIN [JobType] jt
 							ON r.JobTypeId = jt.Id
+                            JOIN [PropertySystem] ps
+                            ON r.systemId = ps.Id
                             WHERE r.[Id] = @reportId";
                 var parameters = new { reportId };
                 var report = db.QueryFirst<ReportToSendDTO>(sql, parameters);
@@ -95,7 +122,10 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-
+                if (newReportDTO.ServiceDate == DateTime.MinValue)
+                {
+                    newReportDTO.ServiceDate = DateTime.Now;
+                }
                 var sql = @"INSERT INTO [Report]
                             (
                                 [AmountRemaining],

@@ -3,7 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 import LandingPage from '../Components/LandingPage/LandingPage';
 import ServiceTracker from '../ServiceTracker/ServiceTracker';
@@ -58,7 +58,9 @@ function App() {
             )
           } {
             !authorized
-            && <LandingPage logIn={logIn} error={error} />
+            && <Route exact path='/'>
+                <LandingPage logIn={logIn} error={error} />
+              </Route>
           }
         </BrowserRouter>
       </QueryClientProvider>

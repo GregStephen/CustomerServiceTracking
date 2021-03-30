@@ -13,6 +13,10 @@ function PropertyReports({ reports }) {
       Cell: ({ value }) => moment(value).format('L'),
     },
     {
+      Header: 'System',
+      accessor: 'systemName',
+    },
+    {
       Header: 'Technician',
       accessor: 'technician',
     },

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Page, Header } from '../Global';
 import { useUserById } from '../../Helpers/Data/UserRequests';
 
-function SystemPage() {
+function ProfilePage() {
   const { userId } = useParams();
   const user = useUserById(userId);
 
@@ -17,4 +17,4 @@ function SystemPage() {
   );
 }
 
-export default SystemPage;
+export default ProfilePage;

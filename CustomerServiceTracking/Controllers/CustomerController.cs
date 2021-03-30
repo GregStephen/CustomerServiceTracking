@@ -166,6 +166,19 @@ namespace CustomerServiceTracking.Controllers
             }
         }
 
+        [HttpPut("updatePropertySystemName")]
+        public IActionResult UpdatePropertySystemName(PropertySystem updatedPropertySystem)
+        {
+            if (_repo.UpdatePropertySystemName(updatedPropertySystem))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpDelete("contact/{contactId}")]
         public IActionResult DeleteContact(Guid contactId)
         {

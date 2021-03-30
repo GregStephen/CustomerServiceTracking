@@ -7,19 +7,19 @@ import { Header, GlobalTable } from '../Global';
 
 function PropertySystems({ property }) {
   const history = useHistory();
-  const addSystemLink = `/add-system-to-property/${property.id}`;
+  const addSystemLink = `${property.id}/add-system-to-property/`;
 
   const tableData = useMemo(() => (property.systems || []), [property.systems]);
 
   const tableColumns = useMemo(() => [
     {
+      Header: 'Name',
+      accessor: 'displayName',
+    },
+    {
       Header: 'Install Date',
       accessor: 'installDate',
       Cell: ({ value }) => (moment(value).format('L')),
-    },
-    {
-      Header: 'Serial Number',
-      accessor: 'serialNumber',
     },
     {
       Header: 'Active',
@@ -49,7 +49,7 @@ function PropertySystems({ property }) {
         customRowProps={(row) => ({
           className: 'cursor-pointer',
           onClick: () => {
-            history.push(`/system/${row.original.id}`);
+            history.push(`${row.original.propertyId}/system/${row.original.id}`);
           },
         })}
           />
