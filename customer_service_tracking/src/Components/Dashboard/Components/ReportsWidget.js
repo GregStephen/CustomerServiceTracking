@@ -3,11 +3,11 @@ import moment from 'moment';
 import { Link, useHistory } from 'react-router-dom';
 import { GlobalTable, Header } from '../../Global';
 import UserContext from '../../../Contexts/UserContext';
-import { useGetAllReportsByBusinessId } from '../../../Helpers/Data/ReportRequests';
+import { useGetAllReportsByBusinessIdLastWeek } from '../../../Helpers/Data/ReportRequests';
 
 function ReportsWidget() {
   const user = useContext(UserContext);
-  const reports = useGetAllReportsByBusinessId(user.businessId);
+  const reports = useGetAllReportsByBusinessIdLastWeek(user.businessId);
   const history = useHistory();
 
   const tableData = useMemo(() => (reports?.data ? reports.data : []), [reports]);

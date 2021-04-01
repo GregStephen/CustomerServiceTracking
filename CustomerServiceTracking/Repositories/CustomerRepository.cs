@@ -226,10 +226,39 @@ namespace CustomerServiceTracking.Repositories
             // calculates the days remaining until all the gallons of water in the tank are gone, rounded down
             int daysUntilDepleted = (int)(totalGallonsInTank / dailyUsageInGallons);
 
-            // Gets todays day, adds the days remaining until the tank is depleted, returns new Datetime
-            var today = DateTime.Now;
-            DateTime dayUntilDepleted = today.AddDays(daysUntilDepleted);
+            // Adds the days remaining until the tank is depleted to the day of the report, returns new Datetime
+            DateTime dayUntilDepleted = report.ServiceDate.AddDays(daysUntilDepleted);
             return dayUntilDepleted;
+        }
+
+        private double GetHowManyInchesWouldBeLeft(Guid systemId, ReportToSendDTO mostRecentReport)
+        {
+            // gets old system data by systemId
+            PropertySystem oldSystem = GetPropertySystemByPropertySystemId(systemId);
+            // gets the exact system being checked
+            BusinessSystem systemToDoMath = _systemRepo.GetSystemInfoBySystemId(oldSystem.SystemId);
+
+            var totalInchesInSystem = mostRecentReport.SolutionAdded + mostRecentReport.AmountRemaining;
+            // 0.03 is the amount per oz that a single nozzle shoots out in a second at 200 psi
+            var ozPerNozzlePerSprayDuration = oldSystem.SprayDuration * 0.03;
+
+            //converts that to gallons
+            var gallonsPerSprayDurationPerNozzle = ozPerNozzlePerSprayDuration / 128;
+
+            // calculates how many gallons are used in a single day
+            var dailyUsageInGallons = gallonsPerSprayDurationPerNozzle * oldSystem.SprayCycles * oldSystem.Nozzles;
+
+            // calculates how many gallons are in a single inch of this specific tank
+            var volumePerInchOfHeight = (float)systemToDoMath.Gallons / (float)systemToDoMath.Inches;
+
+            var daysElapsed = DateTime.Today - mostRecentReport.ServiceDate;
+
+            var totalGallonsUsed = daysElapsed.Days * dailyUsageInGallons;
+
+            var totalInchesUsed = totalGallonsUsed / volumePerInchOfHeight;
+            var inchesRemaining = totalInchesInSystem - totalInchesUsed;
+
+            return inchesRemaining;
         }
 
         public Guid AddNewSystemToProperty(NewPropertySystemDTO newPropertySystemDTO)
@@ -367,10 +396,20 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        public bool UpdatePropertySystem(PropertySystem updatedPropertySystem)
+        public bool UpdatePropertySystem(PropertySystem updatedPropertySystem, ReportToSendDTO mostRecentReport)
         {
             using (var db = new SqlConnection(_connectionString))
             {
+                var inchesRemaining = GetHowManyInchesWouldBeLeft(updatedPropertySystem.Id, mostRecentReport);
+                var newReport = new NewReportDTO()
+                {
+                    InchesAdded = 0,
+                    AmountRemaining = (int)inchesRemaining,
+                    SolutionAdded = 0,
+                    SystemId = updatedPropertySystem.Id
+                };
+                var dateTankWillBeDepleted = GetTheDateTheTankWillBeDepleted(updatedPropertySystem, newReport);
+                updatedPropertySystem.DayTankDepleted = dateTankWillBeDepleted;
                 var sql = @"UPDATE [PropertySystem]
                             SET [DisplayName] = @displayName,
                                 [InstallDate] = @installDate,
@@ -381,7 +420,6 @@ namespace CustomerServiceTracking.Repositories
                                 [SprayDuration] = @sprayDuration,
                                 [SystemId] = @systemId,
                                 [Notes] = @notes,
-                                [DayTankDepleted] = @dayTankDepleted
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedPropertySystem) == 1);
             }

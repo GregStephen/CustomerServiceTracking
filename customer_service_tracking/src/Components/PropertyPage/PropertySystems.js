@@ -15,18 +15,14 @@ function PropertySystems({ property }) {
     {
       Header: 'Name',
       accessor: 'displayName',
+      Cell: ({ row: { original } }) => (
+        <p>{original.displayName} {!original.enabled && <Badge color="danger">Inactive</Badge>}</p>
+      ),
     },
     {
       Header: 'Install Date',
       accessor: 'installDate',
       Cell: ({ value }) => (moment(value).format('L')),
-    },
-    {
-      Header: 'Active',
-      accessor: 'enabled',
-      Cell: ({ value }) => (
-        value ? <Badge color="success">Active</Badge> : <Badge color="danger">Inactive</Badge>
-      ),
     },
     {
       Header: 'Day Depleted',

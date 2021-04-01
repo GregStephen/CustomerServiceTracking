@@ -156,7 +156,9 @@ namespace CustomerServiceTracking.Controllers
         [HttpPut("updatePropertySystem")]
         public IActionResult UpdatePropertySystem(PropertySystem updatePropertySystem)
         {
-            if (_repo.UpdatePropertySystem(updatePropertySystem))
+            var reports = _reportRepo.GetReportsByPropertySystemId(updatePropertySystem.Id);
+            var mostRecentReport = reports.OrderByDescending(report => report.ServiceDate).First();
+            if (_repo.UpdatePropertySystem(updatePropertySystem, mostRecentReport))
             {
                 return Ok();
             }

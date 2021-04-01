@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { Page, Header } from '../Global';
 import ReportInfo from './Components/ReportInfo';
-import SystemInfo from './Components/SystemInfo';
+import SystemInfo from '../SystemInfo/SystemInfo';
 import { useGetReportById } from '../../Helpers/Data/ReportRequests';
 
 function ReportPage() {
