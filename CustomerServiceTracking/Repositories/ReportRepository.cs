@@ -80,6 +80,29 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public IEnumerable<ReportToSendDTO> GetReportsByUserId(Guid userId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT r.Id, r.AmountRemaining, r.PropertyId, r.InchesAdded, r.Notes, r.ServiceDate, r.SolutionAdded, r.SystemId, u.FirstName + ' ' + u.LastName as Technician, jt.Type as Type, ps.DisplayName as SystemName
+                            FROM [Report] r
+                            JOIN [User] u
+							ON r.TechnicianId = u.Id
+							JOIN [JobType] jt
+							ON r.JobTypeId = jt.Id
+                            JOIN [PropertySystem] ps
+                            ON r.systemId = ps.Id
+                            WHERE r.[TechnicianId] = @userId";
+                var parameters = new { userId };
+                var reports = db.Query<ReportToSendDTO>(sql, parameters);
+                foreach (var report in reports)
+                {
+                    report.Property = _customerRepo.GetPropertyByPropertyId(report.PropertyId);
+                }
+                return reports;
+            }
+        }
+
         public IEnumerable<ReportToSendDTO> GetReportsByPropertySystemId(Guid propertySystemId)
         {
             using (var db = new SqlConnection(_connectionString))

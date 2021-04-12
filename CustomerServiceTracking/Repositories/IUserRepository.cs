@@ -15,5 +15,7 @@ namespace CustomerServiceTracking.Repositories
 
         bool AddNewUserToDatabase(NewUserDTO newUser);
 
+        bool UpdateUserAdmin(User userToUpdate);
+
     }
 }

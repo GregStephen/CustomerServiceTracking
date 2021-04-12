@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CustomerServiceTracking.DataModels
 {
@@ -9,7 +6,7 @@ namespace CustomerServiceTracking.DataModels
     {
         public Property Property { get; set; }
         public PropertySystem System { get; set; }
-        public int DaysUntilEmpty { get; set; }
+        public int DaysUntilServiceDate { get; set; }
         public List<Employee> EmployeeOptions { get; set; }
         public Job Job { get; set; }
     }

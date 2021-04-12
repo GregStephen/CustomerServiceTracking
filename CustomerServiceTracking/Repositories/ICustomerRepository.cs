@@ -29,7 +29,7 @@ namespace CustomerServiceTracking.Repositories
 
         bool UpdatePropertyName(Property updatedProperty);
 
-        bool UpdatePropertySystemName(PropertySystem updatedPropertySystem, ReportToSendDTO mostRecentReport);
+        bool UpdatePropertySystemName(PropertySystem updatedPropertySystem);
 
         bool UpdateContact(Contact updatedContact);
 
@@ -37,7 +37,7 @@ namespace CustomerServiceTracking.Repositories
 
         bool UpdatePropertySystemEnabledOrDisabled(PropertySystem updatedPropertySystem);
 
-        bool UpdatePropertySystem(PropertySystem updatedPropertySystem);
+        bool UpdatePropertySystem(PropertySystem updatedPropertySystem, ReportToSendDTO mostRecentReport);
 
         bool UpdatePropertySystemDayTankDepleted(NewReportDTO newReport);
 

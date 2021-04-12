@@ -38,10 +38,17 @@ namespace CustomerServiceTracking.Controllers
         {
             return Ok(_repo.GetAllReportsByBusinessIdLastWeek(businessId));
         }
+
         [HttpGet("propertyId/{propertyId}")]
         public IActionResult GetReportsByPropertyId(Guid propertyId)
         {
             return Ok(_repo.GetReportsByPropertyId(propertyId));
+        }
+
+        [HttpGet("userId/{userId}")]
+        public IActionResult GetReportsByUserId(Guid userId)
+        {
+            return Ok(_repo.GetReportsByUserId(userId));
         }
 
         [HttpGet("propertySystemId/{propertySystemId}")]

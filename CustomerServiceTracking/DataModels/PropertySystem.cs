@@ -29,7 +29,9 @@ namespace CustomerServiceTracking.DataModels
 
         public int SprayDuration { get; set; }
 
-        public DateTime DayTankDepleted { get; set; }
+        public DateTime NextServiceDate { get; set; }
+
+        public int ServiceOptionId { get; set; }
 
         public Guid SystemId { get; set; }
 

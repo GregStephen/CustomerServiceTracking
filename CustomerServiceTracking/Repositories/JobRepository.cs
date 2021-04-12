@@ -50,13 +50,13 @@ namespace CustomerServiceTracking.Repositories
                             on ps.[PropertyId] = p.Id
                             LEFT JOIN [Job] j
                             on j.[PropertySystemId] = ps.Id
-                            WHERE p.BusinessId = @businessId AND (DATEDIFF(day, GETDATE(), ps.[DayTankDepleted]) < @amountOfDays) AND j.[Id] IS NULL";
+                            WHERE p.BusinessId = @businessId AND (DATEDIFF(day, GETDATE(), ps.[NextServiceDate]) < @amountOfDays) AND j.[Id] IS NULL";
                 var parameters = new { businessId, amountOfDays };
                 var propertySystemsNeedingService =  db.Query<PropertySystem>(sql, parameters);
                 foreach (var propertySystemNeedingService in propertySystemsNeedingService)
                 {
                     ServiceNeed SystemNeedingService = new ServiceNeed();
-                    SystemNeedingService.DaysUntilEmpty = (propertySystemNeedingService.DayTankDepleted - DateTime.Now).Days;
+                    SystemNeedingService.DaysUntilServiceDate = (propertySystemNeedingService.NextServiceDate - DateTime.Now).Days;
                     SystemNeedingService.Property = _customerRepo.GetPropertyByPropertyId(propertySystemNeedingService.PropertyId);
                     SystemNeedingService.System = propertySystemNeedingService;
                     SystemNeedingService.EmployeeOptions = employeeOptions;

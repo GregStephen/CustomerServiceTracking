@@ -18,8 +18,17 @@ export function useGetAllReportsByBusinessIdLastWeek(businessId) {
     return data;
   });
 }
+
 export function useGetReportsByPropertyId(propertyId) {
   const url = `${baseUrl}/propertyId/${propertyId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
+
+export function useGetReportsByUserId(userId) {
+  const url = `${baseUrl}/userId/${userId}`;
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
     return data;

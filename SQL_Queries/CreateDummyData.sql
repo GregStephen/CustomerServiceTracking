@@ -35,6 +35,34 @@ SELECT @business = [Id]
 FROM [Business]
 WHERE BusinessName = 'Bloopers Business'
 
+INSERT INTO [ServiceOptions]
+(
+	[BusinessId],
+	[ServiceOptionId]
+)
+VALUES
+(
+	@business,
+	1
+),
+(
+	@business,
+	2
+),
+(
+	@business,
+	3
+),
+(
+	@business,
+	4
+),
+(
+	@business,
+	11
+)
+
+
 /* Creates an admin user and a personal user*/
 INSERT INTO [User]
 (
@@ -151,7 +179,8 @@ WHERE FirstName = 'Frank'
 INSERT INTO [PropertySystem]
 (
 	[PropertyId],
-	[Enable],
+	[DisplayName],
+	[Enabled],
 	[InstallDate],
 	[Notes],
 	[Nozzles],
@@ -160,13 +189,15 @@ INSERT INTO [PropertySystem]
 	[SprayCycles],
 	[SprayDuration],
 	[SystemId],
-	[DayTankDepleted]
+	[NextServiceDate],
+	[ServiceOptionId]
 )
 VALUES
 (
 	@property,
+	'First System',
 	1,
-	'2020-12-12 00:00:00.000',
+	'2021-03-12 00:00:00.000',
 	'Around back near the gate',
 	10,
 	'1239129123',
@@ -174,7 +205,8 @@ VALUES
 	4,
 	30,
 	@system,
-	'2021-01-02 00:00:00.000'
+	'2021-04-14 00:00:00.000',
+	11
 )
 
 SELECT @propertySystem = [Id]
@@ -230,7 +262,7 @@ VALUES
 	20,
 	@jobTypeInstall,
 	'All lines look good',
-	'2020-12-12 00:00:00.000',
+	'2021-03-12 09:20:03.000',
 	5,
 	@propertySystem,
 	@user2

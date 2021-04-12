@@ -108,8 +108,8 @@ function ServiceNeededReport() {
           accessor: (r) => r.system.displayName,
         },
         {
-          Header: 'Days Until Empty',
-          accessor: 'daysUntilEmpty',
+          Header: 'Days Until Service Date',
+          accessor: 'daysUntilServiceDate',
           Cell: ({ value }) => (value > 0 ? value : 'Past Due'),
         },
         {

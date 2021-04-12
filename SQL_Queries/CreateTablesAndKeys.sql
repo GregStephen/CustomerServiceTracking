@@ -18,6 +18,17 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Business')
 ELSE
 	PRINT 'Business table already exists'
 
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'ServiceOptions')
+	BEGIN
+	CREATE TABLE [ServiceOptions]
+	(
+		[BusinessId] UNIQUEIDENTIFIER not null,
+		[ServiceOptionId] INT not null
+	)
+	END
+ELSE
+	PRINT 'ServiceOption table already exists'
+
 IF not exists (SELECT * FROM sys.tables WHERE [name] = 'User')
 	BEGIN
 	CREATE TABLE [User]
@@ -101,7 +112,8 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'PropertySystem')
 		[SprayCycles] INT not null,
 		[SprayDuration] INT not null,
 		[SystemId] UNIQUEIDENTIFIER not null,
-		[DayTankDepleted] DATETIME not null,
+		[NextServiceDate] DATETIME not null,
+		[ServiceOptionId] INT not null,
 	)
 	END
 ELSE
@@ -121,7 +133,6 @@ IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Report')
 		[SolutionAdded] INT not null,
 		[SystemId] UNIQUEIDENTIFIER not null,
 		[TechnicianId] UNIQUEIDENTIFIER not null,
-		[TimeSubmitted] DATETIME not null
 	)
 	END
 ELSE

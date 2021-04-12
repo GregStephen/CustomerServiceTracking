@@ -1,18 +1,19 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Page, Header } from '../Global';
+import { Page } from '../Global';
 import { useUserById } from '../../Helpers/Data/UserRequests';
+import { useGetReportsByUserId } from '../../Helpers/Data/ReportRequests';
+import { UserReports, UserInfo } from './Components';
 
 function ProfilePage() {
   const { userId } = useParams();
   const user = useUserById(userId);
+  const reports = useGetReportsByUserId(userId);
 
   return (
     <Page>
-      <Header title={`${user?.data?.firstName} ${user?.data?.lastName}'s Profile`} />
-      <div className="widget">
-        <p>{user?.data?.id}</p>
-        </div>
+      <UserInfo userInfo={user?.data} />
+      <UserReports reports={reports?.data} />
     </Page>
   );
 }

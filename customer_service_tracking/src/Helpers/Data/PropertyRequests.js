@@ -88,6 +88,7 @@ export function useUpdatePropertyName() {
     },
   });
 }
+
 export function useUpdateContact() {
   const url = `${baseUrl}/updateContact`;
   const queryClient = useQueryClient();

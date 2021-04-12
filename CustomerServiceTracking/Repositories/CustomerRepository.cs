@@ -200,6 +200,11 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        private DateTime GetTheNextServiceDate(PropertySystem system, NewReportDTO report)
+        {
+            return new DateTime();
+        }
+
         private DateTime GetTheDateTheTankWillBeDepleted(PropertySystem system, NewReportDTO report)
         {
             // How many inches of water are in the tank once the report is done
@@ -265,7 +270,7 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                newPropertySystemDTO.System.DayTankDepleted = GetTheDateTheTankWillBeDepleted(newPropertySystemDTO.System, newPropertySystemDTO.Report);
+                newPropertySystemDTO.System.NextServiceDate = GetTheDateTheTankWillBeDepleted(newPropertySystemDTO.System, newPropertySystemDTO.Report);
                 var sql = @"INSERT INTO [PropertySystem]
                             (
                             [PropertyId],
@@ -278,8 +283,9 @@ namespace CustomerServiceTracking.Repositories
                             [SprayCycles],
                             [SprayDuration],
                             [SystemId],
-                            [DayTankDepleted],
-                            [DisplayName]
+                            [NextServiceDate],
+                            [DisplayName],
+                            [ServiceOptionId]
                             )
                             OUTPUT INSERTED.Id
                             VALUES
@@ -294,8 +300,9 @@ namespace CustomerServiceTracking.Repositories
                             @sprayCycles,
                             @sprayDuration,
                             @systemId,
-                            @dayTankDepleted,
-                            @displayName
+                            @nextServiceDate,
+                            @displayName,
+                            @serviceOptionId
                             )";
                 return db.QueryFirst<Guid>(sql, newPropertySystemDTO.System);
             }
@@ -408,8 +415,8 @@ namespace CustomerServiceTracking.Repositories
                     SolutionAdded = 0,
                     SystemId = updatedPropertySystem.Id
                 };
-                var dateTankWillBeDepleted = GetTheDateTheTankWillBeDepleted(updatedPropertySystem, newReport);
-                updatedPropertySystem.DayTankDepleted = dateTankWillBeDepleted;
+                var nextServiceDate = GetTheDateTheTankWillBeDepleted(updatedPropertySystem, newReport);
+                updatedPropertySystem.NextServiceDate = nextServiceDate;
                 var sql = @"UPDATE [PropertySystem]
                             SET [DisplayName] = @displayName,
                                 [InstallDate] = @installDate,
@@ -420,6 +427,8 @@ namespace CustomerServiceTracking.Repositories
                                 [SprayDuration] = @sprayDuration,
                                 [SystemId] = @systemId,
                                 [Notes] = @notes,
+                                [NextServiceDate] = @nextServiceDate,
+                                [ServiceOptionId] = @serviceOptionId
                             WHERE [Id] = @id";
                 return (db.Execute(sql, updatedPropertySystem) == 1);
             }
@@ -451,12 +460,12 @@ namespace CustomerServiceTracking.Repositories
             using (var db = new SqlConnection(_connectionString))
             {
                 var system = GetPropertySystemByPropertySystemId(newReport.SystemId);
-                var dateTankWillBeDepleted = GetTheDateTheTankWillBeDepleted(system, newReport);
+                var nextServiceDate = GetTheDateTheTankWillBeDepleted(system, newReport);
                 var sql = @"UPDATE [PropertySystem]
                             SET
-                                [DayTankDepleted] = @dateTankWillBeDepleted
+                                [NextServiceDate] = @nextServiceDate
                             WHERE [Id] = @systemId";
-                var parameters = new { newReport.SystemId, dateTankWillBeDepleted };
+                var parameters = new { newReport.SystemId, nextServiceDate };
                 return (db.Execute(sql, parameters) == 1);
             }
         }
@@ -470,6 +479,16 @@ namespace CustomerServiceTracking.Repositories
                 var parameters = new { propertySystemId };
                 return db.Execute(sql, parameters) == 1;
             }
+        }
+
+        public bool UpdatePropertySystemName(PropertySystem updatedPropertySystem, ReportToSendDTO mostRecentReport)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdatePropertySystem(PropertySystem updatedPropertySystem)
+        {
+            throw new NotImplementedException();
         }
     }
 }

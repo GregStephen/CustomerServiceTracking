@@ -1,4 +1,5 @@
 import React from 'react';
+import ServiceOptionEnums from '../../Helpers/Enums/ServiceOptionEnums.ts';
 import { Header } from '../Global';
 
 function SystemInfo({ system }) {
@@ -9,6 +10,7 @@ function SystemInfo({ system }) {
         <p>Nozzles: {system.nozzles}</p>
         <p>Spray Cycles: {system.sprayCycles}</p>
         <p>Spray Duration: {system.sprayDuration} seconds</p>
+        <p>Service Interval: {ServiceOptionEnums[system.serviceOptionId]}</p>
       </div>
       <h4>System Specifications</h4>
       <div className="widget-list">

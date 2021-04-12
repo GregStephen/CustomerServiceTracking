@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 const baseUrl = 'https://localhost:44324/api/user';
 
@@ -41,6 +41,20 @@ const addNewUser = (userobj) => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
+export function useUpdateUserAdmin() {
+  const url = `${baseUrl}/updateAdmin`;
+  const queryClient = useQueryClient();
+  return useMutation((userToUpdate) => axios.put(url, userToUpdate), {
+    onSuccess: (data, userToUpdate) => {
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return key.startsWith(`${baseUrl}/user/${userToUpdate.id}`);
+        },
+      });
+    },
+  });
+}
 
 export default {
   addNewUser,

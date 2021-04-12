@@ -79,5 +79,20 @@ namespace CustomerServiceTracking.Repositories
                 return db.Execute(sql, newUser) == 1;
             }
         }
+
+        public bool UpdateUserAdmin(User userToUpdate)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var id = userToUpdate.Id;
+                var admin = !userToUpdate.Admin;
+                var sql = @"UPDATE [User]
+                            SET
+                                [Admin] = @admin
+                            WHERE [Id] = @id";
+                var parameters = new { id, admin };
+                return (db.Execute(sql, parameters) == 1);
+            }
+        }
     }
 }

@@ -25,8 +25,8 @@ function PropertySystems({ property }) {
       Cell: ({ value }) => (moment(value).format('L')),
     },
     {
-      Header: 'Day Depleted',
-      accessor: 'dayTankDepleted',
+      Header: 'Next Service Date',
+      accessor: 'nextServiceDate',
       Cell: ({ value }) => (moment(value).format('L')),
     },
   ], []);
