@@ -36,8 +36,11 @@ function ReportsWidget() {
   ], []);
 
   return (
-    <div className="widget">
+    <div className="widget col-10">
       <Header title="Recent Reports" />
+      <div className="d-flex justify-content-end">
+        <Link className="btn btn-info mr-3 mb-3" to='/reports'>View All Reports</Link>
+      </div>
       <GlobalTable
         hover
         striped
@@ -54,7 +57,6 @@ function ReportsWidget() {
         defaultSortColumn='serviceDate'
         sortDesc={true}
       />
-      <Link className="btn btn-info" to='/reports'>View All Reports</Link>
     </div>
   );
 }

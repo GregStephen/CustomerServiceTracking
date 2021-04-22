@@ -20,6 +20,8 @@ import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 import defaults from '../../Helpers/defaults';
+import ServiceOptionEnums from '../../Helpers/Enums/ServiceOptionEnums.ts';
+import { useGetBusinessServiceOptions } from '../../Helpers/Data/BusinessRequests';
 
 const { defaultReport, defaultSystem } = defaults;
 
@@ -36,6 +38,7 @@ const newInstallReportValidationSchema = Yup.object().shape({
   serialNumber: Yup.string().required('Serial number is required'),
   sold: Yup.bool().required(),
   displayName: Yup.string().required('Display Name is required'),
+  serviceOptionId: Yup.number(),
 });
 
 function AddSystemToPropertyPage() {
@@ -44,6 +47,7 @@ function AddSystemToPropertyPage() {
   const history = useHistory();
   const property = useGetPropertyFromPropertyId(propertyId);
   const systemOptions = useGetSystemsForBusiness(userObj.businessId);
+  const serviceOptions = useGetBusinessServiceOptions(userObj.businessId);
   const jobTypeOptions = useGetJobTypeOptions();
   const addNewPropertySystem = useAddNewPropertySystem();
   const today = moment().format('YYYY-MM-DD');
@@ -67,6 +71,7 @@ function AddSystemToPropertyPage() {
         systemId: submission.systemId,
         installDate: moment(submission.installDate).format('YYYY-MM-DD'),
         displayName: submission.displayName,
+        serviceOptionId: parseInt(submission.serviceOptionId, 10),
       };
       const newInstallReport = {
         propertyId,
@@ -108,7 +113,7 @@ function AddSystemToPropertyPage() {
             <div className="d-flex justify-content-center">
               <Form className="col-8" onSubmit={formik.handleSubmit}>
                 <Row form className="align-items-center">
-                  <Col md={10}>
+                  <Col md={5}>
                     <FormGroup>
                       <Label htmlFor="systemId">Which of your systems did you install?</Label>
                       <Input
@@ -119,6 +124,23 @@ function AddSystemToPropertyPage() {
                         <option value="">Select a system</option>
                         {systemOptions?.data?.map((object) => (
                           <option key={object.id} value={object.id}>{object.type}</option>
+                        ))}
+                      </Input>
+                      {formik.touched.systemId
+                        && <FormFeedback className="d-block">{formik.errors?.systemId}</FormFeedback>}
+                    </FormGroup>
+                  </Col>
+                  <Col md={5}>
+                    <FormGroup>
+                      <Label htmlFor="serviceOptionId">Which service option?</Label>
+                      <Input
+                        type="select"
+                        name="serviceOptionId"
+                        id="serviceOptionId"
+                        {...formik.getFieldProps('serviceOptionId')}>
+                        <option value="">Select an option</option>
+                        {serviceOptions.data?.map((option) => (
+                          <option key={option} value={option}>{ServiceOptionEnums[option]}</option>
                         ))}
                       </Input>
                       {formik.touched.systemId
@@ -176,7 +198,6 @@ function AddSystemToPropertyPage() {
                         && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
                     </FormGroup>
                   </Col>
-
                 </Row>
                 <Row form>
                   <Col md={4}>

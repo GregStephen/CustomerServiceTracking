@@ -11,5 +11,7 @@ namespace CustomerServiceTracking.Repositories
         IEnumerable<Business> GetBusinesses();
         List<Employee> GetAllEmployees(Guid businessId);
         Business GetUsersBusiness(Guid userId);
+
+        List<int> GetServiceOptions(Guid businessId);
     }
 }

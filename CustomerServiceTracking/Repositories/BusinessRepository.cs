@@ -54,5 +54,17 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public List<int> GetServiceOptions(Guid businessId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT ServiceOptionId
+                            FROM [ServiceOptions]
+                            WHERE [BusinessId] = @businessId";
+                var parameters = new { businessId };
+                return db.Query<int>(sql, parameters).ToList();
+            }
+        }
+
     }
 }

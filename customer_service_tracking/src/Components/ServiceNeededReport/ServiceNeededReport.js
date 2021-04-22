@@ -24,12 +24,7 @@ import CreateNewJobModal from '../Modals/CreateNewJobModal/CreateNewJobModal';
 import NewJobModal from '../Modals/NewJobModal/NewJobModal';
 import Formatting from '../../Helpers/Functions/Formatting';
 
-import {
-  useJobsNeedingAssignment,
-  useCreateNewJob,
-  useJobs,
-} from '../../Helpers/Data/JobRequests';
-import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
+import { useJobsNeedingAssignment, useJobs } from '../../Helpers/Data/JobRequests';
 import UserContext from '../../Contexts/UserContext';
 
 function ServiceNeededReport() {
@@ -38,8 +33,8 @@ function ServiceNeededReport() {
   const [daysOut, getDaysOut] = useState(7);
   const systemsNeedingService = useJobsNeedingAssignment(userObj.business?.id, daysOut);
   const jobs = useJobs(userObj?.businessId);
-  const jobTypeOptions = useGetJobTypeOptions();
-  const createNewJob = useCreateNewJob();
+
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
@@ -118,14 +113,12 @@ function ServiceNeededReport() {
           Cell: ({ row: { original } }) => (
             <CreateNewJobModal
               systemNeedingService={original}
-              createJob={createNewJob}
-              jobTypeOptions={jobTypeOptions?.data}
             />
           ),
         },
       ],
     },
-  ], [daysOut, createNewJob, jobTypeOptions]);
+  ], [daysOut]);
 
   return (
     <div className="ServiceNeededReport widget col-10 mb-4 mt-4">

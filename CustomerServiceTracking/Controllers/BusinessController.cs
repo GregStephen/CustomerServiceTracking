@@ -38,7 +38,11 @@ namespace CustomerServiceTracking.Controllers
             return Ok(_repo.GetAllEmployees(businessId));
         }
 
-
+        [HttpGet("serviceOptions/{businessId}")]
+        public IActionResult GetServiceOptions(Guid businessId)
+        {
+            return Ok(_repo.GetServiceOptions(businessId));
+        }
         [HttpDelete("{unregisteredId}")]
         public IActionResult DeleteCustomer(Guid unregisteredId)
         {
@@ -51,5 +55,7 @@ namespace CustomerServiceTracking.Controllers
                 return BadRequest();
             }
         }
+
+
     }
 }

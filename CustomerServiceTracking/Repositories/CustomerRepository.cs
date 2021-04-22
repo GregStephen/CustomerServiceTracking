@@ -15,6 +15,14 @@ namespace CustomerServiceTracking.Repositories
         string _connectionString;
         private ISystemRepository _systemRepo;
 
+        enum ServiceOptions{
+            OneWeek = 1,
+            TwoWeek,
+            OneMonth,
+            ThreeMonth,
+            BuzzOff = 11,
+
+        }
         public CustomerRepository(IConfiguration configuration, ISystemRepository systemRepo)
         {
             _connectionString = configuration.GetValue<string>("ConnectionString");
@@ -202,7 +210,31 @@ namespace CustomerServiceTracking.Repositories
 
         private DateTime GetTheNextServiceDate(PropertySystem system, NewReportDTO report)
         {
-            return new DateTime();
+            var currentServiceDate = report.ServiceDate;
+            if (system.ServiceOptionId == (int)ServiceOptions.OneWeek)
+            {
+                return currentServiceDate.AddDays(7);
+            }
+            if (system.ServiceOptionId == (int)ServiceOptions.TwoWeek)
+            {
+                return currentServiceDate.AddDays(14);
+            }
+            if (system.ServiceOptionId == (int)ServiceOptions.OneMonth)
+            {
+                return currentServiceDate.AddMonths(1);
+            }
+            if (system.ServiceOptionId == (int)ServiceOptions.ThreeMonth)
+            {
+                return currentServiceDate.AddMonths(3);
+            }
+            if (system.ServiceOptionId == (int)ServiceOptions.BuzzOff)
+            {
+                return GetTheDateTheTankWillBeDepleted(system, report);
+            }
+            else
+            {
+                throw new Exception("Not working");
+            }
         }
 
         private DateTime GetTheDateTheTankWillBeDepleted(PropertySystem system, NewReportDTO report)
@@ -246,7 +278,7 @@ namespace CustomerServiceTracking.Repositories
             var totalInchesInSystem = mostRecentReport.SolutionAdded + mostRecentReport.AmountRemaining;
             // 0.03 is the amount per oz that a single nozzle shoots out in a second at 200 psi
             var ozPerNozzlePerSprayDuration = oldSystem.SprayDuration * 0.03;
-
+            
             //converts that to gallons
             var gallonsPerSprayDurationPerNozzle = ozPerNozzlePerSprayDuration / 128;
 
@@ -270,7 +302,7 @@ namespace CustomerServiceTracking.Repositories
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                newPropertySystemDTO.System.NextServiceDate = GetTheDateTheTankWillBeDepleted(newPropertySystemDTO.System, newPropertySystemDTO.Report);
+                newPropertySystemDTO.System.NextServiceDate = GetTheNextServiceDate(newPropertySystemDTO.System, newPropertySystemDTO.Report);
                 var sql = @"INSERT INTO [PropertySystem]
                             (
                             [PropertyId],

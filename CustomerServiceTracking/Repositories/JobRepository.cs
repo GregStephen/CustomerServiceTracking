@@ -124,7 +124,8 @@ namespace CustomerServiceTracking.Repositories
                                 [DateAssigned],
                                 [TechnicianId],
                                 [JobTypeId],
-                                [Note]
+                                [Note],
+                                [BusinessId]
                             )
                             VALUES
                             (
@@ -132,7 +133,8 @@ namespace CustomerServiceTracking.Repositories
                                 @dateAssigned,
                                 @technicianId,
                                 @jobTypeId,
-                                @note
+                                @note,
+                                @businessId
                             )";
                 return (db.Execute(sql, newJobDTO) == 1);
             }

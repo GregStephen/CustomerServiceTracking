@@ -18,3 +18,11 @@ export function useGetRegisteredAndUnregisteredEmployees(businessId) {
     return data;
   });
 }
+
+export function useGetBusinessServiceOptions(businessId) {
+  const url = `${baseUrl}/serviceOptions/${businessId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}

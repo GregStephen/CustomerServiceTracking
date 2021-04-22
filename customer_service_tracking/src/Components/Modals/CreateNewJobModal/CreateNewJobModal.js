@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import {
   Form,
   FormGroup,
@@ -15,6 +15,10 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
 
+import { useCreateNewJob } from '../../../Helpers/Data/JobRequests';
+import useGetJobTypeOptions from '../../../Helpers/Data/JobTypeRequests';
+import UserContext from '../../../Contexts/UserContext';
+
 const editJobValidationSchema = Yup.object().shape({
   technicianId: Yup.string().required('Technician is required'),
   note: Yup.string().notRequired(),
@@ -24,10 +28,11 @@ const editJobValidationSchema = Yup.object().shape({
 
 function CreateNewJobModal({
   systemNeedingService,
-  createJob,
-  jobTypeOptions,
 }) {
   const [isToggled, setIsToggled] = useState(false);
+  const createJob = useCreateNewJob();
+  const jobTypeOptions = useGetJobTypeOptions();
+  const user = useContext(UserContext);
 
   const defaultJob = useMemo(() => ({
     id: '',
@@ -39,7 +44,8 @@ function CreateNewJobModal({
     includeOtherSystems: false,
     otherSystemIds: [],
     includeNotes: false,
-  }), [systemNeedingService]);
+    businessId: user.businessId,
+  }), [systemNeedingService, user]);
 
   const formik = useFormik({
     initialValues: defaultJob,
@@ -47,7 +53,7 @@ function CreateNewJobModal({
     validationSchema: editJobValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
-      submission.jobTypeId = jobTypeOptions.find((x) => x.type === 'Service').id;
+      submission.jobTypeId = jobTypeOptions.data.find((x) => x.type === 'Service').id;
       submission.dateAssigned = moment();
       if (submission.includeOtherSystems === true) {
         const systems = systemNeedingService?.property?.systems;
@@ -96,7 +102,8 @@ function CreateNewJobModal({
               id="note"
               {...formik.getFieldProps('note')} />
           </FormGroup>
-<FormGroup>
+          {systemNeedingService?.property?.systems.length > 1
+            && <FormGroup>
               <Label check>
                 <Input
                   type="checkbox"
@@ -105,6 +112,7 @@ function CreateNewJobModal({
               Create job for other systems on property?
             </Label>
             </FormGroup>
+          }
           {(formik.values.includeOtherSystems === true)
             && <FormGroup>
               <Label check>

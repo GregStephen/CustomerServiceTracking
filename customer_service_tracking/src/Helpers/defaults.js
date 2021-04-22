@@ -5,6 +5,7 @@ const today = moment().format('YYYY-MM-DD');
 const defaultSystem = {
   id: '',
   propertyId: '',
+  serviceOptionId: 0,
   installDate: '',
   notes: '',
   nozzles: '',
