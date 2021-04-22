@@ -65,6 +65,7 @@ namespace CustomerServiceTracking.Controllers
                         PropertySystemId = systemId,
                         JobTypeId = newJobDTO.JobTypeId,
                         TechnicianId = newJobDTO.TechnicianId,
+                        BusinessId = newJobDTO.BusinessId
                     };
 
                     if (newJobDTO.IncludeNotes == true)

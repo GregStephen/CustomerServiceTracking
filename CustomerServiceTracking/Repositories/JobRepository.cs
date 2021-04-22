@@ -50,7 +50,7 @@ namespace CustomerServiceTracking.Repositories
                             on ps.[PropertyId] = p.Id
                             LEFT JOIN [Job] j
                             on j.[PropertySystemId] = ps.Id
-                            WHERE p.BusinessId = @businessId AND (DATEDIFF(day, GETDATE(), ps.[NextServiceDate]) < @amountOfDays) AND j.[Id] IS NULL";
+                            WHERE p.BusinessId = @businessId AND (DATEDIFF(day, GETDATE(), ps.[NextServiceDate]) <= @amountOfDays) AND j.[Id] IS NULL";
                 var parameters = new { businessId, amountOfDays };
                 var propertySystemsNeedingService =  db.Query<PropertySystem>(sql, parameters);
                 foreach (var propertySystemNeedingService in propertySystemsNeedingService)

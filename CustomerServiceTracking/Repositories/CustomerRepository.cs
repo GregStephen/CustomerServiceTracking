@@ -492,7 +492,7 @@ namespace CustomerServiceTracking.Repositories
             using (var db = new SqlConnection(_connectionString))
             {
                 var system = GetPropertySystemByPropertySystemId(newReport.SystemId);
-                var nextServiceDate = GetTheDateTheTankWillBeDepleted(system, newReport);
+                var nextServiceDate = GetTheNextServiceDate(system, newReport);
                 var sql = @"UPDATE [PropertySystem]
                             SET
                                 [NextServiceDate] = @nextServiceDate

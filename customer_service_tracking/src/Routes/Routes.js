@@ -24,6 +24,7 @@ import TeamPage from '../Components/TeamPage/TeamPage';
 
 import PropertyRoutes from './PropertyRoutes';
 import Dashboard from '../Components/Dashboard/Dashboard';
+import AdminProtectedRoute from './AdminProtectedRoute.tsx';
 
 function Routes() {
   const userContext = useContext(UserContext);
@@ -40,34 +41,34 @@ function Routes() {
       <Route exact path='/jobs'>
         <JobsPage />
       </Route>
-      <Route exact path='/systems'>
+      <AdminProtectedRoute exact path='/systems'>
         <SystemsPage />
-      </Route>
-      <Route exact path='/new-system'>
+      </AdminProtectedRoute>
+      <AdminProtectedRoute exact path='/new-system'>
         <NewSystemPage />
-      </Route>
-      <Route exact path='/properties'>
+      </AdminProtectedRoute>
+      <AdminProtectedRoute exact path='/properties'>
         <PropertiesPage />
-      </Route>
-      <Route exact path='/new-property'>
+      </AdminProtectedRoute>
+      <AdminProtectedRoute exact path='/new-property'>
         <NewPropertyPage />
-      </Route>
+      </AdminProtectedRoute>
       {propertyRoute && <PropertyRoutes {...propertyRoute} />}
       <Route path='/report/:reportId'>
         <ReportPage />
       </Route>
-      <Route path='/reports'>
+      <AdminProtectedRoute path='/reports'>
         <ReportsPage />
-      </Route>
+      </AdminProtectedRoute>
       <Route path='/new-report/:id'>
         <NewReportPage />
       </Route>
-      <Route path='/edit-property-system/:id'>
+      <AdminProtectedRoute path='/edit-property-system/:id'>
         <EditPropertySystemPage />
-      </Route>
-      <Route path='/team'>
+      </AdminProtectedRoute>
+      <AdminProtectedRoute path='/team'>
         <TeamPage />
-      </Route>
+      </AdminProtectedRoute>
       <Route path='/user/:userId'>
         <ProfilePage />
       </Route>

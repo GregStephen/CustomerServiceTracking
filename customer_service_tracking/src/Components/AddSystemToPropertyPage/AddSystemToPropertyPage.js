@@ -78,7 +78,7 @@ function AddSystemToPropertyPage() {
         jobTypeId: installId,
         amountRemaining: 0,
         inchesAdded: parseInt(submission.inchesAdded, 10),
-        serviceDate: submission.installDate,
+        serviceDate: moment(),
         solutionAdded: parseInt(submission.solutionAdded, 10),
         technicianId: userObj.id,
         notes: '',

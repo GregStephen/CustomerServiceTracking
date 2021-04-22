@@ -7,6 +7,7 @@ import AddSystemToPropertyPage from '../Components/AddSystemToPropertyPage/AddSy
 import NewContactPage from '../Components/NewContactPage/NewContactPage';
 import SystemPage from '../Components/SystemPage/SystemPage';
 import PropertyPage from '../Components/PropertyPage/PropertyPage';
+import AdminProtectedRoute from './AdminProtectedRoute.tsx';
 
 function PropertyRoutes({ path }) {
   return (
@@ -14,12 +15,12 @@ function PropertyRoutes({ path }) {
       <Route exact path={path}>
         <PropertyPage />
       </Route>
-      <Route exact path={`${path}/new-contact`}>
+      <AdminProtectedRoute exact path={`${path}/new-contact`}>
         <NewContactPage />
-      </Route>
-      <Route exact path={`${path}/add-system-to-property`}>
+      </AdminProtectedRoute>
+      <AdminProtectedRoute exact path={`${path}/add-system-to-property`}>
         <AddSystemToPropertyPage />
-      </Route>
+      </AdminProtectedRoute>
       <Route exact path={`${path}/system/:systemId`}>
         <SystemPage />
       </Route>

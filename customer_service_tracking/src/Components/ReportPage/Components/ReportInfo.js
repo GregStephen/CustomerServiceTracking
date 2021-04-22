@@ -8,7 +8,7 @@ function ReportInfo({ report }) {
     <div className="widget col-5 mt-0">
       <Header title={report.systemName} />
       <div className="widget-list">
-        <p>Time Submitted: { moment(report.serviceDate).format('LLL')}</p>
+        <p>Time Submitted: { moment.utc(report.serviceDate).local().format('LLL')}</p>
         <p>Property: {report.property.displayName}</p>
         <p>Type: {report.type}</p>
         <p>Technician: {report.technician}</p>

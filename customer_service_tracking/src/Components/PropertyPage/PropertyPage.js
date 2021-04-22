@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Badge } from 'reactstrap';
 import { useParams } from 'react-router-dom';
 
@@ -13,13 +13,14 @@ import { useGetPropertyFromPropertyId } from '../../Helpers/Data/PropertyRequest
 import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
 import JobsMap from '../JobsMap/JobsMap';
 import EditPropertyNameModal from '../Modals/EditPropertyNameModal/EditPropertyNameModal';
+import UserContext from '../../Contexts/UserContext';
 
 
 function PropertyPage() {
   const { propertyId } = useParams();
   const reports = useGetReportsByPropertyId(propertyId);
   const property = useGetPropertyFromPropertyId(propertyId);
-
+  const user = useContext(UserContext);
   return (
     <Page>
       {property?.data
@@ -29,7 +30,9 @@ function PropertyPage() {
               <Badge color={property.data.enabled ? 'success' : 'danger'}>
                 {property.data.enabled ? 'Active' : 'Inactive'}
               </Badge>
-              <EditPropertyNameModal property={property.data}/>
+              {user.admin
+               && <EditPropertyNameModal property={property.data}/>
+            }
               </>
             }
           />

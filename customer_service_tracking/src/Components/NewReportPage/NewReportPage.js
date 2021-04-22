@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import {
   Col,
   Row,
@@ -31,6 +31,8 @@ const newReportValidationSchema = Yup.object().shape({
   serviceDate: Yup.date().notRequired(),
 });
 
+const today = moment().format('YYYY-MM-DD');
+
 function NewReportPage() {
   const userObj = useContext(UserContext);
   const { id } = useParams();
@@ -42,24 +44,34 @@ function NewReportPage() {
   const job = useJobForSystemBySystemId(id);
   const addNewReport = useAddNewReport();
 
+  const jobType = useMemo(() => jobTypeOptions.data?.find((x) => x.id === job.data?.jobTypeId), [job.data, jobTypeOptions.data]);
+
+  const initalValues = {
+    amountRemaining: '',
+    propertyId: propertySystem?.data?.propertyId,
+    inchesAdded: '',
+    notes: '',
+    serviceDate: '',
+    solutionAdded: '',
+    systemId: propertySystem?.data?.id,
+    technicianId: userObj.id,
+    jobTypeId: job?.data?.jobTypeId,
+  };
+
   const formik = useFormik({
-    initialValues: defaults.defaultReport,
+    initialValues: initalValues,
     enableReinitialize: true,
     validationSchema: newReportValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
-      submission.technicianId = userObj.id;
-      submission.propertyId = propertySystem?.data?.propertyId;
-      submission.systemId = propertySystem?.data?.id;
       submission.amountRemaining = parseInt(submission.amountRemaining, 10);
       submission.inchesAdded = parseInt(submission.inchesAdded, 10);
-      submission.serviceDate = moment(submission.serviceDate).format('YYYY-MM-DD');
+      submission.serviceDate = userObj.admin ? moment(submission.serviceDate) : moment().utc();
       submission.solutionAdded = parseInt(submission.solutionAdded, 10);
       setValues(submission);
       addNewReport.mutate(submission, {
         onSuccess: () => {
           if (job.data.id !== '') {
-            console.log(job);
             deleteJob.mutate(job.data.id, {
               onSuccess: () => {
                 history.push('/');
@@ -73,7 +85,7 @@ function NewReportPage() {
     },
   });
   const maxInches = propertySystem?.data?.systemInfo?.inches;
-  const today = moment().format('YYYY-MM-DD');
+
   return (
     <Page>
       <Header title="New Report" />
@@ -91,21 +103,7 @@ function NewReportPage() {
                 <p>{propertySystem?.data?.notes}</p>
               </div>
               : ''}
-            <FormGroup>
-              <Label htmlFor="jobTypeId">What type of job?</Label>
-              <Input
-                type="select"
-                name="jobTypeId"
-                id="jobTypeId"
-                {...formik.getFieldProps('jobTypeId')}>
-                <option value="">Select a job</option>
-                {jobTypeOptions.data?.map((object) => (
-                  <option key={object.id} value={object.id}>{object.type}</option>
-                ))}
-              </Input>
-              {formik.touched.jobTypeId
-                && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
-          </FormGroup>
+          <p>Job Type: {jobType?.type}</p>
           {userObj.admin
             && job.data?.id
             && < FormGroup >

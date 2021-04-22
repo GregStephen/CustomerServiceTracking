@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Card,
   CardHeader,
   CardBody,
 } from 'reactstrap';
+import UserContext from '../../Contexts/UserContext';
 import Formatting from '../../Helpers/Functions/Formatting';
 import EditContactModal from '../Modals/EditContactModal/EditContactModal';
 
 function ContactCard({ contact, deleteEnabled }) {
+  const user = useContext(UserContext);
   return (
     <div className="col-10 mb-2">
       <Card body>
@@ -15,9 +17,11 @@ function ContactCard({ contact, deleteEnabled }) {
           <div className="d-flex align-items-baseline">
             {contact.primary && <i className="mr-1 fas fa-star" />}
             <h6 className="ml-2">{contact.firstName} {contact.lastName}</h6>
-            <div className="ml-auto d-flex justify-content-end align-items-baseline">
-              <EditContactModal contact={contact} deleteEnabled={deleteEnabled} />
-            </div>
+            {user.admin
+              && <div className="ml-auto d-flex justify-content-end align-items-baseline">
+                <EditContactModal contact={contact} deleteEnabled={deleteEnabled} />
+              </div>
+            }
           </div>
         </CardHeader>
         <CardBody>

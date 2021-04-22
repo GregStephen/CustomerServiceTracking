@@ -1,14 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { Badge } from 'reactstrap';
 
 import { Header, GlobalTable } from '../Global';
+import UserContext from '../../Contexts/UserContext';
 
 function PropertySystems({ property }) {
   const history = useHistory();
   const addSystemLink = `${property.id}/add-system-to-property/`;
-
+  const user = useContext(UserContext);
   const tableData = useMemo(() => (property.systems || []), [property.systems]);
 
   const tableColumns = useMemo(() => [
@@ -31,11 +32,13 @@ function PropertySystems({ property }) {
     },
   ], []);
   return (
-      <div className="widget col-10 mb-4 pt-0">
-        <Header title="Systems" />
-        <div className="d-flex justify-content-end mb-4">
-        <Link className="btn btn-info mr-4" tag={Link} to={addSystemLink}>Add System</Link>
+    <div className="widget col-10 mb-4 pt-0">
+      <Header title="Systems" />
+      {user.admin
+        && <div className="d-flex justify-content-end mb-4">
+          <Link className="btn btn-info mr-4" tag={Link} to={addSystemLink}>Add System</Link>
         </div>
+      }
       <GlobalTable
         columns={tableColumns}
         data={tableData}
@@ -48,8 +51,8 @@ function PropertySystems({ property }) {
             history.push(`${row.original.propertyId}/system/${row.original.id}`);
           },
         })}
-          />
-      </div>
+      />
+    </div>
   );
 }
 
