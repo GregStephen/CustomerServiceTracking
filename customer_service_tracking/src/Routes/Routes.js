@@ -34,8 +34,8 @@ function Routes() {
     <Switch>
       <Route exact path='/'>
         {
-          userContext.admin ? <Dashboard />
-            : <Redirect to='/jobs' />
+          !userContext.admin ? <Redirect to='/jobs' />
+            : <Dashboard />
         }
       </Route>
       <Route exact path='/jobs'>
@@ -72,6 +72,7 @@ function Routes() {
       <Route path='/user/:userId'>
         <ProfilePage />
       </Route>
+      <Route component={Dashboard} />
     </Switch>
   );
 }

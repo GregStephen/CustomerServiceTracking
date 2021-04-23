@@ -3,7 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 
 import LandingPage from '../Components/LandingPage/LandingPage';
 import ServiceTracker from '../ServiceTracker/ServiceTracker';
@@ -56,14 +56,19 @@ function App() {
             && (
               <ServiceTracker userUid={userUid} authorized={authorized} />
             )
-          } {
-            !authorized
-            && <Route exact path='/'>
+          }
+          {
+            !authorized && userUid === undefined
+            && <>
+              <Redirect to="/" />
+              <Route exact path="/">
                 <LandingPage logIn={logIn} error={error} />
               </Route>
+            </>
           }
         </BrowserRouter>
       </QueryClientProvider>
+
     </div>
   );
 }

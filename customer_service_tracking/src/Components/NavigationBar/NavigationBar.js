@@ -1,6 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
-import { NavLink as RRNavLink, Link, useHistory } from 'react-router-dom';
+import {
+  NavLink as RRNavLink,
+  Link,
+  useHistory,
+  Redirect,
+} from 'react-router-dom';
 import {
   Collapse,
   Navbar,
