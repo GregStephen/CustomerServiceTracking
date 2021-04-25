@@ -55,12 +55,10 @@ function NewTeamMemberModal() {
       const secondaryApp = firebase.initializeApp(constants.firebaseKeys, 'Secondary');
       secondaryApp.auth().createUserWithEmailAndPassword(newTeamMember.email, newTeamMember.password)
         .then((cred) => {
-          console.log(`User ${cred.user.uid} created successfully!`);
           newTeamMember.firebaseUid = cred.user.uid;
           delete newTeamMember.email;
           delete newTeamMember.password;
           delete newTeamMember.passwordConfirm;
-          console.log(newTeamMember);
           // I don't know if the next statement is necessary
           secondaryApp.auth().signOut();
           setSubmitting(false);
@@ -85,8 +83,7 @@ function NewTeamMemberModal() {
                   name="firstName"
                   id="firstName"
                   {...formik.getFieldProps('firstName')} />
-                {formik.touched.firstName
-                  && <FormFeedback className="d-block">{formik.errors?.firstName}</FormFeedback>}
+
               </FormGroup>
             </Col>
             <Col md={6}>

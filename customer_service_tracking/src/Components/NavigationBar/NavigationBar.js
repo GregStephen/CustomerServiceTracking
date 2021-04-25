@@ -4,7 +4,6 @@ import {
   NavLink as RRNavLink,
   Link,
   useHistory,
-  Redirect,
 } from 'react-router-dom';
 import {
   Collapse,

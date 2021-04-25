@@ -3,6 +3,7 @@ import { Badge, Button } from 'reactstrap';
 import UserContext from '../../../Contexts/UserContext';
 import { Header } from '../../Global';
 import { useUpdateUserAdmin } from '../../../Helpers/Data/UserRequests';
+import UpdatePasswordModal from '../../Modals/UpdatePasswordModal/UpdatePasswordModal';
 
 function UserInfo({ userInfo }) {
   const currentUser = useContext(UserContext);
@@ -10,16 +11,24 @@ function UserInfo({ userInfo }) {
   return (
     <div className="widget mb-3 mt-3">
       {userInfo ? <>
-      <Header title={`${userInfo?.firstName} ${userInfo?.lastName}'s Profile`} />
+        <Header title={`${userInfo?.firstName} ${userInfo?.lastName}'s Profile`} />
         <div>
           {userInfo.admin && <Badge color="success">Admin</Badge>}
           {currentUser.admin
-          && <Button className="ml-3 btn btn-info"
-          onClick={() => updateUserAdmin.mutate(userInfo)}>
-          {userInfo.admin ? 'Remove Admin Privileges' : 'Enable Admin Privileges'}
-        </Button>}
+            && <Button className="ml-3 btn btn-info"
+              onClick={() => updateUserAdmin.mutate(userInfo)}>
+              {userInfo.admin ? 'Remove Admin Privileges' : 'Enable Admin Privileges'}
+            </Button>}
+          {currentUser.id === userInfo.id
+            && <>
+              <Button className="btn btn-info">
+                Change Email
+            </Button>
+            <UpdatePasswordModal />
+            </>
+          }
         </div>
-        </> : <p>LOADING</p>
+      </> : <p>LOADING</p>
       }
     </div>
   );
