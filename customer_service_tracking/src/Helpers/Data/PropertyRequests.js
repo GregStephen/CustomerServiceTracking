@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-const baseUrl = 'https://localhost:44324/api/customer';
-
+const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/customer';
+// const baseUrl = 'https://localhost:44324/api/customer';
 // GETS
 
 export function useGetPropertyFromPropertyId(propertyId) {

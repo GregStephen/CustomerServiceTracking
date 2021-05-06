@@ -14,7 +14,7 @@ function UserInfo({ userInfo }) {
         <Header title={`${userInfo?.firstName} ${userInfo?.lastName}'s Profile`} />
         <div>
           {userInfo.admin && <Badge color="success">Admin</Badge>}
-          {currentUser.admin
+          {currentUser.admin && currentUser.id !== userInfo.id
             && <Button className="ml-3 btn btn-info"
               onClick={() => updateUserAdmin.mutate(userInfo)}>
               {userInfo.admin ? 'Remove Admin Privileges' : 'Enable Admin Privileges'}

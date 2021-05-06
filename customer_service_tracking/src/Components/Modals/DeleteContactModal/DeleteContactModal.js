@@ -24,7 +24,7 @@ function DeleteContactModal({ contact, deleteEnabled }) {
   }, [deleteContact, history, contact]);
 
   return (<>
-    <span class="d-inline-block" id="deleteContact">
+    <span className="d-inline-block" id="deleteContact">
       <Button color="danger" className="col-12" disabled={contact?.primary || !deleteEnabled} onClick={() => setDeleteContactModalIsToggled(true)}>Delete</Button>
     </span>
     <Tooltip target="deleteContact" placement="right" isOpen={tooltipOpen} toggle={toggleToolTip}>Cannot delete Primary Contact, you must edit or reassign</Tooltip>

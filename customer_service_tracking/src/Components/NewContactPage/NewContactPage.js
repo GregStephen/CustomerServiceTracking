@@ -10,6 +10,7 @@ import {
 } from 'reactstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import MaskedInput from 'react-input-mask';
 import { useHistory, useParams } from 'react-router-dom';
 import { Header, Page } from '../Global';
 import { useAddNewContact, useUpdateContact } from '../../Helpers/Data/PropertyRequests';
@@ -20,8 +21,8 @@ const phoneRegEx = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,
 const newContactValidationSchema = Yup.object().shape({
   firstName: Yup.string().required('First Name is required'),
   lastName: Yup.string().required('Last Name is required'),
-  workPhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
-  homePhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
+  workPhone: Yup.string().notRequired().matches(/^\d{10$/, 'Phone number is not valid'),
+  homePhone: Yup.string().notRequired().matches(/^\d{10$/, 'Phone number is not valid'),
   cellPhone: Yup.string().notRequired().matches(phoneRegEx, 'Phone number is not valid'),
   email: Yup.string().notRequired(),
   primary: Yup.bool(),
@@ -114,12 +115,18 @@ function NewCustomerPage({ contact }) {
           </FormGroup>
           <FormGroup>
             <Label for="homePhone">Home Phone</Label>
-            <Input
-              type="text"
-              name="homePhone"
-              id="homePhone"
-              {...formik.getFieldProps('homePhone')} />
-
+            <MaskedInput
+              mask="(999) 999-9999"
+              alwaysShowMask
+              value={formik.values.homePhone}
+              onBlur={(e) => formik.handleBlur(e)}
+              onChange={(e) => formik.setFieldValue('homePhone', e.target.value.replace(/\D/g, ''))}>
+              {() => (<Input
+                type="text"
+                name="homePhone"
+                id="homePhone"
+              />)}
+            </MaskedInput>
             {formik.touched.homePhone
               && <FormFeedback className="d-block">{formik.errors?.homePhone}</FormFeedback>}
           </FormGroup>

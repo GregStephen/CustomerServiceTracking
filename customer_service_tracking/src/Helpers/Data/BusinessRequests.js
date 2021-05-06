@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
 
-const baseUrl = 'https://localhost:44324/api/business';
-
+const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/business';
+// const baseUrl = 'https://localhost:44324/api/business';
 export function useGetBusinesses() {
   const url = `${baseUrl}`;
   return useQuery([url], async () => {

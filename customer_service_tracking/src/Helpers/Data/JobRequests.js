@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-const baseUrl = 'https://localhost:44324/api/job';
-
+const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/job';
+// const baseUrl = 'https://localhost:44324/api/job';
 export function useJobForSystemBySystemId(systemId) {
   const url = `${baseUrl}/systemId/${systemId}`;
   return useQuery([url], async () => {
