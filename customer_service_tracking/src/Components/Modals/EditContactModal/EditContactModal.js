@@ -15,11 +15,9 @@ import { useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import MaskedInput from 'react-input-mask';
-import Formatting from '../../../Helpers/Functions/Formatting';
 import { useUpdateContact, useAddNewContact } from '../../../Helpers/Data/PropertyRequests';
 import DeleteContactModal from '../DeleteContactModal/DeleteContactModal';
 
-const phoneRegEx = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const editContactValidationSchema = Yup.object().shape({
   firstName: Yup.string().required('First Name is required'),

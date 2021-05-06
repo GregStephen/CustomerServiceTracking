@@ -15,7 +15,6 @@ import moment from 'moment';
 
 import { Header, Page } from '../Global';
 import UserContext from '../../Contexts/UserContext';
-import defaults from '../../Helpers/defaults';
 import { useGetPropertyFromPropertyId, useGetPropertySystemFromPropertySystemId } from '../../Helpers/Data/PropertyRequests';
 import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
