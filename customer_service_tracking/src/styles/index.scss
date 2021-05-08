@@ -19,6 +19,8 @@ body {
   font-family: 'Noto Sans JP', sans-serif;
   font-weight: bolder;
   background-color: $favColor;
+  background-image: url('./gravel.png');
+  background-blend-mode:multiply;
   direction: ltr;
   text-rendering: optimizeLegibility;
 }
@@ -33,6 +35,7 @@ body {
   padding: 0; 
   padding-bottom: 1rem;
   background-color: $background-color-transparent;
+
   border: 3px solid black;
   border-radius: .5em;
   color: $textColor;
@@ -54,6 +57,7 @@ body {
  position: relative;
  padding-bottom: 1rem;
  background-color: $background-color-header;
+ background-blend-mode:overlay;
  border-bottom: 2px solid black;
 }
 

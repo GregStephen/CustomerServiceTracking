@@ -129,9 +129,18 @@ function PropertiesPage() {
             </div>
           </Col>
         </Row>
-        <div className="d-flex justify-content-end">
-          <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>
-        </div>
+        <Row>
+          <Col className="d-flex justify-content-between">
+            <div className="ml-4">
+              <Button color="info" onClick={toggle} className="mr-3" style={{ height: '38px' }}>Show All</Button>
+              <Button color="info" onClick={toggle} className="mr-3" style={{ height: '38px' }}>Active</Button>
+              <Button color="info" onClick={toggle} className="mr-3" style={{ height: '38px' }}>Deactivated</Button>
+            </div>
+            <div className="d-flex justify-content-end">
+              <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>
+            </div>
+          </Col>
+        </Row>
         <div>
           <Collapse isOpen={isOpen}>
             <div className="d-flex justify-content-center">
