@@ -210,7 +210,7 @@ function GlobalTable({
               )
               : (
                 <tr>
-                  <td colSpan={columns.length} style={{ textAlign: 'center' }}>{emptyTableMessage}</td>
+                  <td colSpan={columns[0]?.columns ? columns[0].columns.length : columns.length} style={{ textAlign: 'center' }}>{emptyTableMessage}</td>
                 </tr>
               )}
           </tbody>

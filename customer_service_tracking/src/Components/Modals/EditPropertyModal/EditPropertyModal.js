@@ -26,8 +26,7 @@ const editPropertyValidationSchema = Yup.object().shape({
   zipCode: Yup.string().length(5).required('Zip Code is required'),
 });
 
-function EditPropertyModal({ property }) {
-  const [isToggled, setIsToggled] = useState(false);
+function EditPropertyModal({ property, isToggled, setIsToggled }) {
   const updateProperty = useUpdateProperty();
   const [confirmAddressModalIsToggled, setConfirmAddressModalIsToggled] = useState(false);
   const [geocodingAddress, setGeocodingAddress] = useState();
@@ -64,10 +63,9 @@ function EditPropertyModal({ property }) {
         setIsToggled(false);
       },
     });
-  }, [property, updateProperty, geocodingAddress, formik]);
+  }, [property, updateProperty, geocodingAddress, formik, setIsToggled]);
 
   return (<>
-    <button className="btn btn-info" onClick={() => setIsToggled(true)}>Edit Property</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>Edit Property</ModalHeader>
       <Form onSubmit={formik.handleSubmit}>

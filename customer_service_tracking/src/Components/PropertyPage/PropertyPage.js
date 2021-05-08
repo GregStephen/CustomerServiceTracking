@@ -12,7 +12,8 @@ import PropertyContacts from './PropertyContacts';
 import { useGetPropertyFromPropertyId } from '../../Helpers/Data/PropertyRequests';
 import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
 import JobsMap from '../JobsMap/JobsMap';
-import EditPropertyNameModal from '../Modals/EditPropertyNameModal/EditPropertyNameModal';
+
+import EditPropertyDropdown from './Components/EditPropertyDropdown';
 import UserContext from '../../Contexts/UserContext';
 
 
@@ -25,20 +26,16 @@ function PropertyPage() {
     <Page>
       {property?.data
         && <div className="PropertyPage">
-          <Header title={property.data?.displayName}
-            description={<>
-              <Badge color={property.data.enabled ? 'success' : 'danger'}>
-                {property.data.enabled ? 'Active' : 'Inactive'}
-              </Badge>
-              {user.admin
-               && <EditPropertyNameModal property={property.data}/>
-            }
-              </>
-            }
-          />
+        <Header title={property.data?.displayName} description={!property.data?.enabled && <Badge color='danger' className="mt-2">Inactive</Badge>}>
+            <div className="d-flex justify-content-end">
+            {user.admin
+              && <EditPropertyDropdown />
+              }
+            </div>
+          </Header>
           <div className="d-flex row justify-content-center ml-0 mr-0">
             <div className="col-6 row justify-content-end">
-            <PropertyInfo property={property.data} />
+              <PropertyInfo property={property.data} />
               <div className="col-10">
                 <JobsMap
                   getLocation={false}

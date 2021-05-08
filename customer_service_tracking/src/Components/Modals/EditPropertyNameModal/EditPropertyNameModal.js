@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Form,
   FormFeedback,
@@ -20,8 +20,7 @@ const editPropertyValidationSchema = Yup.object().shape({
   displayName: Yup.string().required('Display Name is required'),
 });
 
-function EditPropertyNameModal({ property }) {
-  const [isToggled, setIsToggled] = useState(false);
+function EditPropertyNameModal({ property, isToggled, setIsToggled }) {
   const updatePropertyName = useUpdatePropertyName();
 
   const formik = useFormik({
@@ -39,7 +38,7 @@ function EditPropertyNameModal({ property }) {
   });
 
   return (<>
-    <Button color="info" onClick={() => setIsToggled(true)}><i className="fas fa-edit"></i></Button>
+
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>Edit Property Name</ModalHeader>
       <Form onSubmit={formik.handleSubmit}>

@@ -61,5 +61,5 @@ export default {
   directionLink,
   formatAddressObj,
   formatContactInfo,
-  formatAddressIntoQuery,
+  formatAddressIntoQuery
 };

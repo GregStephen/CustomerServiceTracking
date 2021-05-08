@@ -24,5 +24,5 @@ export function useGetBusinessServiceOptions(businessId) {
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
     return data;
-  });
+  }, { staleTime: Infinity, cacheTime: Infinity });
 }

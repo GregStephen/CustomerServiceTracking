@@ -1,4 +1,9 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useContext,
+  useMemo,
+} from 'react';
 import {
   Col,
   Row,
@@ -11,10 +16,11 @@ import {
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import MaskedInput from 'react-input-mask';
 import { Header, Page } from '../Global';
 
 import UserContext from '../../Contexts/UserContext';
-import { useAddNewProperty } from '../../Helpers/Data/PropertyRequests';
+import { useAddNewProperty, useGetPropertiesForBusiness } from '../../Helpers/Data/PropertyRequests';
 import usePropertyGeo from '../../Helpers/Data/GeocodingRequests';
 import ConfirmAddressModal from '../Modals/ConfimAddressModal/ConfirmAddressModal';
 
@@ -44,6 +50,7 @@ const defaultNewProperty = {
 
 const newPropertyValidationSchema = Yup.object().shape({
   property: Yup.object().shape({
+    displayName: Yup.string().required('Display Name is required'),
     city: Yup.string().required('City is required'),
     state: Yup.string().length(2, 'Please use 2 letter state abbreviation').required('State is required'),
     zipCode: Yup.string().length(5, 'Zip Code must be only 5 digits long').required('Zip Code is required'),
@@ -53,10 +60,10 @@ const newPropertyValidationSchema = Yup.object().shape({
   contact: Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
-    workPhone: Yup.string().length(10).notRequired(),
-    homePhone: Yup.string().length(10).notRequired(),
-    cellPhone: Yup.string().length(10).notRequired(),
-    email: Yup.string().notRequired(),
+    workPhone: Yup.string().notRequired().matches(/^[0-9]{10}$/, 'Phone number is not valid'),
+    homePhone: Yup.string().notRequired().matches(/^[0-9]{10}$/, 'Phone number is not valid'),
+    cellPhone: Yup.string().notRequired().matches(/^[0-9]{10}$/, 'Phone number is not valid'),
+    email: Yup.string().notRequired().matches(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, 'Email is not valid'),
   }),
 });
 
@@ -65,8 +72,12 @@ function NewPropertyPage() {
   const history = useHistory();
   const [confirmAddressModalIsToggled, setConfirmAddressModalIsToggled] = useState(false);
   const [geocodingAddress, setGeocodingAddress] = useState();
+  const businessProperties = useGetPropertiesForBusiness(userObj.businessId);
   const addnewProperty = useAddNewProperty();
   const getPropertyGeo = usePropertyGeo();
+
+  const duplicateCheck = useMemo(() => businessProperties.data?.some((x) => x.latitude === geocodingAddress?.location.lat.toString() && x.longitude === geocodingAddress?.location.lng.toString()),
+    [businessProperties.data, geocodingAddress]);
 
   const formik = useFormik({
     initialValues: defaultNewProperty,
@@ -106,11 +117,11 @@ function NewPropertyPage() {
     <Page>
       <Header title="New Property" icon="fa-user-plus" />
       <div className="widget col-8 d-flex justify-content-center mb-4">
-        <Form className="col-10" onSubmit={formik.handleSubmit}>
+        <Form className="col-10 mt-3" onSubmit={formik.handleSubmit}>
           <Row form>
             <Col md={12}>
               <FormGroup>
-                <Label for="displayName">Display Name</Label>
+                <Label for="displayName">Property Display Name</Label>
                 <Input
                   type="text"
                   name="displayName"
@@ -129,7 +140,7 @@ function NewPropertyPage() {
               id="property.addressLine1"
               {...formik.getFieldProps('property.addressLine1')} />
             {formik.touched.property?.addressLine1
-              && <FormFeedback className="d-block">{formik.errors?.property?.addressLine1}</FormFeedback>}
+              && <FormFeedback className="d-block error">{formik.errors?.property?.addressLine1}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label for="property.addressLine2">Address Line 2</Label>
@@ -208,33 +219,49 @@ function NewPropertyPage() {
           </Row>
           <FormGroup>
             <Label for="contact.homePhone">Home Phone</Label>
-            <Input
-              type="text"
-              name="contact.homePhone"
-              id="contact.homePhone"
-              {...formik.getFieldProps('contact.homePhone')} />
-
+            <MaskedInput
+              mask="(999) 999-9999"
+              value={formik.values.contact.homePhone}
+              onBlur={(e) => formik.handleBlur(e)}
+              onChange={(e) => formik.setFieldValue('contact.homePhone', e.target.value.replace(/\D/g, ''))}>
+              {() => (<Input
+                type="text"
+                name="homePhone"
+                id="homePhone"
+              />)}
+            </MaskedInput>
             {formik.touched.contact?.homePhone
               && <FormFeedback className="d-block">{formik.errors?.contact?.homePhone}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label for="contact.cellPhone">Cell Phone</Label>
-            <Input
-              type="text"
-              name="contact.cellPhone"
-              id="contact.cellPhone"
-              {...formik.getFieldProps('cellPhone')} />
-
+            <MaskedInput
+              mask="(999) 999-9999"
+              value={formik.values.contact.cellPhone}
+              onBlur={(e) => formik.handleBlur(e)}
+              onChange={(e) => formik.setFieldValue('contact.cellPhone', e.target.value.replace(/\D/g, ''))}>
+              {() => (<Input
+                type="text"
+                name="cellPhone"
+                id="cellPhone"
+              />)}
+            </MaskedInput>
             {formik.touched.contact?.cellPhone
               && <FormFeedback className="d-block">{formik.errors?.contact?.cellPhone}</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label for="contact.workPhone">Work Phone</Label>
-            <Input
-              type="text"
-              name="contact.workPhone"
-              id="contact.workPhone"
-              {...formik.getFieldProps('contact.workPhone')} />
+            <MaskedInput
+              mask="(999) 999-9999"
+              value={formik.values.contact.workPhone}
+              onBlur={(e) => formik.handleBlur(e)}
+              onChange={(e) => formik.setFieldValue('contact.workPhone', e.target.value.replace(/\D/g, ''))}>
+              {() => (<Input
+                type="text"
+                name="contact.workPhone"
+                id="contact.workPhone"
+              />)}
+            </MaskedInput>
             {formik.touched.contact?.workPhone
               && <FormFeedback className="d-block">{formik.errors?.contact?.workPhone}</FormFeedback>}
           </FormGroup>
@@ -257,6 +284,7 @@ function NewPropertyPage() {
         setConfirmAddressModalIsToggled={setConfirmAddressModalIsToggled}
         confirmAddressModalIsToggled={confirmAddressModalIsToggled}
         onSuccessFunction={createProperty}
+        isDuplicate={duplicateCheck}
       />
     </Page>
   );

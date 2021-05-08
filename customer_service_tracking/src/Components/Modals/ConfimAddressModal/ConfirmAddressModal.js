@@ -1,11 +1,8 @@
 /* eslint-disable camelcase */
 import React from 'react';
-
 import {
-  Modal, ModalHeader, Button, ModalBody, ModalFooter,
+  Modal, ModalHeader, Button, ModalBody, ModalFooter, Alert,
 } from 'reactstrap';
-
-
 import JobsMap from '../../JobsMap/JobsMap';
 
 function ConfirmAddressModal({
@@ -13,6 +10,7 @@ function ConfirmAddressModal({
   confirmAddressModalIsToggled,
   setConfirmAddressModalIsToggled,
   onSuccessFunction,
+  isDuplicate,
 }) {
   return (<>
     <Modal isOpen={confirmAddressModalIsToggled} toggle={() => setConfirmAddressModalIsToggled(false)}>
@@ -30,7 +28,8 @@ function ConfirmAddressModal({
         />
       </ModalBody>
       <ModalFooter>
-        <Button type="btn" onClick={() => onSuccessFunction()} color="success">Confirm Property</Button>
+        {isDuplicate ? <Alert color="danger">This is a duplicate address of another of your properties.</Alert>
+          : <Button type="btn" onClick={() => onSuccessFunction()} color="success">Confirm Property</Button>}
         <Button color="danger" value="info" onClick={() => setConfirmAddressModalIsToggled(false)}>Cancel</Button>
       </ModalFooter>
     </Modal>
