@@ -4,9 +4,12 @@ import { Header } from '../Global';
 
 function SystemInfo({ system }) {
   return (
-    <div className="widget col-5 mt-0">
+    <div className="widget col-md-5 col-sm-12 mt-0">
       <Header title='System Info' />
       <div className="widget-list">
+        {system.notes
+          && <p>Notes: {system.notes}</p>
+        }
         <p>Nozzles: {system.nozzles}</p>
         <p>Spray Cycles: {system.sprayCycles}</p>
         <p>Spray Duration: {system.sprayDuration} seconds</p>

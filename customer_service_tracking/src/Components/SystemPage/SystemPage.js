@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page, Header } from '../Global';
 import { useGetPropertySystemFromPropertySystemId } from '../../Helpers/Data/PropertyRequests';
+import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
 import SystemInfo from '../SystemInfo/SystemInfo';
 import CreateNewJobModal from '../Modals/CreateNewJobModal/CreateNewJobModal';
+import SystemReports from './SystemReports';
 
 function SystemPage() {
   const { systemId } = useParams();
   const system = useGetPropertySystemFromPropertySystemId(systemId);
+  const reports = useGetReportsByPropertyId(system.data?.propertyId);
+  const systemReports = useMemo(() => reports.data?.filter((x) => x.systemId === systemId), [reports.data, systemId]);
 
   return (
     <Page>
@@ -18,10 +22,10 @@ function SystemPage() {
           systemNeedingService={system}
         />
         }
-        <div className="widget">
-          <p>{system?.data?.id}</p>
+        <div className="d-flex">
+          <SystemInfo system={system?.data} />
+          <SystemReports reports={systemReports} />
         </div>
-        <SystemInfo system={system?.data} />
       </>}
     </Page>
   );
