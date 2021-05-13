@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CustomerServiceTracking.Repositories;
+using CustomerServiceTracking.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -43,7 +46,18 @@ namespace CustomerServiceTracking
             services.AddScoped<IUnregisteredEmployeeRepository, UnregisteredEmployeeRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IGeocodingRepository, GeocodingRepository>();
+            services.AddScoped<IChangeLogRepository, ChangeLogRepository>();
+            services.AddScoped<IUsernameService, UsernameService>();
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                // These three subnets encapsulate the applicable Azure subnets. At the moment, it's not possible to narrow it down further.
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("::ffff:10.0.0.0"), 104));
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("::ffff:192.168.0.0"), 112));
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("::ffff:172.16.0.0"), 108));
+            });
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
@@ -75,6 +89,8 @@ namespace CustomerServiceTracking
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseForwardedHeaders();
 
             app.UseCors("MyPolicy");
 

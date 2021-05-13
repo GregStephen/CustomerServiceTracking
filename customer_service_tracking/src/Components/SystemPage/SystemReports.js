@@ -46,7 +46,7 @@ function ServiceReports({ reports }) {
           type="text"
           value={searchFilter}
           onChange={(e) => setSearchFilter(e.target.value)}
-          placeholder="Search Properties"
+          placeholder="Search Reports"
           style={{ maxWidth: '100%', width: '300px' }}
         />
       </div>

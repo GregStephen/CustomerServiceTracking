@@ -44,7 +44,7 @@ const addNewUser = (userobj) => new Promise((resolve, reject) => {
 export function useUpdateUserAdmin() {
   const url = `${baseUrl}/updateAdmin`;
   const queryClient = useQueryClient();
-  return useMutation((userToUpdate) => axios.put(url, userToUpdate), {
+  return useMutation((userToUpdate) => axios.post(url, userToUpdate), {
     onSuccess: (data, userToUpdate) => {
       queryClient.invalidateQueries({
         predicate: (query) => {

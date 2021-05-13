@@ -24,21 +24,21 @@ function Jobs({ jobs }) {
           Header: 'Property',
           accessor: (j) => j.propertySystemId,
           Cell: ({ row: { original } }) => (
-            <Link to={{ pathname: `/property/${original.property?.id}` }}>{`${original.property?.displayName}`}</Link>
+              <Link to={{ pathname: `/property/${original.property?.id}` }}>{`${original.property?.displayName}`}</Link>
           ),
         },
         {
           Header: 'Address',
           accessor: (j) => j.property,
           Cell: ({ row: { original } }) => (
-            <a rel="noopener noreferrer" target="_blank" href={Formatting.directionLink(original.property)}>{original.property?.addressLine1}</a>
+              <a rel="noopener noreferrer" target="_blank" href={Formatting.directionLink(original.property)}>{original.property?.addressLine1}</a>
           ),
         },
         {
           Header: 'System',
           accessor: (j) => j.propertySystem.displayName,
           Cell: ({ row: { original } }) => (
-            <Link to={{ pathname: `/property/${original.property?.id}/system/${original.propertySystem?.id}` }}>{original.propertySystem.displayName}</Link>
+              <Link to={{ pathname: `/property/${original.property?.id}/system/${original.propertySystem?.id}` }}>{original.propertySystem.displayName}</Link>
           ),
         },
         {
@@ -59,12 +59,12 @@ function Jobs({ jobs }) {
           Header: ' ',
           accessor: (r) => r.job?.id,
           Cell: ({ row: { original } }) => (
-            <EditJobModal
+              <EditJobModal
               job={original}
               editJob={editTheJob}
               deleteJob={deleteJob}
               jobTypeOptions={jobTypeOptions?.data}
-            />
+              />
           ),
         },
       ],
@@ -72,11 +72,11 @@ function Jobs({ jobs }) {
   ], [editTheJob, deleteJob, jobTypeOptions]);
 
   return (
-    <GlobalTable
+      <GlobalTable
       columns={tableColumns}
       data={tableData}
       emptyTableMessage="No jobs currently assigned"
-    />
+      />
   );
 }
 

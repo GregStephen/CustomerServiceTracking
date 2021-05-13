@@ -15,7 +15,7 @@ import JobsMap from '../JobsMap/JobsMap';
 
 import EditPropertyDropdown from './Components/EditPropertyDropdown';
 import UserContext from '../../Contexts/UserContext';
-
+import PropertyChangeLog from './Components/PropertyChangeLog.tsx';
 
 function PropertyPage() {
   const { propertyId } = useParams();
@@ -26,9 +26,9 @@ function PropertyPage() {
     <Page>
       {property?.data
         && <div className="PropertyPage">
-        <Header title={property.data?.displayName} description={!property.data?.enabled && <Badge color='danger' className="mt-2">Inactive</Badge>}>
+          <Header title={property.data?.displayName} description={!property.data?.enabled && <Badge color='danger' className="mt-2">Inactive</Badge>}>
             <div className="d-flex justify-content-end">
-            {user.admin
+              {user.admin
               && <EditPropertyDropdown />
               }
             </div>
@@ -50,9 +50,16 @@ function PropertyPage() {
               <PropertyContacts property={property.data} />
             </div>
           </div>
+
+
           <PropertySystems property={property.data} />
           {reports?.data
-            && <PropertyReports reports={reports.data} />}
+          && <PropertyReports reports={reports.data} />}
+          <div className="d-flex row justify-content-center ml-0 mr-0">
+            <div className="col-6 justify-content-center">
+              <PropertyChangeLog />
+            </div>
+          </div>
         </div>
       }
     </Page>

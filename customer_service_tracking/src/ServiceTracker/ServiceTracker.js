@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Spinner } from 'reactstrap';
 import UserContext from '../Contexts/UserContext';
 import Routes from '../Routes/Routes';
 
@@ -23,7 +24,13 @@ function ServiceTracker({ userUid, authorized }) {
     <div className="ServiceTracker">
       <UserContext.Provider value={userContextValues}>
         <NavigationBar authorized={authorized} userObj={userContextValues} />
-        {userObj.isSuccess ? <Routes authorized={authorized} /> : (<Page> <p>LOADING</p></Page>)}
+        {userObj.isSuccess ? <Routes authorized={authorized} />
+          : (<Page>
+            <div className="d-flex justify-content-center mt-4">
+              <h2>Fetching your data</h2>
+              <Spinner className="ml-3" color="info" style={{ width: '3rem', height: '3rem' }} />
+            </div>
+          </Page>)}
       </UserContext.Provider>
     </div>
   );

@@ -65,9 +65,9 @@ function JobsMap({
   const updateMarkers = () => {
     if (markersData?.length > 0) {
       const markersToShow = markersData.map((marker, i) => (<PropertyMarker
-          key={i}
-          marker={marker}
-        />));
+        key={i}
+        marker={marker}
+      />));
       return markersToShow;
     }
     return null;

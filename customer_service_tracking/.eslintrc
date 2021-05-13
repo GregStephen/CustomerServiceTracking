@@ -1,9 +1,47 @@
 {
+  "root": true,  
   "parserOptions": {
+    "tsconfigRootDir": "./",
+    "project": "./tsconfig.json",
     "ecmaVersion": 9,
     "sourceType": "module"
   },
-  "extends": ["airbnb-base", "react-app"],
+  "ignorePatterns": ".eslintrc.js",
+  "extends": [
+    "eslint:recommended", 
+    "react-app",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["react", "@typescript-eslint", "react-hooks", "import"],
+  "settings": {
+    "react": {
+      "version": "detect",
+      "pragma": "React"
+    },
+    "import/extensions": [".ts", ".js", ".tsx"],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
+  },
+  "overrides": [{
+    "files": ["**/*.ts", "**/*.tsx"],
+    "rules": {
+      "import/named": "off"
+    }
+  }],
   "globals": {
     "document": true,
     "window": true,
@@ -12,10 +50,51 @@
     "allowTemplateLiterals": true
   },
   "rules": {
-    "no-console": [1, { "allow": ["error"] }],
-    "no-debugger": 1,
+    "eqeqeq": 2,
+    "indent": ["error", 2],
+    "no-trailing-spaces": 1,
+    "quotes": ["error", "single"],
+    "react/destructuring-assignment": "off",
+    "react/jsx-closing-bracket-location": ["error", {"nonEmpty": "after-props", "selfClosing": "line-aligned"}],
+    "react/jsx-curly-brace-presence": ["error", {"props": "never", "children": "never"}],
+    "react/jsx-curly-spacing": ["error", {"when": "never"}],
+    "react/no-unused-state": ["warn"],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-useless-constructor": "error",
+    "@typescript-eslint/restrict-plus-operands": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "warn",
+    "@typescript-eslint/prefer-optional-chain": "warn",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/semi": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "curly": "error",
+    "object-property-newline": ["warn", {
+      "allowAllPropertiesOnSameLine": true
+    }],
+    "object-curly-newline": [1, {
+      "ObjectExpression": {
+        "multiline": true,
+        "minProperties": 4,
+        "consistent": true
+      },
+      "ObjectPattern": {
+        "multiline": true,
+        "consistent": true
+      },
+      "ImportDeclaration": {
+        "multiline": true,
+        "minProperties": 5,
+        "consistent": true
+      }
+    }],
     "class-methods-use-this": 0,
-    "linebreak-style": 0,
-    "max-len": [1,200,2]
+    "linebreak-style": 0
   }
 }

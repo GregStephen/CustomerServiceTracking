@@ -3,6 +3,7 @@ import React, {
   useEffect,
   useState,
   useContext,
+  useCallback,
 } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import {
@@ -12,6 +13,7 @@ import {
   Input,
   Collapse,
   Button,
+  CustomInput,
 } from 'reactstrap';
 import UserContext from '../../Contexts/UserContext';
 import JobsMap from '../JobsMap/JobsMap';
@@ -26,7 +28,7 @@ function PropertiesPage() {
   const [markersData, setMarkersData] = useState([]);
   const [inactiveProperties, getInactiveProperties] = useState();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [choseenFilter, setChosenFilter] = useState();
   const toggle = () => setIsOpen(!isOpen);
 
   const returnPrimaryContactName = (contacts) => {
@@ -108,6 +110,9 @@ function PropertiesPage() {
     [searchFilter],
   );
 
+  const filterResults = useCallback((e) => {
+    setChosenFilter(e.id);
+  }, []);
   return (
     <Page>
       <div className="widget col-10 mt-4">
@@ -132,9 +137,9 @@ function PropertiesPage() {
         <Row>
           <Col className="d-flex justify-content-between">
             <div className="ml-4">
-              <Button color="info" onClick={toggle} className="mr-3" style={{ height: '38px' }}>Show All</Button>
-              <Button color="info" onClick={toggle} className="mr-3" style={{ height: '38px' }}>Active</Button>
-              <Button color="info" onClick={toggle} className="mr-3" style={{ height: '38px' }}>Deactivated</Button>
+              <CustomInput onChange={(e) => filterResults(e)} type="switch" id="active" name="active" label="Active" inline/>
+              <CustomInput onChange={(e) => filterResults(e)} type="switch" id="inactive" name="inactive" label="Inactive" inline/>
+              <CustomInput onChange={(e) => filterResults(e)} type="switch" id="all" name="all" label="Show All" inline/>
             </div>
             <div className="d-flex justify-content-end">
               <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>

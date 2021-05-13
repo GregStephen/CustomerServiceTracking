@@ -40,6 +40,14 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public List<User> GetShallowUsers(List<string> userIds)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                string sql = "SELECT * FROM [User] WHERE [Id] IN @ids";
+                return db.Query<User>(sql, new { ids = userIds }).ToList();
+            }
+        }
         public User GetUserById(Guid userId)
         {
             using (var db = new SqlConnection(_connectionString))

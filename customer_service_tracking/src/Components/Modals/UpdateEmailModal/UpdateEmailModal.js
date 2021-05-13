@@ -16,7 +16,7 @@ import 'firebase/auth';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-function UpdatePasswordModal({ isToggled, setIsToggled }) {
+function UpdateEmailModal({ isToggled, setIsToggled }) {
   const user = firebase.auth().currentUser;
   const [error, setError] = useState('');
 
@@ -92,4 +92,4 @@ function UpdatePasswordModal({ isToggled, setIsToggled }) {
   );
 }
 
-export default UpdatePasswordModal;
+export default UpdateEmailModal;

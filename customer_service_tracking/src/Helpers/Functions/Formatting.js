@@ -56,10 +56,38 @@ const formatContactInfo = (customerObj) => {
   );
 };
 
+const splitCamelCase = (input) => {
+  let output = '';
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < input.length - 1; i++) {
+    const thisChar = input[i];
+    const nextChar = input[i + 1];
+
+    output += thisChar;
+    if (isNaN(Number(thisChar)) && isNaN(Number(nextChar))) {
+      if (thisChar === thisChar.toLowerCase() && nextChar === nextChar.toUpperCase()) {
+        output += ' ';
+      } else if (thisChar === thisChar.toUpperCase() && nextChar === nextChar.toUpperCase()) {
+        if (i < input.length - 2) {
+          const nextNextChar = input[i + 2];
+          if (isNaN(Number(nextNextChar)) && nextNextChar === nextNextChar.toLowerCase()) {
+            output += ' ';
+          }
+        }
+      }
+    }
+    if (i === input.length - 2) {
+      output += nextChar;
+    }
+  }
+  return output.trim();
+};
+
 export default {
   formatPhoneNumber,
   directionLink,
   formatAddressObj,
   formatContactInfo,
-  formatAddressIntoQuery
+  formatAddressIntoQuery,
+  splitCamelCase,
 };

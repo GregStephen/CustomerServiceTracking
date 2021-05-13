@@ -11,9 +11,8 @@ function UserInfo({ userInfo }) {
   return (
     <div className="widget mb-3 mt-3">
       {userInfo ? <>
-        <Header title={`${userInfo?.firstName} ${userInfo?.lastName}'s Profile`} />
+        <Header title={`${userInfo?.firstName} ${userInfo?.lastName}'s Profile`} subTitle={userInfo.admin && <Badge color="success">Admin</Badge>}/>
         <div>
-          {userInfo.admin && <Badge color="success">Admin</Badge>}
           {currentUser.admin && currentUser.id !== userInfo.id
             && <Button className="ml-3 btn btn-info"
               onClick={() => updateUserAdmin.mutate(userInfo)}>

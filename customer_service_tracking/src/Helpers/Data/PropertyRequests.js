@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/customer';
-// const baseUrl = 'https://localhost:44324/api/customer';
+// const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/customer';
+const baseUrl = 'https://localhost:44324/api/customer';
 // GETS
 
 export function useGetPropertyFromPropertyId(propertyId) {
@@ -23,6 +23,14 @@ export function useGetPropertiesForBusiness(businessId) {
 
 export function useGetPropertySystemFromPropertySystemId(propertySystemId) {
   const url = `${baseUrl}/propertySystemId/${propertySystemId}`;
+  return useQuery([url], async () => {
+    const { data } = await axios.get(url);
+    return data;
+  });
+}
+
+export function usePropertyChangeLog(propertyId) {
+  const url = `${baseUrl}/changeLog/${propertyId}`;
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
     return data;

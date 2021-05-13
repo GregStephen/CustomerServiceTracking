@@ -17,5 +17,6 @@ namespace CustomerServiceTracking.Repositories
 
         bool UpdateUserAdmin(User userToUpdate);
 
+        List<User> GetShallowUsers(List<string> userIds);
     }
 }

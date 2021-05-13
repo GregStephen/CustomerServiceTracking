@@ -4,7 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using CustomerServiceTracking.DataModels;
 using CustomerServiceTracking.DTOS;
+using CustomerServiceTracking.DTOS.ChangeLog;
+using CustomerServiceTracking.Helpers;
 using CustomerServiceTracking.Repositories;
+using CustomerServiceTracking.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,17 +16,23 @@ namespace CustomerServiceTracking.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController : BaseController
     {
         private readonly ILogger<CustomerController> _logger;
         private readonly ICustomerRepository _repo;
         private readonly IReportRepository _reportRepo;
+        private readonly IChangeLogRepository _changeLogRepo;
+        private readonly IUserRepository _userRepo;
+        private readonly IUsernameService _usernameService;
 
-        public CustomerController(ILogger<CustomerController> logger, ICustomerRepository repo, IReportRepository reportRepo)
+        public CustomerController(ILogger<CustomerController> logger, ICustomerRepository repo, IReportRepository reportRepo, IChangeLogRepository changeLogRepo, IUserRepository userRepo, IUsernameService usernameService) : base(userRepo)
         {
             _logger = logger;
             _repo = repo;
             _reportRepo = reportRepo;
+            _changeLogRepo = changeLogRepo;
+            _userRepo = userRepo;
+            _usernameService = usernameService;
         }
 
         [HttpGet("businessId/{businessId}")]
@@ -44,6 +53,13 @@ namespace CustomerServiceTracking.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("changeLog/{propertyId}")]
+        public IActionResult GetPropertyChangeLog(Guid propertyId)
+        {
+            var changeLog = _changeLogRepo.GetChangeLog(propertyId, ChangeLogType.Property);
+            return Ok(_usernameService.ApplyUserNamesToChangeLog(changeLog.ToList()));
         }
 
         [HttpGet("propertySystemId/{propertySystemId}")]
@@ -129,8 +145,12 @@ namespace CustomerServiceTracking.Controllers
         [HttpPut("updatePropertyName")]
         public IActionResult UpdatePropertyName(Property updatedProperty)
         {
+            var oldProperty = _repo.GetPropertyByPropertyId(updatedProperty.Id);
             if (_repo.UpdatePropertyName(updatedProperty))
             {
+                var changes = new Dictionary<string, Variance>();
+                changes.Add(nameof(Property.DisplayName), new Variance(oldProperty.DisplayName, updatedProperty.DisplayName));
+                _changeLogRepo.InsertChangeLog(ChangeLogType.Property, updatedProperty.Id.ToString(), CurrentUserId, changes);
                 return Ok();
             }
             else
