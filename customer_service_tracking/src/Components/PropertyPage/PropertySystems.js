@@ -32,7 +32,7 @@ function PropertySystems({ property }) {
     },
   ], []);
   return (
-    <div className="widget col-10 mb-4 pt-0">
+    <div className="widget col-10 mb-4 mr-0 ml-0 mt-0 pt-0">
       <Header title="Systems" />
       {user.admin
         && <div className="d-flex justify-content-end mb-4">

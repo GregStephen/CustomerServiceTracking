@@ -31,6 +31,8 @@ namespace CustomerServiceTracking.Repositories
 
         bool UpdatePropertySystemName(PropertySystem updatedPropertySystem);
 
+        Task<Contact> GetContactById(Guid ContactId);
+
         bool UpdateContact(Contact updatedContact);
 
         Task<bool> UpdatePropertyEnabledOrDisabled(Property updatedProperty);

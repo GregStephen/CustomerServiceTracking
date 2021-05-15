@@ -184,6 +184,18 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
+        public Task<Contact> GetContactById(Guid ContactId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var sql = @"SELECT *
+                            FROM [Contact]
+                            WHERE [Id] = @contactId";
+                var parameters = new { ContactId };
+                return db.QueryFirstOrDefaultAsync<Contact>(sql, parameters);
+            }
+        }
+
         public Guid GetPrimaryContactId(Guid PropertyId)
         {
             using (var db = new SqlConnection(_connectionString))

@@ -26,7 +26,7 @@ function PropertyReports({ reports }) {
     },
   ], []);
   return (
-    <div className="PropertyReports widget col-10 pt-0">
+    <div className="PropertyReports widget col-10 pt-0 mb-4">
       <Header title="Reports" icon="fa-file-signature" />
       <GlobalTable
         hover

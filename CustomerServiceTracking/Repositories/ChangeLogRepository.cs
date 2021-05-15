@@ -57,7 +57,8 @@ namespace CustomerServiceTracking.Repositories
                 var sql = @"SELECT *
                             FROM [ChangeLog] 
                             WHERE [EntityId] = @entityId
-                            AND [Entity] = @entityType";
+                            AND [Entity] = @entityType
+                            ORDER BY [Timestamp] DESC";
                 var parameters = new { entityId, entityType };
                 return db.Query<ChangeLog>(sql, parameters);
             }

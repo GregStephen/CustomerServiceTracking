@@ -70,7 +70,7 @@ namespace CustomerServiceTracking.Helpers
     {
         Address,
         PropertyName,
-        Enabled,
+        Active,
         SystemSpecs
     }
 }

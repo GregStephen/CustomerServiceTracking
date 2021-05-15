@@ -94,6 +94,9 @@ namespace CustomerServiceTracking.Controllers
         {
             if (_repo.AddNewContactToDatabase(newContactDTO))
             {
+                //var changes = new Dictionary<string, Variance>();
+                //changes.Add(nameof(Property.DisplayName), new Variance({ }, updatedProperty.DisplayName));
+                //_changeLogRepo.InsertChangeLog(ChangeLogType.Property, updatedProperty.Id.ToString(), CurrentUserId, changes);
                 return Created($"customer/{newContactDTO.FirstName}", newContactDTO);
             }
             else
@@ -117,10 +120,13 @@ namespace CustomerServiceTracking.Controllers
             return BadRequest();
         }
         [HttpPut("updateContact")]
-        public IActionResult UpdateContact(Contact updateContact)
+        public async Task<IActionResult> UpdateContact(Contact updateContact)
         {
+            var oldCustomer = await _repo.GetContactById(updateContact.Id);
             if (_repo.UpdateContact(updateContact))
             {
+                
+                //_changeLogRepo.InsertChangeLog(ChangeLogType.Property, updatedProperty.Id.ToString(), CurrentUserId, changes);
                 return Ok();
             }
             else
@@ -165,6 +171,9 @@ namespace CustomerServiceTracking.Controllers
         {
             if (await _repo.UpdatePropertyEnabledOrDisabled(property))
             {
+                var changes = new Dictionary<string, Variance>();
+                changes.Add("Active", new Variance(!property.Enabled, property.Enabled));
+                _changeLogRepo.InsertChangeLog(ChangeLogType.Property, property.Id.ToString(), CurrentUserId, changes);
                 return Ok();
             }
             else
@@ -206,6 +215,9 @@ namespace CustomerServiceTracking.Controllers
         {
             if (_repo.DeleteContact(contactId))
             {
+                var changes = new Dictionary<string, Variance>();
+                changes.Add("Contact", new Variance(contactId, null));
+                _changeLogRepo.InsertChangeLog(ChangeLogType.Property, CurrentPropertyId, CurrentUserId, changes);
                 return Ok();
             }
             else

@@ -51,15 +51,16 @@ function PropertyPage() {
             </div>
           </div>
 
-
-          <PropertySystems property={property.data} />
-          {reports?.data
-          && <PropertyReports reports={reports.data} />}
           <div className="d-flex row justify-content-center ml-0 mr-0">
+            <div className="col-6 row justify-content-end">
+              <PropertySystems property={property.data} />
+            </div>
             <div className="col-6 justify-content-center">
               <PropertyChangeLog />
             </div>
           </div>
+          {reports?.data
+          && <PropertyReports reports={reports.data} />}
         </div>
       }
     </Page>

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import useHeaders from './useHeaders';
 
 // const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/customer';
 const baseUrl = 'https://localhost:44324/api/customer';
@@ -160,7 +161,8 @@ export function useDeleteProperty() {
 export function useDeleteContact() {
   const url = `${baseUrl}/contact`;
   const queryClient = useQueryClient();
-  return useMutation((contactToDeleteId) => axios.delete(`${url}/${contactToDeleteId}`), {
+  const headers = useHeaders();
+  return useMutation((contactToDeleteId) => axios.delete(`${url}/${contactToDeleteId}`, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {

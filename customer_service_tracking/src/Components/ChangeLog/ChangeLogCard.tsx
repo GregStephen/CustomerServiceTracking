@@ -55,14 +55,16 @@ function ChangeLogCard({ delta }: Props) {
 
   const [updatedThings, newThings, deletedThings] = useMemo(() => parseUpdates(parsedDelta), [parsedDelta]);
 
-  return (<Card className="mb-3 shardow-sm bg-gray-50" body>
+  return (<Card className="mb-3 shadow-sm bg-gray-50" body>
     <CardSubtitle>
-      {getChangeLogText(updatedThings, newThings, deletedThings)}
-      <Button
-        color="light"
-        onClick={() => setIsOpen(!isOpen)}>
-        Advanced Details
-      </Button>
+      <div className="d-flex justify-content-between">
+        {getChangeLogText(updatedThings, newThings, deletedThings)}
+        <Button
+          color="link"
+          onClick={() => setIsOpen(!isOpen)}>
+          <i className="fas fa-info-circle"/>
+        </Button>
+      </div>
     </CardSubtitle>
     <Collapse isOpen={isOpen} className="pt-2">
       <pre className="text-muted">

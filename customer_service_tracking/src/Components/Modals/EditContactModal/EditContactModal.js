@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Modal,
@@ -18,7 +19,6 @@ import MaskedInput from 'react-input-mask';
 import { useUpdateContact, useAddNewContact } from '../../../Helpers/Data/PropertyRequests';
 import DeleteContactModal from '../DeleteContactModal/DeleteContactModal';
 
-
 const editContactValidationSchema = Yup.object().shape({
   firstName: Yup.string().required('First Name is required'),
   lastName: Yup.string().required('Last Name is required'),
@@ -29,7 +29,6 @@ const editContactValidationSchema = Yup.object().shape({
   primary: Yup.bool(),
 });
 
-
 function EditContactModal({ contact, deleteEnabled }) {
   const [isToggled, setIsToggled] = useState(false);
   const { propertyId } = useParams();
@@ -37,7 +36,6 @@ function EditContactModal({ contact, deleteEnabled }) {
   const addNewContact = useAddNewContact();
 
   const updatingContact = contact !== null;
-
 
   const defaultContact = useMemo(() => ({
     id: contact?.id ?? '',
@@ -49,6 +47,8 @@ function EditContactModal({ contact, deleteEnabled }) {
     email: contact?.email ?? '',
     primary: contact?.primary ?? false,
   }), [contact]);
+
+
 
   const formik = useFormik({
     initialValues: defaultContact,
@@ -64,7 +64,7 @@ function EditContactModal({ contact, deleteEnabled }) {
         submission.homePhone = submission.homePhone.replace(/[^\d]/g, '');
         updateContact.mutate(submission, {
           onSuccess: () => {
-            setIsToggled(false);
+            clearAndClose();
           },
         });
       } else {
@@ -72,7 +72,7 @@ function EditContactModal({ contact, deleteEnabled }) {
         setValues(submission);
         addNewContact.mutate(submission, {
           onSuccess: () => {
-            setIsToggled(false);
+            clearAndClose();
           },
         });
       }
@@ -87,8 +87,8 @@ function EditContactModal({ contact, deleteEnabled }) {
 
   return (<>
     <button className={updatingContact ? 'btn btn-secondary' : 'btn btn-info mr-4 mb-2'} onClick={() => setIsToggled(true)}>{updatingContact ? 'Edit' : 'Create New'}</button>
-    <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
-      <ModalHeader toggle={() => setIsToggled(false)}>{updatingContact ? 'Edit' : 'Create New'} Contact</ModalHeader>
+    <Modal isOpen={isToggled} toggle={() => clearAndClose()}>
+      <ModalHeader toggle={() => clearAndClose()}>{updatingContact ? 'Edit' : 'Create New'} Contact</ModalHeader>
       {updatingContact && (<DeleteContactModal contact={contact} deleteEnabled={deleteEnabled} />)}
       <Form onSubmit={formik.handleSubmit}>
         <ModalBody>
@@ -109,7 +109,8 @@ function EditContactModal({ contact, deleteEnabled }) {
               type="input"
               className="form-control"
               id="lastName"
-              {...formik.getFieldProps('lastName')} />
+              {...formik.getFieldProps('lastName')}
+            />
             {formik.touched.lastName
               && <FormFeedback className="d-block">{formik.errors?.lastName}</FormFeedback>}
           </FormGroup>
@@ -119,7 +120,8 @@ function EditContactModal({ contact, deleteEnabled }) {
               type="email"
               name="email"
               id="email"
-              {...formik.getFieldProps('email')} />
+              {...formik.getFieldProps('email')}
+            />
             {formik.touched.email
               && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
           </FormGroup>
@@ -176,7 +178,8 @@ function EditContactModal({ contact, deleteEnabled }) {
               <Input
                 id="primary"
                 type="checkbox"
-                {...formik.getFieldProps('primary')} />
+                {...formik.getFieldProps('primary')}
+              />
               <Label for="primary" check>Set as Primary</Label>
             </FormGroup>}
         </ModalBody>

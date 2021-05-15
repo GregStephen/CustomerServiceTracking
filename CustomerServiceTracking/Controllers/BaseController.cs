@@ -17,7 +17,7 @@ namespace CustomerServiceTracking.Controllers
             _userRepo = userRepo;
         }
 
-        protected string CurrentPropertyId => Request.Headers["Property"];
+        protected string CurrentPropertyId => Request.Headers["property"];
 
         protected string CurrentUserId => _userRepo.GetUserByFirebaseId(User.FindFirst(ClaimTypes.NameIdentifier).Value).Id.ToString();
     }

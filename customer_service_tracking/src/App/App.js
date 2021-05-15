@@ -29,10 +29,10 @@ function App() {
   const [error, setError] = useState(undefined);
 
   const logIn = (email, password) => {
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
       .then(() => firebase.auth().signInWithEmailAndPassword(email, password))
       .then((cred) => cred.user.getIdToken())
-      .then((token) => sessionStorage.setItem('token', token))
+      .then((token) => localStorage.setItem('token', token))
       .catch((err) => setError(err.message));
   };
 

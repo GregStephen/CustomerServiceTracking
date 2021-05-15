@@ -15,10 +15,10 @@ function PropertyContacts({ property }) {
         </div>
       }
       <div className="d-flex justify-content-center row">
-          {property.contacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} deleteEnabled={property.contacts.length > 1} />
-          ))}
-        </div>
+        {property.contacts.map((contact) => (
+          <ContactCard key={contact.id} contact={contact} deleteEnabled={property.contacts.length > 1} />
+        ))}
+      </div>
     </div>
   );
 }
