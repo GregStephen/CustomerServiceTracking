@@ -9,7 +9,7 @@ namespace CustomerServiceTracking.Repositories
 {
     public interface IUserRepository
     {
-        User GetUserByFirebaseId(string firebaseId);
+        Task<User> GetUserByFirebaseId(string firebaseId);
 
         User GetUserById(Guid userId);
 

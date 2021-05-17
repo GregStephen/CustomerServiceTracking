@@ -1,17 +1,17 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import useBaseUrl from './useBaseUrl';
 
-const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/user';
-// const baseUrl = 'https://localhost:44324/api/user';
+const baseUrl = useBaseUrl('user');
+
 axios.interceptors.request.use((request) => {
-  const token = sessionStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
   if (token != null) {
     request.headers.Authorization = `Bearer ${token}`;
   }
   return request;
 }, (err) => Promise.reject(err));
-
 
 // GETS
 

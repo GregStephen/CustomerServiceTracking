@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import useBaseUrl from './useBaseUrl';
 import useHeaders from './useHeaders';
 
-// const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/customer';
-const baseUrl = 'https://localhost:44324/api/customer';
+const baseUrl = useBaseUrl('customer');
 // GETS
 
 export function useGetPropertyFromPropertyId(propertyId) {
@@ -30,10 +30,11 @@ export function useGetPropertySystemFromPropertySystemId(propertySystemId) {
   });
 }
 
-export function usePropertyChangeLog(propertyId) {
-  const url = `${baseUrl}/changeLog/${propertyId}`;
+export function usePropertyChangeLog() {
+  const url = `${baseUrl}/changeLog/`;
+  const headers = useHeaders();
   return useQuery([url], async () => {
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(url, {headers: headers});
     return data;
   });
 }
@@ -56,7 +57,8 @@ export function useAddNewProperty() {
 export function useAddNewContact() {
   const url = `${baseUrl}/contact`;
   const queryClient = useQueryClient();
-  return useMutation((contact) => axios.post(url, contact), {
+  const headers = useHeaders();
+  return useMutation((contact) => axios.post(url, contact, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -71,7 +73,8 @@ export function useAddNewContact() {
 export function useUpdateProperty() {
   const url = `${baseUrl}/updateProperty`;
   const queryClient = useQueryClient();
-  return useMutation((updatedProperty) => axios.put(url, updatedProperty), {
+  const headers = useHeaders();
+  return useMutation((updatedProperty) => axios.put(url, updatedProperty, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -86,7 +89,8 @@ export function useUpdateProperty() {
 export function useUpdatePropertyName() {
   const url = `${baseUrl}/updatePropertyName`;
   const queryClient = useQueryClient();
-  return useMutation((updatedProperty) => axios.put(url, updatedProperty), {
+  const headers = useHeaders();
+  return useMutation((updatedProperty) => axios.put(url, updatedProperty, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -101,7 +105,8 @@ export function useUpdatePropertyName() {
 export function useUpdateContact() {
   const url = `${baseUrl}/updateContact`;
   const queryClient = useQueryClient();
-  return useMutation((newContact) => axios.put(url, newContact), {
+  const headers = useHeaders();
+  return useMutation((newContact) => axios.put(url, newContact, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -116,7 +121,8 @@ export function useUpdateContact() {
 export function useUpdatePropertySystem() {
   const url = `${baseUrl}/updatePropertySystem`;
   const queryClient = useQueryClient();
-  return useMutation((updatedPropertySystem) => axios.post(url, updatedPropertySystem), {
+  const headers = useHeaders();
+  return useMutation((updatedPropertySystem) => axios.post(url, updatedPropertySystem, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -131,7 +137,8 @@ export function useUpdatePropertySystem() {
 export function useUpdatePropertyStatus() {
   const url = `${baseUrl}/updatePropertyStatus`;
   const queryClient = useQueryClient();
-  return useMutation((propertyToUpdate) => axios.put(url, propertyToUpdate), {
+  const headers = useHeaders();
+  return useMutation((propertyToUpdate) => axios.put(url, propertyToUpdate, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -177,7 +184,8 @@ export function useDeleteContact() {
 export function useDeletePropertySystem() {
   const url = `${baseUrl}/propertySystem`;
   const queryClient = useQueryClient();
-  return useMutation((propertySystemId) => axios.delete(`${url}/${propertySystemId}`), {
+  const headers = useHeaders();
+  return useMutation((propertySystemId) => axios.delete(`${url}/${propertySystemId}`, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -192,7 +200,8 @@ export function useDeletePropertySystem() {
 export function useAddNewPropertySystem() {
   const url = `${baseUrl}/addSystem`;
   const queryClient = useQueryClient();
-  return useMutation((propertySystem) => axios.post(url, propertySystem), {
+  const headers = useHeaders();
+  return useMutation((propertySystem) => axios.post(url, propertySystem, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: (query) => {

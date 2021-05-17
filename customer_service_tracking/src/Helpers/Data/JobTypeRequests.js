@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import useBaseUrl from './useBaseUrl';
 
-const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/JobType';
-// const baseUrl = 'https://localhost:44324/api/JobType';
+const baseUrl = useBaseUrl('JobType');
 
 export default function useGetJobTypes() {
   const url = `${baseUrl}`;

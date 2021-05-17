@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import useBaseUrl from './useBaseUrl';
 
-const baseUrl = 'https://servicetrackerapi.azurewebsites.net/api/system';
-// const baseUrl = 'https://localhost:44324/api/system';
+const baseUrl = useBaseUrl('system');
 
 // GETS
 

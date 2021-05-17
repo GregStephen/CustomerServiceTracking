@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CustomerServiceTracking.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerServiceTracking.Controllers
@@ -19,6 +20,6 @@ namespace CustomerServiceTracking.Controllers
 
         protected string CurrentPropertyId => Request.Headers["property"];
 
-        protected string CurrentUserId => _userRepo.GetUserByFirebaseId(User.FindFirst(ClaimTypes.NameIdentifier).Value).Id.ToString();
+        protected string CurrentUserId => _userRepo.GetUserByFirebaseId(User.FindFirst(ClaimTypes.NameIdentifier).Value).Result.Id.ToString();
     }
 }

@@ -71,6 +71,8 @@ namespace CustomerServiceTracking.Helpers
         Address,
         PropertyName,
         Active,
-        SystemSpecs
+        SystemSpecs,
+        Contact,
+        System,
     }
 }

@@ -43,22 +43,22 @@ function NavigationBar({ userObj }) {
         <NavLink onClick={toggle} tag={RRNavLink} to='/jobs'>Jobs</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink onClick={toggle} tag={RRNavLink} to='/team'>Team</NavLink>
+        <NavLink tag={RRNavLink} to='/team'>Team</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink onClick={toggle} tag={RRNavLink} to='/systems'>Systems</NavLink>
+        <NavLink tag={RRNavLink} to='/systems'>Systems</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink onClick={toggle} tag={RRNavLink} to='/reports'>Reports</NavLink>
+        <NavLink tag={RRNavLink} to='/reports'>Reports</NavLink>
       </NavItem>
       <NavItem>
-        <NavLink onClick={toggle} tag={RRNavLink} to='/properties'>Properties</NavLink>
+        <NavLink tag={RRNavLink} to='/properties'>Properties</NavLink>
       </NavItem>
       <UncontrolledDropdown nav inNavbar>
         <DropdownToggle nav caret className="navbar-user-button">
         </DropdownToggle>
         <DropdownMenu right>
-          <DropdownItem onClick={toggle} tag={Link} to={`/user/${userObj.id}`}>
+          <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
             User Profile
           </DropdownItem>
           <DropdownItem onClick={logMeOut}>
@@ -75,7 +75,7 @@ function NavigationBar({ userObj }) {
         <DropdownToggle nav caret className="navbar-user-button">
         </DropdownToggle>
         <DropdownMenu right>
-          <DropdownItem onClick={toggle} tag={Link} to={`/user/${userObj.id}`}>
+          <DropdownItem tag={Link} to={`/user/${userObj.id}`}>
             User Profile
           </DropdownItem>
           <DropdownItem onClick={logMeOut}>

@@ -23,7 +23,7 @@ namespace CustomerServiceTracking.Repositories
             _unregisteredEmployeeRepo = unregisteredEmployeeRepo;
         }
 
-        public User GetUserByFirebaseId(string firebaseId)
+        public async Task<User> GetUserByFirebaseId(string firebaseId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -31,7 +31,7 @@ namespace CustomerServiceTracking.Repositories
                             FROM [User]
                             WHERE [FirebaseUid] = @firebaseId";
                 var parameters = new { firebaseId };
-                var userFromDb = db.QueryFirstOrDefault<User>(sql, parameters);
+                var userFromDb = await db.QueryFirstOrDefaultAsync<User>(sql, parameters);
                 var businessInfo = _businessRepo.GetUsersBusiness(userFromDb.BusinessId);
                 userFromDb.Business = businessInfo;
                 userFromDb.BusinessId = businessInfo.Id;

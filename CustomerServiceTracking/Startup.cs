@@ -48,7 +48,7 @@ namespace CustomerServiceTracking
             services.AddScoped<IGeocodingRepository, GeocodingRepository>();
             services.AddScoped<IChangeLogRepository, ChangeLogRepository>();
             services.AddScoped<IUsernameService, UsernameService>();
-
+            services.AddHttpContextAccessor();
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders =

@@ -33,15 +33,26 @@ function EditPropertyModal({ property, isToggled, setIsToggled }) {
 
   const getPropertyGeo = usePropertyGeo();
 
+  const checkAddressNulls = (address) => {
+    if (address?.number && address?.street && address?.city && address?.state && address?.zip) {
+      return true;
+    }
+    return false;
+  };
+
   const formik = useFormik({
     initialValues: property,
     enableReinitialize: true,
     validationSchema: editPropertyValidationSchema,
-    onSubmit: (formValues, { setSubmitting }) => {
+    onSubmit: (formValues) => {
       const submission = { ...formValues };
       getPropertyGeo.mutate(submission, {
         onSuccess: (data) => {
-          setGeocodingAddress(data.data.results[0]);
+          if (checkAddressNulls(data.data.results[0].address_components)) {
+            setGeocodingAddress(data.data.results[0]);
+          } else {
+            setGeocodingAddress(null);
+          }
           setConfirmAddressModalIsToggled(true);
         },
       });
@@ -126,12 +137,12 @@ function EditPropertyModal({ property, isToggled, setIsToggled }) {
               && <FormFeedback className="d-block">{formik.errors?.zipCode}</FormFeedback>}
           </FormGroup>
           <ConfirmAddressModal
-        address={geocodingAddress}
-        newProperty={formik.values}
-        setConfirmAddressModalIsToggled={setConfirmAddressModalIsToggled}
-        confirmAddressModalIsToggled={confirmAddressModalIsToggled}
-        onSuccessFunction={updatePropertyFunction}
-      />
+            address={geocodingAddress}
+            newProperty={formik.values}
+            setConfirmAddressModalIsToggled={setConfirmAddressModalIsToggled}
+            confirmAddressModalIsToggled={confirmAddressModalIsToggled}
+            onSuccessFunction={updatePropertyFunction}
+          />
         </ModalBody>
         <ModalFooter>
           <Button type="submit" color="primary">Edit Property</Button>{' '}

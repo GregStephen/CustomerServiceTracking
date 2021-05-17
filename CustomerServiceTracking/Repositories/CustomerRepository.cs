@@ -184,7 +184,7 @@ namespace CustomerServiceTracking.Repositories
             }
         }
 
-        public Task<Contact> GetContactById(Guid ContactId)
+        public async Task<Contact> GetContactById(Guid ContactId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
@@ -192,7 +192,7 @@ namespace CustomerServiceTracking.Repositories
                             FROM [Contact]
                             WHERE [Id] = @contactId";
                 var parameters = new { ContactId };
-                return db.QueryFirstOrDefaultAsync<Contact>(sql, parameters);
+                return await db.QueryFirstOrDefaultAsync<Contact>(sql, parameters);
             }
         }
 
