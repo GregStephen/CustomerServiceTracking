@@ -1,4 +1,17 @@
 --CREATE DATABASE [CustomerServiceTracking]
+IF not exists (SELECT * FROM sys.tables WHERE [name] = 'ChangeLog')
+	BEGIN
+	CREATE TABLE [ChangeLog]
+	(
+		[Entity] TINYINT not null,
+		[EntityId] NVARCHAR(255) not null,
+		[Username] NVARCHAR(255) not null,
+		[Delta] NVARCHAR(255) not null,
+		[Timestamp] DATETIME not null,
+	)
+	END
+ELSE
+	PRINT 'ChangeLog table already exists'
 
 IF not exists (SELECT * FROM sys.tables WHERE [name] = 'Business')
 	BEGIN

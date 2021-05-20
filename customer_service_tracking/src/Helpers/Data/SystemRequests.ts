@@ -1,15 +1,19 @@
 import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient, Query } from 'react-query';
 import useBaseUrl from './useBaseUrl';
 
 const baseUrl = useBaseUrl('system');
 
+function invalidateSystemQueries(query: Query) {
+  const key = query.queryKey[0] as string;
+  return key.startsWith(baseUrl);
+}
 // GETS
 
 //  Sends Business ID and returns a system array.
-export function useGetSystemsForBusiness(businessId) {
+export function useGetSystemsForBusiness(businessId: string) {
   const url = `${baseUrl}/${businessId}`;
-  return useQuery([url], async () => {
+  return useQuery<Array<Business.BusinessSystem>, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });
@@ -21,13 +25,10 @@ export function useGetSystemsForBusiness(businessId) {
 export function useAddNewSystem() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation((newSystem) => axios.post(url, newSystem), {
+  return useMutation<any, Error, Business.BusinessSystem>((newSystem) => axios.post(url, newSystem), {
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}`);
-        },
+        predicate: invalidateSystemQueries
       });
     },
   });
@@ -37,13 +38,10 @@ export function useAddNewSystem() {
 export function useDeleteSystemById() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation((systemId) => axios.delete(`${url}/${systemId}`), {
+  return useMutation<any, Error, string>((systemId) => axios.delete(`${url}/${systemId}`), {
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}`);
-        },
+        predicate: invalidateSystemQueries
       });
     },
   });
@@ -54,13 +52,10 @@ export function useDeleteSystemById() {
 export function useEditSystem() {
   const url = `${baseUrl}/updateSystem`;
   const queryClient = useQueryClient();
-  return useMutation((updatedSystem) => axios.put([url], updatedSystem), {
+  return useMutation<any, Error, Business.BusinessSystem>((updatedSystem) => axios.put(url, updatedSystem), {
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}`);
-        },
+        predicate: invalidateSystemQueries
       });
     },
   });

@@ -11,7 +11,7 @@ export function useGetBusinesses() {
   });
 }
 
-export function useGetRegisteredAndUnregisteredEmployees(businessId) {
+export function useGetRegisteredAndUnregisteredEmployees(businessId: string) {
   const url = `${baseUrl}/allEmployees/${businessId}`;
   return useQuery([url], async () => {
     const { data } = await axios.get(url);
@@ -19,9 +19,9 @@ export function useGetRegisteredAndUnregisteredEmployees(businessId) {
   });
 }
 
-export function useGetBusinessServiceOptions(businessId) {
+export function useGetBusinessServiceOptions(businessId: string) {
   const url = `${baseUrl}/serviceOptions/${businessId}`;
-  return useQuery([url], async () => {
+  return useQuery<Array<number>, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   }, { staleTime: Infinity, cacheTime: Infinity });

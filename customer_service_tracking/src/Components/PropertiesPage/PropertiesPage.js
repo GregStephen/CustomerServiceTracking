@@ -28,7 +28,7 @@ function PropertiesPage() {
   const [markersData, setMarkersData] = useState([]);
   const [inactiveProperties, getInactiveProperties] = useState();
   const [isOpen, setIsOpen] = useState(false);
-  const [choseenFilter, setChosenFilter] = useState();
+  const [chosenFilter, setChosenFilter] = useState();
   const toggle = () => setIsOpen(!isOpen);
 
   const returnPrimaryContactName = (contacts) => {
@@ -130,7 +130,7 @@ function PropertiesPage() {
             </div>
             <div className="d-flex justify-content-end">
               <Button color="primary" onClick={toggle} className="mr-3" style={{ height: '38px' }}>{isOpen ? 'Close Map' : 'Show Map'}</Button>
-              <Link className="btn btn-info mr-4 mb-2" to={'/new-property'}>Add a new Property</Link>
+              <Link className="btn btn-info mr-4 mb-2" to="/new-property">Add a new Property</Link>
             </div>
           </Col>
         </Row>

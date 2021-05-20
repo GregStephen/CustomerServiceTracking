@@ -12,10 +12,41 @@ import {
   useSortBy,
   usePagination,
   useFilters,
+  HeaderGroup,
+  Column,
+  TableState,
+  SortingRule,
+  Row as TableRow,
+  Cell
 } from 'react-table';
 
-const renderHeaderStyles = (column, customStyles = {}) => {
-  const styles = { ...customStyles };
+interface ReactTableProps {
+  columns: any[];
+  data: object[];
+  hiddenColumns?: string[];
+  hidePagination?: boolean;
+  sortable?: boolean;
+  sortColumns?: SortingRule<object>[];
+  defaultSortColumn?: string;
+  sortDesc?: boolean;
+  filters?: { id: string; value: any }[];
+  bordered?: boolean;
+  striped?: boolean;
+  hover?: boolean;
+  small?: boolean;
+  className?: string;
+  enableOverflow?: boolean;
+  customHeaderProps?: (column?: Column<any>) => object;
+  customRowProps?: (row?: TableRow<any>) => object;
+  customCellProps?: (cell?: Cell<any>) => object;
+  customColumnProps?: (column?: Column<any>) => object;
+  emptyTableMessage?: string;
+  pageRowCount?: number;
+  pageCountOptions?: number[];
+
+}
+const renderHeaderStyles = (column: Column, customStyles = {}) => {
+  const styles: React.CSSProperties = { ...customStyles };
   if (column.minWidth) {
     styles.minWidth = column.minWidth;
   }
@@ -51,15 +82,15 @@ function GlobalTable({
   emptyTableMessage = 'No data to display',
   pageRowCount = 10,
   pageCountOptions = [10, 25, 50, 100],
-}) {
-  const allRowPros = (row) => {
+}: ReactTableProps) {
+  const allRowPros = (row: TableRow) => {
     const props = row.getRowProps(customRowProps(row));
     props.className = `${props.className ?? ''}`;
     return props;
   };
 
   const initialTableState = useMemo(() => {
-    const state = {
+    const state: Partial<TableState> = {
       sortBy: [],
       pageSize: pageRowCount,
       filters,
@@ -146,13 +177,13 @@ function GlobalTable({
       <div className="col-12" style={enableOverflow ? { overflowX: 'visible' } : {}}>
         <table {...getTableProps({ className: tableClasses })}>
           <thead>
-            {headerGroups.map((headerGroup, i) => (
-              <tr key={i} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, h) => (
-                  <th key={h} {...column.getHeaderProps([
+            {headerGroups.map((headerGroup: HeaderGroup, i) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column: any, h) => (
+                  <th  {...column.getHeaderProps([
                     {
-                      className: `${column.canSort ? 'cursor-pointer' : ''} ${column.className ?? ''}`,
-                      style: renderHeaderStyles(column, column.style),
+                      className: `${column.canSort ? 'cursor-pointer' : ''} ${column.headerClassName ?? ''}`,
+                      style: renderHeaderStyles(column, column.headerStyle),
                     },
                     customColumnProps(column),
                     customHeaderProps(column),
@@ -193,8 +224,8 @@ function GlobalTable({
                   prepareRow(row);
                   return (
                     <tr {...allRowPros(row)}>
-                      {row.cells.map((cell, c) => (
-                        <td key={c} {...cell.getCellProps([
+                      {row.cells.map((cell: any, c) => (
+                        <td {...cell.getCellProps([
                           {
                             className: cell.column.cellClassName,
                             style: cell.column.cellStyle,
@@ -228,7 +259,7 @@ function GlobalTable({
                 {rows.length}
               </span>
               {rows.length > 10 && (
-                <CustomInput id="pageSize" type="select" bsSize="sm" value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))} style={{ maxWidth: '75px' }}>
+                <CustomInput id="pageSize" type="select" bsSize="sm" value={pageSize} onChange={(e: any) => setPageSize(Number(e.target.value))} style={{ maxWidth: '75px' }}>
                   {pageCountOptions.map((pagedSize) => (
                     <option key={pagedSize} value={pagedSize}>{pagedSize}</option>
                   ))}

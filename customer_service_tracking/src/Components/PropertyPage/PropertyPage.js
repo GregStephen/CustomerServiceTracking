@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { Page, Header } from '../Global';
 
-import PropertyReports from './PropertyReports/PropertyReports';
+import PropertyReports from './Components/PropertyReports';
 import PropertyInfo from './PropertyInfo';
 import PropertySystems from './PropertySystems';
 import PropertyContacts from './PropertyContacts';

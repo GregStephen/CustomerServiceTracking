@@ -26,15 +26,13 @@ function ChangeLogTable({ logData, entityName }: Props) {
     },
   ], []);
 
-  return logData?.length > 0
+  return logData
     ? <GlobalTable
       columns={tableColumns}
       data={logData}
       pageRowCount={5}
       emptyTableMessage={emptyMessage}
       hidePagination={false}
-      sortColumns={null}
-      hiddenColumns={null}
     /> : <div></div>;
 }
 

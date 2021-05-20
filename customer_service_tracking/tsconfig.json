@@ -29,6 +29,8 @@
     "noUnusedLocals": true,
     "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "strict": true
   },
   "include": [
     "src"

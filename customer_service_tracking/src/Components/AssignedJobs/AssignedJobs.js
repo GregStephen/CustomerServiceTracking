@@ -86,16 +86,16 @@ function AssignedJobs() {
       <Header title="Your Jobs" icon="fa-briefcase" />
       {jobsAssigned.data?.length > 0
         && (<>
-      <div className="d-flex justify-content-end">
-        <Button color="primary" onClick={toggle} className="mr-3 mb-3" >{isOpen ? 'Close Map' : 'Show Map'}</Button>
-      </div>
-      <Collapse isOpen={isOpen}>
-        <JobsMap
-          getLocation={true}
-          markersData={markersData}
-          businessAddress={userObj?.business}
-        />
-      </Collapse>
+          <div className="d-flex justify-content-end">
+            <Button color="primary" onClick={toggle} className="mr-3 mb-3" >{isOpen ? 'Close Map' : 'Show Map'}</Button>
+          </div>
+          <Collapse isOpen={isOpen}>
+            <JobsMap
+              getLocation={true}
+              markersData={markersData}
+              businessAddress={userObj?.business}
+            />
+          </Collapse>
         </>)}
       {jobsAssigned.isLoading && <p>LOADING</p>}
       {jobsAssigned.isSuccess
@@ -104,7 +104,7 @@ function AssignedJobs() {
         data={tableData}
         emptyTableMessage="No jobs currently assigned"
       />
-}
+      }
     </div>
   );
 }

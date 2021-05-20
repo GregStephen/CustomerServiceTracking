@@ -20,7 +20,7 @@ import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
 import defaults from '../../Helpers/defaults';
-import ServiceOptionEnums from '../../Helpers/Enums/ServiceOptionEnums.ts';
+import ServiceOptionEnums from '../../Helpers/Enums/ServiceOptionEnums';
 import { useGetBusinessServiceOptions } from '../../Helpers/Data/BusinessRequests';
 
 const { defaultReport, defaultSystem } = defaults;
@@ -43,9 +43,9 @@ const newInstallReportValidationSchema = Yup.object().shape({
 
 function AddSystemToPropertyPage() {
   const userObj = useContext(UserContext);
-  const { propertyId } = useParams();
+  const params = useParams<Routes.Property>();
   const history = useHistory();
-  const property = useGetPropertyFromPropertyId(propertyId);
+  const property = useGetPropertyFromPropertyId(params.propertyId);
   const systemOptions = useGetSystemsForBusiness(userObj.businessId);
   const serviceOptions = useGetBusinessServiceOptions(userObj.businessId);
   const jobTypeOptions = useGetJobTypeOptions();
@@ -59,9 +59,9 @@ function AddSystemToPropertyPage() {
     onSubmit: (formValues, { setSubmitting }) => {
       const submission = { ...formValues };
       const jTOptions = jobTypeOptions?.data;
-      const installId = jTOptions.find((x) => x.type === 'Install').id;
-      const newPropertySystem = {
-        propertyId,
+      const installId = jTOptions?.find((x) => x.type === 'Install')?.id;
+      const newPropertySystem: Partial<Property.PropertySystem> = {
+        propertyId: params.propertyId,
         nozzles: parseInt(submission.nozzles, 10),
         sprayCycles: parseInt(submission.sprayCycles, 10),
         sprayDuration: parseInt(submission.sprayDuration, 10),
@@ -71,14 +71,14 @@ function AddSystemToPropertyPage() {
         systemId: submission.systemId,
         installDate: moment(submission.installDate).format('YYYY-MM-DD'),
         displayName: submission.displayName,
-        serviceOptionId: parseInt(submission.serviceOptionId, 10),
+        serviceOptionId: submission.serviceOptionId,
       };
-      const newInstallReport = {
-        propertyId,
+      const newInstallReport: Partial<Property.Report> = {
+        propertyId: params.propertyId,
         jobTypeId: installId,
         amountRemaining: 0,
         inchesAdded: parseInt(submission.inchesAdded, 10),
-        serviceDate: moment(),
+        serviceDate: moment().format(),
         solutionAdded: parseInt(submission.solutionAdded, 10),
         technicianId: userObj.id,
         notes: '',
@@ -89,7 +89,7 @@ function AddSystemToPropertyPage() {
       };
       addNewPropertySystem.mutate(dataToSend, {
         onSuccess: () => {
-          history.push(`/property/${propertyId}`);
+          history.push(`/property/${params.propertyId}`);
         },
       });
       setSubmitting(false);
@@ -98,13 +98,13 @@ function AddSystemToPropertyPage() {
 
   const systemMax = useMemo(() => {
     if (formik.values.systemId) {
-      return systemOptions?.data?.find((x) => x.id === formik.values.systemId).inches;
+      return systemOptions?.data?.find((x) => x.id === formik.values.systemId)?.inches;
     }
     return 0;
   }, [formik.values.systemId, systemOptions]);
 
   return (
-  <>
+    <>
       {
         property.isSuccess
         && <Page>
@@ -118,7 +118,6 @@ function AddSystemToPropertyPage() {
                       <Label htmlFor="systemId">Which of your systems did you install?</Label>
                       <Input
                         type="select"
-                        name="systemId"
                         id="systemId"
                         {...formik.getFieldProps('systemId')}>
                         <option value="">Select a system</option>
@@ -135,7 +134,6 @@ function AddSystemToPropertyPage() {
                       <Label htmlFor="serviceOptionId">Which service option?</Label>
                       <Input
                         type="select"
-                        name="serviceOptionId"
                         id="serviceOptionId"
                         {...formik.getFieldProps('serviceOptionId')}>
                         <option value="">Select an option</option>
@@ -152,7 +150,8 @@ function AddSystemToPropertyPage() {
                       <Input
                         type="checkbox"
                         id="sold"
-                        {...formik.getFieldProps('sold')} />
+                        {...formik.getFieldProps('sold')}
+                      />
                       <Label for="sold" check>Sold</Label>
                     </FormGroup>
                   </Col>
@@ -164,8 +163,8 @@ function AddSystemToPropertyPage() {
                       <Input
                         type="input"
                         id="displayName"
-                        name="displayName"
-                        {...formik.getFieldProps('displayName')} />
+                        {...formik.getFieldProps('displayName')}
+                      />
                       {formik.touched.displayName
                         && <FormFeedback className="d-block">{formik.errors?.displayName}</FormFeedback>}
                     </FormGroup>
@@ -178,9 +177,9 @@ function AddSystemToPropertyPage() {
                       <Input
                         type="date"
                         id="installDate"
-                        name="installDate"
                         max={today}
-                        {...formik.getFieldProps('installDate')} />
+                        {...formik.getFieldProps('installDate')}
+                      />
                       {formik.touched.installDate
                         && <FormFeedback className="d-block">{formik.errors?.installDate}</FormFeedback>}
                     </FormGroup>
@@ -191,9 +190,9 @@ function AddSystemToPropertyPage() {
                       <Input
                         type="input"
                         id="serialNumber"
-                        name="serialNumber"
                         max={today}
-                        {...formik.getFieldProps('serialNumber')} />
+                        {...formik.getFieldProps('serialNumber')}
+                      />
                       {formik.touched.serialNumber
                         && <FormFeedback className="d-block">{formik.errors?.serialNumber}</FormFeedback>}
                     </FormGroup>
@@ -208,7 +207,8 @@ function AddSystemToPropertyPage() {
                         id="nozzles"
                         min="0"
                         placeholder="0"
-                        {...formik.getFieldProps('nozzles')} />
+                        {...formik.getFieldProps('nozzles')}
+                      />
                       {formik.touched.nozzles
                         && <FormFeedback className="d-block">{formik.errors?.nozzles}</FormFeedback>}
                     </FormGroup>
@@ -221,7 +221,8 @@ function AddSystemToPropertyPage() {
                         id="sprayCycles"
                         min="0"
                         placeholder="0"
-                        {...formik.getFieldProps('sprayCycles')} />
+                        {...formik.getFieldProps('sprayCycles')}
+                      />
                       {formik.touched.sprayCycles
                         && <FormFeedback className="d-block">{formik.errors?.sprayCycles}</FormFeedback>}
                     </FormGroup>
@@ -234,7 +235,8 @@ function AddSystemToPropertyPage() {
                         id="sprayDuration"
                         min="0"
                         placeholder="0"
-                        {...formik.getFieldProps('sprayDuration')} />
+                        {...formik.getFieldProps('sprayDuration')}
+                      />
                       {formik.touched.sprayDuration
                         && <FormFeedback className="d-block">{formik.errors?.sprayDuration}</FormFeedback>}
                     </FormGroup>
@@ -245,7 +247,8 @@ function AddSystemToPropertyPage() {
                   <Input
                     type="textarea"
                     id="notes"
-                    {...formik.getFieldProps('notes')} />
+                    {...formik.getFieldProps('notes')}
+                  />
                   {formik.touched.notes
                     && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
                 </FormGroup>
@@ -259,7 +262,8 @@ function AddSystemToPropertyPage() {
                           min="0"
                           id="inchesAdded"
                           max={systemMax}
-                          {...formik.getFieldProps('inchesAdded')} />
+                          {...formik.getFieldProps('inchesAdded')}
+                        />
                         {formik.touched.inchesAdded
                           && <FormFeedback className="d-block">{formik.errors?.inchesAdded}</FormFeedback>}
                       </FormGroup>
@@ -271,7 +275,8 @@ function AddSystemToPropertyPage() {
                           type="number"
                           min="0"
                           id="solutionAdded"
-                          {...formik.getFieldProps('solutionAdded')} />
+                          {...formik.getFieldProps('solutionAdded')}
+                        />
                         {formik.touched.solutionAdded
                           && <FormFeedback className="d-block">{formik.errors?.solutionAdded}</FormFeedback>}
                       </FormGroup>
@@ -284,7 +289,7 @@ function AddSystemToPropertyPage() {
           </div>
         </Page>
       }
-      </>
+    </>
   );
 }
 
