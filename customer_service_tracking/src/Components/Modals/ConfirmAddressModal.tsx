@@ -3,7 +3,15 @@ import React from 'react';
 import {
   Modal, ModalHeader, Button, ModalBody, ModalFooter, Alert,
 } from 'reactstrap';
-import JobsMap from '../../JobsMap/JobsMap';
+import JobsMap from '../JobsMap/JobsMap';
+
+interface Props {
+  address: any;
+  confirmAddressModalIsToggled: boolean;
+  setConfirmAddressModalIsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+  onSuccessFunction: () => void;
+  isDuplicate: boolean;
+}
 
 function ConfirmAddressModal({
   address,
@@ -11,7 +19,7 @@ function ConfirmAddressModal({
   setConfirmAddressModalIsToggled,
   onSuccessFunction,
   isDuplicate,
-}) {
+}: Props) {
   return (<>
     <Modal isOpen={confirmAddressModalIsToggled} toggle={() => setConfirmAddressModalIsToggled(false)}>
       <ModalHeader toggle={() => setConfirmAddressModalIsToggled(false)}>Confirm Property Address</ModalHeader>
@@ -27,6 +35,7 @@ function ConfirmAddressModal({
               businessAddress={{ latitude: address?.location?.lat, longitude: address?.location?.lng }}
               hideMainMarkerPopup={true}
               soloMarker={true}
+              markersData={null}
             />
           </>
           : <p>We were unable to find a match, please go back and edit the form</p>}

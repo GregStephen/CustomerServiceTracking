@@ -6,5 +6,5 @@ const baseUrl = useBaseUrl('geocoding');
 
 export default function usePropertyGeo() {
   const url = `${baseUrl}`;
-  return useMutation((property) => axios.post(url, property));
+  return useMutation<any, Error, Property.Property>((property) => axios.post(url, property));
 }

@@ -22,7 +22,7 @@ import { Header, Page } from '../Global';
 import UserContext from '../../Contexts/UserContext';
 import { useAddNewProperty, useGetPropertiesForBusiness } from '../../Helpers/Data/PropertyRequests';
 import usePropertyGeo from '../../Helpers/Data/GeocodingRequests';
-import ConfirmAddressModal from '../Modals/ConfimAddressModal/ConfirmAddressModal';
+import ConfirmAddressModal from '../Modals/ConfirmAddressModal';
 
 const defaultPrimaryContact = {
   firstName: '',

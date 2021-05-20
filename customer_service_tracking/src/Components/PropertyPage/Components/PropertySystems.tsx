@@ -3,8 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { Badge } from 'reactstrap';
 import { Column } from 'react-table';
-import { Header, GlobalTable } from '../Global';
-import UserContext from '../../Contexts/UserContext';
+import { Header, GlobalTable } from '../../Global';
+import UserContext from '../../../Contexts/UserContext';
 
 interface Props {
   property: Property.Property;

@@ -42,6 +42,11 @@ declare namespace Business {
     technicianName: string;
     jobTypeId: string;
     note?: string;
+    property?: Property.Property;
+    jobType?: string;
+    propertySystem?: Property.PropertySystem;
+    includeOtherSystems?: boolean;
+    otherSystemIds?: string[];
   }
 
   export interface JobType {

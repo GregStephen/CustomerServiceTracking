@@ -4,7 +4,7 @@ import { Page, Header } from '../Global';
 import { useGetPropertySystemFromPropertySystemId } from '../../Helpers/Data/PropertyRequests';
 import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
 import SystemInfo from '../SystemInfo/SystemInfo';
-import CreateNewJobModal from '../Modals/CreateNewJobModal/CreateNewJobModal';
+import CreateNewJobModal from '../Modals/CreateNewJobModal';
 import SystemReports from './SystemReports';
 
 function SystemPage() {

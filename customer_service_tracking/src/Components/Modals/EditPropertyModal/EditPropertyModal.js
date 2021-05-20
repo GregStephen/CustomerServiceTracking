@@ -16,7 +16,7 @@ import * as Yup from 'yup';
 
 import usePropertyGeo from '../../../Helpers/Data/GeocodingRequests';
 import { useUpdateProperty } from '../../../Helpers/Data/PropertyRequests';
-import ConfirmAddressModal from '../ConfimAddressModal/ConfirmAddressModal';
+import ConfirmAddressModal from '../ConfirmAddressModal';
 
 const editPropertyValidationSchema = Yup.object().shape({
   addressLine1: Yup.string().required('Address is required'),

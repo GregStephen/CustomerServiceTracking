@@ -1,36 +1,40 @@
 import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient, Query } from 'react-query';
 import useBaseUrl from './useBaseUrl';
 
 const baseUrl = useBaseUrl('job');
 
-export function useJobForSystemBySystemId(systemId) {
+function invalidateReportQueries(query: Query) {
+  const key = query.queryKey[0] as string;
+  return key.startsWith(baseUrl);
+}
+export function useJobForSystemBySystemId(systemId: string) {
   const url = `${baseUrl}/systemId/${systemId}`;
-  return useQuery([url], async () => {
+  return useQuery<Business.Job, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });
 }
 
-export function useJobs(businessId) {
+export function useJobs(businessId: string) {
   const url = `${baseUrl}/${businessId}`;
-  return useQuery([url], async () => {
+  return useQuery<Array<Business.Job>, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });
 }
 
-export function useJobsNeedingAssignment(businessId, daysOut) {
+export function useJobsNeedingAssignment(businessId: string, daysOut: string) {
   const url = `${baseUrl}/upcoming-jobs/${businessId}/${daysOut}`;
-  return useQuery([url], async () => {
+  return useQuery<Array<Business.ServiceNeed>, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });
 }
 
-export function useJobsAssignedTo(employeeId) {
+export function useJobsAssignedTo(employeeId: string) {
   const url = `${baseUrl}/employeeId/${employeeId}`;
-  return useQuery([url], async () => {
+  return useQuery<Array<Business.Job>, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });
@@ -39,13 +43,10 @@ export function useJobsAssignedTo(employeeId) {
 export function useCreateNewJob() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation((newJob) => axios.post(url, newJob), {
+  return useMutation<Partial<Business.Job>, Error, Partial<Business.Job>>((newJob) => axios.post(url, newJob), {
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}`);
-        },
+        predicate: invalidateReportQueries
       });
     },
   });
@@ -54,13 +55,10 @@ export function useCreateNewJob() {
 export function useEditJob() {
   const url = `${baseUrl}/edit`;
   const queryClient = useQueryClient();
-  return useMutation((job) => axios.post(url, job), {
+  return useMutation<Business.Job, Error, Business.Job>((job) => axios.post(url, job), {
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}`);
-        },
+        predicate: invalidateReportQueries
       });
     },
   });
@@ -69,13 +67,10 @@ export function useEditJob() {
 export function useDeleteJob() {
   const url = `${baseUrl}/`;
   const queryClient = useQueryClient();
-  return useMutation((jobId) => axios.delete(`${url}${jobId}`), {
+  return useMutation<any, Error, string>((jobId) => axios.delete(`${url}${jobId}`), {
     onSuccess: () => {
       queryClient.invalidateQueries({
-        predicate: (query) => {
-          const key = query.queryKey[0];
-          return key.startsWith(`${baseUrl}`);
-        },
+        predicate: invalidateReportQueries
       });
     },
   });

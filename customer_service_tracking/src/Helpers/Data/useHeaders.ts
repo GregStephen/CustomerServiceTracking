@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 
 export default function useHeaders() {
-  const routeMatch = useRouteMatch([
+  const routeMatch = useRouteMatch<Routes.System>([
     '/property/:propertyId',
     '/property/:propertyId/system/:systemId'
 
   ]);
   const headers = useMemo(() => {
-    const headers = {};
+    const headers = {} as any;
     if (routeMatch?.params?.propertyId) {
       headers.Property = routeMatch.params.propertyId;
     }

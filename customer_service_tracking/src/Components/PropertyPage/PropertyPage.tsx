@@ -5,9 +5,9 @@ import { useParams } from 'react-router-dom';
 import { Page, Header } from '../Global';
 
 import PropertyReports from './Components/PropertyReports';
-import PropertyInfo from './PropertyInfo';
-import PropertySystems from './PropertySystems';
-import PropertyContacts from './PropertyContacts';
+import PropertyInfo from './Components/PropertyInfo';
+import PropertySystems from './Components/PropertySystems';
+import PropertyContacts from './Components/PropertyContacts';
 
 import { useGetPropertyFromPropertyId } from '../../Helpers/Data/PropertyRequests';
 import { useGetReportsByPropertyId } from '../../Helpers/Data/ReportRequests';
@@ -15,12 +15,12 @@ import JobsMap from '../JobsMap/JobsMap';
 
 import EditPropertyDropdown from './Components/EditPropertyDropdown';
 import UserContext from '../../Contexts/UserContext';
-import PropertyChangeLog from './Components/PropertyChangeLog.tsx';
+import PropertyChangeLog from './Components/PropertyChangeLog';
 
 function PropertyPage() {
-  const { propertyId } = useParams();
-  const reports = useGetReportsByPropertyId(propertyId);
-  const property = useGetPropertyFromPropertyId(propertyId);
+  const params = useParams<Routes.Property>();
+  const reports = useGetReportsByPropertyId(params.propertyId);
+  const property = useGetPropertyFromPropertyId(params.propertyId);
   const user = useContext(UserContext);
   return (
     <Page>
@@ -43,6 +43,7 @@ function PropertyPage() {
                   businessAddress={property.data}
                   hideMainMarkerPopup={true}
                   soloMarker={true}
+                  markersData={null}
                 />
               </div>
             </div>

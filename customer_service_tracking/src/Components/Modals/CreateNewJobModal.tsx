@@ -15,9 +15,9 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
 
-import { useCreateNewJob } from '../../../Helpers/Data/JobRequests';
-import useGetJobTypeOptions from '../../../Helpers/Data/JobTypeRequests';
-import UserContext from '../../../Contexts/UserContext';
+import { useCreateNewJob } from '../../Helpers/Data/JobRequests';
+import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
+import UserContext from '../../Contexts/UserContext';
 
 const editJobValidationSchema = Yup.object().shape({
   technicianId: Yup.string().required('Technician is required'),
@@ -26,9 +26,12 @@ const editJobValidationSchema = Yup.object().shape({
   includeNotes: Yup.bool().required(),
 });
 
+interface Props {
+  systemNeedingService: Business.ServiceNeed;
+}
 function CreateNewJobModal({
   systemNeedingService,
-}) {
+}: Props) {
   const [isToggled, setIsToggled] = useState(false);
   const createJob = useCreateNewJob();
   const jobTypeOptions = useGetJobTypeOptions();
@@ -52,14 +55,15 @@ function CreateNewJobModal({
     enableReinitialize: true,
     validationSchema: editJobValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
-      const submission = { ...formValues };
-      submission.jobTypeId = jobTypeOptions.data.find((x) => x.type === 'Service').id;
-      submission.dateAssigned = moment();
+      const submission = { ...formValues } as Partial<Business.Job>;
+      submission.jobTypeId = jobTypeOptions.data?.find((x) => x.type === 'Service')?.id;
+      submission.dateAssigned = moment().format();
+      submission.otherSystemIds = [];
       if (submission.includeOtherSystems === true) {
         const systems = systemNeedingService?.property?.systems;
         systems.forEach((system) => {
           if (system.id !== submission.propertySystemId) {
-            submission.otherSystemIds.push(system.id);
+            submission.otherSystemIds?.push(system.id);
           }
         });
       }
@@ -83,7 +87,6 @@ function CreateNewJobModal({
             <Label htmlFor="technicianId">Assign a technician</Label>
             <Input
               type="select"
-              name="technicianId"
               id="technicianId"
               {...formik.getFieldProps('technicianId')}>
               <option value="">Select a technician</option>
@@ -98,9 +101,9 @@ function CreateNewJobModal({
             <Label for="note">Notes</Label>
             <Input
               type="textarea"
-              name="note"
               id="note"
-              {...formik.getFieldProps('note')} />
+              {...formik.getFieldProps('note')}
+            />
           </FormGroup>
           {systemNeedingService?.property?.systems.length > 1
             && <FormGroup>
@@ -108,9 +111,10 @@ function CreateNewJobModal({
                 <Input
                   type="checkbox"
                   id="includeOtherSystems"
-                  {...formik.getFieldProps('includeOtherSystems')} />
+                  {...formik.getFieldProps('includeOtherSystems')}
+                />
               Create job for other systems on property?
-            </Label>
+              </Label>
             </FormGroup>
           }
           {(formik.values.includeOtherSystems === true)
@@ -119,9 +123,10 @@ function CreateNewJobModal({
                 <Input
                   type="checkbox"
                   id="includeNotes"
-                  {...formik.getFieldProps('includeNotes')} />
+                  {...formik.getFieldProps('includeNotes')}
+                />
               Attach the same note for new jobs?
-            </Label>
+              </Label>
             </FormGroup>
           }
         </ModalBody>

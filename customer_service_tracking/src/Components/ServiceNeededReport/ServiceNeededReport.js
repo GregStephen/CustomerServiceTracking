@@ -20,7 +20,7 @@ import moment from 'moment';
 import JobsMap from '../JobsMap/JobsMap';
 import { GlobalTable, Header } from '../Global';
 import Jobs from '../Jobs/Jobs';
-import CreateNewJobModal from '../Modals/CreateNewJobModal/CreateNewJobModal';
+import CreateNewJobModal from '../Modals/CreateNewJobModal.tsx';
 import NewJobModal from '../Modals/NewJobModal/NewJobModal';
 import Formatting from '../../Helpers/Functions/Formatting';
 

@@ -1,17 +1,20 @@
 import React, { useContext } from 'react';
-import EditContactModal from '../Modals/EditContactModal/EditContactModal';
-import { Header } from '../Global';
-import ContactCard from './Components/ContactCard';
-import UserContext from '../../Contexts/UserContext';
+import EditContactModal from '../../Modals/EditContactModal/EditContactModal';
+import { Header } from '../../Global';
+import ContactCard from './ContactCard';
+import UserContext from '../../../Contexts/UserContext';
 
-function PropertyContacts({ property }) {
+interface Props {
+  property: Property.Property;
+}
+function PropertyContacts({ property }: Props) {
   const user = useContext(UserContext);
   return (
     <div className="widget col-10 mb-4 mr-0 ml-0 mt-0 pt-0">
       <Header title="Contacts" icon="fas fa-address-card" />
       {user.admin
         && <div className="d-flex justify-content-end">
-          <EditContactModal contact={null} />
+          <EditContactModal contact={null} deleteEnabled={false} />
         </div>
       }
       <div className="d-flex justify-content-center row">
