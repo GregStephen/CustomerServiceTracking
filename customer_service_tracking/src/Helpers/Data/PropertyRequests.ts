@@ -112,7 +112,7 @@ export function useUpdatePropertySystem() {
   const url = `${baseUrl}/updatePropertySystem`;
   const queryClient = useQueryClient();
   const headers = useHeaders();
-  return useMutation<Property.PropertySystem, Error, Property.PropertySystem>((updatedPropertySystem) => axios.post(url, updatedPropertySystem, {headers: headers}), {
+  return useMutation<Property.PropertySystem, Error, Partial<Property.PropertySystem>>((updatedPropertySystem) => axios.post(url, updatedPropertySystem, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidatePropertyQueries

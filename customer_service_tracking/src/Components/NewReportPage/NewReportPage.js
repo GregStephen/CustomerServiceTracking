@@ -19,7 +19,7 @@ import { useGetPropertyFromPropertyId, useGetPropertySystemFromPropertySystemId 
 import { useDeleteJob, useJobForSystemBySystemId } from '../../Helpers/Data/JobRequests';
 import useGetJobTypeOptions from '../../Helpers/Data/JobTypeRequests';
 import { useAddNewReport } from '../../Helpers/Data/ReportRequests';
-import EditPropertySystemModal from '../Modals/EditPropertySystemModal/EditPropertySystemModal';
+import EditPropertySystemModal from '../Modals/EditPropertySystemModal';
 
 const newReportValidationSchema = Yup.object().shape({
   amountRemaining: Yup.number().required('Amount remaining is required'),

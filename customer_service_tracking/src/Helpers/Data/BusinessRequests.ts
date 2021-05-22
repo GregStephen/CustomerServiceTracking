@@ -13,7 +13,7 @@ export function useGetBusinesses() {
 
 export function useGetRegisteredAndUnregisteredEmployees(businessId: string) {
   const url = `${baseUrl}/allEmployees/${businessId}`;
-  return useQuery([url], async () => {
+  return useQuery<Array<Business.Employee>, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   });

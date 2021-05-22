@@ -6,9 +6,9 @@ import {
   DropdownItem,
 } from 'reactstrap';
 import { useParams } from 'react-router-dom';
-import EditPropertyModal from '../../Modals/EditPropertyModal/EditPropertyModal';
+import EditPropertyModal from '../../Modals/EditPropertyModal';
 import { useGetPropertyFromPropertyId, useUpdatePropertyStatus } from '../../../Helpers/Data/PropertyRequests';
-import EditPropertyNameModal from '../../Modals/EditPropertyNameModal/EditPropertyNameModal';
+import EditPropertyNameModal from '../../Modals/EditPropertyNameModal';
 
 const EditPropertyDropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);

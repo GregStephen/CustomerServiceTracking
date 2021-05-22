@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 
 import { Page, Header, GlobalTable } from '../Global';
-import EditSystemModal from '../Modals/EditSystemModal/EditSystemModal';
+import EditSystemModal from '../Modals/EditSystemModal';
 
 import { useDeleteSystemById, useEditSystem, useGetSystemsForBusiness } from '../../Helpers/Data/SystemRequests';
 
@@ -60,7 +60,7 @@ function SystemsPage() {
       <div className="widget col-10 mt-4">
         <Header title="Systems" />
         <div className="d-flex justify-content-end">
-          <Link className="btn btn-info mr-4 mb-4" to={'/new-system'}>Create a New System</Link>
+          <Link className="btn btn-info mr-4 mb-4" to='/new-system'>Create a New System</Link>
         </div>
         <GlobalTable
           columns={tableColumns}

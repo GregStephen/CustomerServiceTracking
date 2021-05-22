@@ -11,7 +11,7 @@ import { useGetRegisteredAndUnregisteredEmployees } from '../../Helpers/Data/Bus
 
 import './TeamPage.scss';
 import UserContext from '../../Contexts/UserContext';
-import NewTeamMemberModal from '../Modals/NewTeamMemberModal/NewTeamMemberModal';
+import NewTeamMemberModal from '../Modals/NewTeamMemberModal';
 
 function TeamPage() {
   const userObj = useContext(UserContext);

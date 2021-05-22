@@ -39,13 +39,14 @@ declare namespace Business {
     propertySystemId: string;
     dateAssigned: string;
     technicianId: string;
-    technicianName: string;
+    technicianName?: string;
     jobTypeId: string;
     note?: string;
     property?: Property.Property;
     jobType?: string;
     propertySystem?: Property.PropertySystem;
     includeOtherSystems?: boolean;
+    includeNotes?: boolean;
     otherSystemIds?: string[];
   }
 

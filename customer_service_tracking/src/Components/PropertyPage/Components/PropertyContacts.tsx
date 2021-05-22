@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import EditContactModal from '../../Modals/EditContactModal/EditContactModal';
+import EditContactModal from '../../Modals/EditContactModal';
 import { Header } from '../../Global';
 import ContactCard from './ContactCard';
 import UserContext from '../../../Contexts/UserContext';

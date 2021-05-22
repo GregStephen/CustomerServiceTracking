@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 import UserContext from '../../../Contexts/UserContext';
 import Formatting from '../../../Helpers/Functions/Formatting';
-import EditContactModal from '../../Modals/EditContactModal/EditContactModal';
+import EditContactModal from '../../Modals/EditContactModal';
 
 interface Props {
   contact: Property.Contact;

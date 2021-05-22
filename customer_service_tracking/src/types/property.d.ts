@@ -58,5 +58,6 @@ declare namespace Property {
     systemName?: string;
     technician?: string;
     type?: string;
+    property?: Property.Property;
   }
 }

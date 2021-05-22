@@ -3,7 +3,7 @@ import { Badge, Button } from 'reactstrap';
 import UserContext from '../../../Contexts/UserContext';
 import { Header } from '../../Global';
 import { useUpdateUserAdmin } from '../../../Helpers/Data/UserRequests';
-import UpdatePasswordModal from '../../Modals/UpdatePasswordModal/UpdatePasswordModal';
+import UpdatePasswordModal from '../../Modals/UpdatePasswordModal';
 
 function UserInfo({ userInfo }) {
   const currentUser = useContext(UserContext);
@@ -22,8 +22,8 @@ function UserInfo({ userInfo }) {
             && <>
               <Button className="btn btn-info">
                 Change Email
-            </Button>
-            <UpdatePasswordModal />
+              </Button>
+              <UpdatePasswordModal />
             </>
           }
         </div>

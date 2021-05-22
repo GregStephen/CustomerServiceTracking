@@ -1,4 +1,12 @@
-export { default as UpdateEmailModal } from './UpdateEmailModal/UpdateEmailModal';
-export { default as UpdatePasswordModal } from './UpdatePasswordModal/UpdatePasswordModal';
+export { default as UpdateEmailModal } from './UpdateEmailModal';
+export { default as UpdatePasswordModal } from './UpdatePasswordModal';
 export { default as ConfirmAddressModal } from './ConfirmAddressModal';
 export { default as CreateNewJobModal } from './CreateNewJobModal';
+export { default as DeleteContactModal } from './DeleteContactModal';
+export { default as DeletePropertyModal } from './DeletePropertyModal';
+export { default as EditJobModal } from './EditJobModal';
+export { default as JobNotesModal } from './JobNotesModal';
+export { default as EditPropertyNameModal } from './EditPropertyNameModal';
+export { default as EditContactModal } from './EditContactModal';
+export { default as NewJobModal } from './NewJobModal';
+export { default as PasswordResetModal } from './PasswordResetModal';

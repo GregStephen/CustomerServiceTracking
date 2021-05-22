@@ -63,7 +63,7 @@ function Routes() {
       <Route path='/new-report/:id'>
         <NewReportPage />
       </Route>
-      <AdminProtectedRoute path='/edit-property-system/:id'>
+      <AdminProtectedRoute path='/edit-property-system/:systemId'>
         <EditPropertySystemPage />
       </AdminProtectedRoute>
       <AdminProtectedRoute path='/team'>

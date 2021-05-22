@@ -21,7 +21,7 @@ import JobsMap from '../JobsMap/JobsMap';
 import { GlobalTable, Header } from '../Global';
 import Jobs from '../Jobs/Jobs';
 import CreateNewJobModal from '../Modals/CreateNewJobModal.tsx';
-import NewJobModal from '../Modals/NewJobModal/NewJobModal';
+import NewJobModal from '../Modals/NewJobModal';
 import Formatting from '../../Helpers/Functions/Formatting';
 
 import { useJobsNeedingAssignment, useJobs } from '../../Helpers/Data/JobRequests';
