@@ -9,19 +9,21 @@ function Dashboard() {
   const user = useContext(UserContext);
   return (
     <Page>
-      <Header
-        icon="fa-home"
-        title="Dashboard"
-        description={`Welcome ${user?.firstName}`}
-      />
-      <div className="d-flex row">
-        <div className="col-12 col-lg-6 justify-content-end">
-          <ReportsWidget />
+      <>
+        <Header
+          icon="fa-home"
+          title="Dashboard"
+          description={`Welcome ${user?.firstName}`}
+        />
+        <div className="d-flex row">
+          <div className="col-12 col-lg-6 justify-content-end">
+            <ReportsWidget />
+          </div>
+          <div className="col-12 col-lg-6">
+            <NeedingServiceWidget />
+          </div>
         </div>
-        <div className="col-12 col-lg-6">
-          <NeedingServiceWidget />
-        </div>
-      </div>
+      </>
     </Page>
   );
 }

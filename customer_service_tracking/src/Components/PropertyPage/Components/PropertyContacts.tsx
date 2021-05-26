@@ -14,7 +14,7 @@ function PropertyContacts({ property }: Props) {
       <Header title="Contacts" icon="fas fa-address-card" />
       {user.admin
         && <div className="d-flex justify-content-end">
-          <EditContactModal contact={null} deleteEnabled={false} />
+          <EditContactModal deleteEnabled={false} />
         </div>
       }
       <div className="d-flex justify-content-center row">

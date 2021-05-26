@@ -3,7 +3,7 @@ import React from 'react';
 const UserContext = React.createContext({
   id: '',
   admin: false,
-  business: {},
+  business: {} as Business.Business,
   businessId: '',
   businessName: '',
   firstName: '',

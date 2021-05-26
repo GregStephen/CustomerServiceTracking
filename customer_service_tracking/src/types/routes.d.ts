@@ -6,4 +6,8 @@ declare namespace Routes {
   export interface System extends Property {
     systemId: string;
   }
+
+  export interface User {
+    userId: string;
+  }
 }

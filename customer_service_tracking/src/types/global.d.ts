@@ -11,6 +11,29 @@ declare interface ChangeLog {
   delta: any;
 }
 
+declare interface GeocodingAddress {
+  formatted_address: string;
+  accuracy: number;
+  accuracy_type: string;
+  source: string;
+  address_components: {
+    number: string;
+    predirectional: string;
+    street: string;
+    suffix: string;
+    formatted_street: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+    county: string;
+  };
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
+
 declare interface CustomMarker {
   title: string;
   propertyLink: string;

@@ -20,9 +20,9 @@ import './JobsMap.scss';
 import UserContext from '../../Contexts/UserContext';
 
 interface Props{
-  getLocation: any;
+  getLocation: boolean;
   markersData: any;
-  businessAddress: any;
+  businessAddress: Partial<Business.Business>;
   hideMainMarkerPopup: boolean;
   dragging?: boolean;
   soloMarker?: boolean;
@@ -56,17 +56,19 @@ function JobsMap({
   }
 
   useEffect(() => {
-    if (!getLocation && businessAddress) {
-      setCenterMarker([businessAddress.latitude, businessAddress.longitude]);
+    if (!getLocation && businessAddress.latitude && businessAddress.longitude) {
+      setCenterMarker([parseFloat(businessAddress.latitude), parseFloat(businessAddress.longitude)]);
     }
   }, [getLocation, businessAddress]);
 
   const allSiteBounds = useMemo(() => {
-    const bounds = L.latLngBounds(L.latLng(0,0), L.latLng(0,0));
+    const bounds = L.latLngBounds(centerMarker, centerMarker);
     bounds.extend(centerMarker);
     if (markersData?.length > 0) {
+      console.log(markersData);
       markersData.forEach((site: any) => bounds.extend(site.latLng));
     }
+    console.log(bounds, 'bounds');
     return bounds;
   }, [markersData, centerMarker]);
 
@@ -81,20 +83,25 @@ function JobsMap({
     return null;
   };
 
-  function ChangeView({ center, zoom }: { center: any; zoom: any}) {
+  function ChangeView({ center, zoom }: { center: L.LatLngExpression; zoom: number}) {
     const map = useMap();
+    console.log(center, zoom);
     map.invalidateSize();
     map.setView(center, zoom);
     return null;
   }
 
-  function ChangeBounds({ allBounds }: any) {
+  function ChangeBounds({ allBounds }: { allBounds: L.LatLngBoundsExpression }) {
     const map = useMap();
     map.invalidateSize();
     map.locate();
+    console.log(map.getBounds(), 'map bounds');
+    console.log(allBounds, 'allBounds');
     if (allBounds // 👈 null and undefined check
       && Object.keys(allBounds).length !== 0 && allBounds.constructor === Object) {
+      console.log('here');
       map.fitBounds(allBounds);
+      console.log(map.getBounds(), 'adj map bounds');
     }
     return null;
   }

@@ -25,7 +25,7 @@ export function useGetSystemsForBusiness(businessId: string) {
 export function useAddNewSystem() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation<any, Error, Business.BusinessSystem>((newSystem) => axios.post(url, newSystem), {
+  return useMutation<any, Error, Partial<Business.BusinessSystem>>((newSystem) => axios.post(url, newSystem), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidateSystemQueries

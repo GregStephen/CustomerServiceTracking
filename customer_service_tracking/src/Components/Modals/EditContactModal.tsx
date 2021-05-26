@@ -30,7 +30,7 @@ const editContactValidationSchema = Yup.object().shape({
 });
 
 interface Props {
-  contact: Property.Contact;
+  contact?: Property.Contact;
   deleteEnabled: boolean;
 }
 
@@ -42,7 +42,7 @@ function EditContactModal({ contact, deleteEnabled }: Props) {
 
   const updatingContact = contact !== null;
 
-  const defaultContact = useMemo(() => ({
+  const defaultContact: Property.Contact = useMemo(() => ({
     id: contact?.id ?? '',
     firstName: contact?.firstName ?? '',
     lastName: contact?.lastName ?? '',
@@ -51,6 +51,7 @@ function EditContactModal({ contact, deleteEnabled }: Props) {
     workPhone: contact?.workPhone ?? '',
     email: contact?.email ?? '',
     primary: contact?.primary ?? false,
+    propertyId: contact?.propertyId ?? ''
   }), [contact]);
 
   const formik = useFormik({
@@ -92,7 +93,7 @@ function EditContactModal({ contact, deleteEnabled }: Props) {
     <button className={updatingContact ? 'btn btn-secondary' : 'btn btn-info mr-4 mb-2'} onClick={() => setIsToggled(true)}>{updatingContact ? 'Edit' : 'Create New'}</button>
     <Modal isOpen={isToggled} toggle={() => clearAndClose()}>
       <ModalHeader toggle={() => clearAndClose()}>{updatingContact ? 'Edit' : 'Create New'} Contact</ModalHeader>
-      {updatingContact && (<DeleteContactModal contact={contact} deleteEnabled={deleteEnabled} />)}
+      {updatingContact && contact && (<DeleteContactModal contact={contact} deleteEnabled={deleteEnabled} />)}
       <Form onSubmit={formik.handleSubmit}>
         <ModalBody>
           <FormGroup>

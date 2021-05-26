@@ -50,8 +50,8 @@ function ServiceNeededReport() {
           propertyLink: `/property/${element.property?.id}`,
           system: element.system?.displayName,
           latLng: {
-            lat: element.property?.latitude,
-            lng: element.property?.longitude,
+            lat: element.property?.latitude ? parseFloat(element.property.latitude): 0,
+            lng: element.property?.longitude ? parseFloat(element.property?.longitude) : 0,
           },
           color: 'red',
           address: element.property,
@@ -66,8 +66,8 @@ function ServiceNeededReport() {
           propertyLink: `/property/${element.property?.id}`,
           system: element.propertySystem?.displayName,
           latLng: {
-            lat: element.property?.latitude,
-            lng: element.property?.longitude,
+            lat: element.property?.latitude ? parseFloat(element.property.latitude): 0,
+            lng: element.property?.longitude ? parseFloat(element.property?.longitude) : 0,
           },
           color: 'green',
           tech: element.technicianName,

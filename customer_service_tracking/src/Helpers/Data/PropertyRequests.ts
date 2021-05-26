@@ -47,7 +47,7 @@ export function usePropertyChangeLog() {
 export function useAddNewProperty() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation<Property.Property, Error, Property.Property>((property) => axios.post(url, property), {
+  return useMutation < Property.Property, Error, { property: Partial<Property.Property>; contact: Partial<Property.Contact>}>((property) => axios.post(url, property), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidatePropertyQueries

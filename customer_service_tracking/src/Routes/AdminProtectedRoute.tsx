@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
 import UserContext from '../Contexts/UserContext';
 
 
-function AdminProtectedRoute({ children, ...rest }: {children: any}) {
+function AdminProtectedRoute({ children, ...rest }: RouteProps) {
   const userContext = useContext(UserContext);
 
   return (

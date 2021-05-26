@@ -32,8 +32,8 @@ function AssignedJobs() {
           title: `${element.property?.displayName}`,
           propertyLink: `/property/${element.property?.id}`,
           latLng: {
-            lat: element.property?.latitude ? parseInt(element.property.latitude): 0,
-            lng: element.property?.longitude ? parseInt(element.property?.longitude) : 0,
+            lat: element.property?.latitude ? parseFloat(element.property.latitude): 0,
+            lng: element.property?.longitude ? parseFloat(element.property?.longitude) : 0,
           },
           color: 'green',
           address: element.property,

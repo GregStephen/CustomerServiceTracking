@@ -17,7 +17,7 @@ function PropertyPopUp({ marker }: Props) {
         </Link>
         </p>
         <p>System: {marker.system}</p>
-        {Formatting.formatAddressObj(marker.address)}
+        {marker.address && Formatting.formatAddressObj(marker.address)}
         {marker.tech && <p>Tech: {marker.tech}</p>}
       </div>
     </Popup>

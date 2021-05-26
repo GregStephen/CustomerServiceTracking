@@ -25,8 +25,8 @@ function PropertyPage() {
   return (
     <Page>
       {property?.data
-        && <div className="PropertyPage">
-          <Header title={property.data?.displayName} description={!property.data?.enabled && <Badge color='danger' className="mt-2">Inactive</Badge>}>
+        ? <div className="PropertyPage">
+          <Header title={property.data?.displayName} description={!property.data?.enabled ? <Badge color='danger' className="mt-2">Inactive</Badge> : ''}>
             <div className="d-flex justify-content-end">
               {user.admin
               && <EditPropertyDropdown />
@@ -63,7 +63,7 @@ function PropertyPage() {
           {reports?.data
           && <PropertyReports reports={reports.data} />}
         </div>
-      }
+        : <></>}
     </Page>
   );
 }

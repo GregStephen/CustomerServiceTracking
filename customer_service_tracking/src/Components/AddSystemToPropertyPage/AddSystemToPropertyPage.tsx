@@ -62,24 +62,24 @@ function AddSystemToPropertyPage() {
       const installId = jTOptions?.find((x) => x.type === 'Install')?.id;
       const newPropertySystem: Partial<Property.PropertySystem> = {
         propertyId: params.propertyId,
-        nozzles: parseInt(submission.nozzles, 10),
-        sprayCycles: parseInt(submission.sprayCycles, 10),
-        sprayDuration: parseInt(submission.sprayDuration, 10),
+        nozzles: submission.nozzles,
+        sprayCycles: submission.sprayCycles,
+        sprayDuration: submission.sprayDuration,
         serialNumber: submission.serialNumber,
         sold: submission.sold,
         notes: submission.notes,
         systemId: submission.systemId,
         installDate: moment(submission.installDate).format('YYYY-MM-DD'),
         displayName: submission.displayName,
-        serviceOptionId: submission.serviceOptionId,
+        serviceOptionId: parseInt(submission.serviceOptionId.toString(), 10),
       };
       const newInstallReport: Partial<Property.Report> = {
         propertyId: params.propertyId,
         jobTypeId: installId,
         amountRemaining: 0,
-        inchesAdded: parseInt(submission.inchesAdded, 10),
+        inchesAdded: submission.inchesAdded,
         serviceDate: moment().format(),
-        solutionAdded: parseInt(submission.solutionAdded, 10),
+        solutionAdded: submission.solutionAdded,
         technicianId: userObj.id,
         notes: '',
       };
@@ -136,7 +136,7 @@ function AddSystemToPropertyPage() {
                         type="select"
                         id="serviceOptionId"
                         {...formik.getFieldProps('serviceOptionId')}>
-                        <option value="">Select an option</option>
+                        <option>Select an option</option>
                         {serviceOptions.data?.map((option) => (
                           <option key={option} value={option}>{ServiceOptionEnums[option]}</option>
                         ))}

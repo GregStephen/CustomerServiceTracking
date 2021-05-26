@@ -26,7 +26,7 @@ const newReportValidationSchema = Yup.object().shape({
   inchesAdded: Yup.number().required('Inches added is required'),
   solutionAdded: Yup.number().required('Solution Added is required'),
   notes: Yup.string().notRequired(),
-  jobTypeId: Yup.string().notRequired('Job type is required'),
+  jobTypeId: Yup.string().notRequired(),
   serviceDate: Yup.date().notRequired(),
 });
 
@@ -34,27 +34,27 @@ const today = moment().format('YYYY-MM-DD');
 
 function NewReportPage() {
   const userObj = useContext(UserContext);
-  const { id } = useParams();
-  const propertySystem = useGetPropertySystemFromPropertySystemId(id);
-  const property = useGetPropertyFromPropertyId(propertySystem?.data?.propertyId);
+  const params = useParams<Routes.System>();
+  const propertySystem = useGetPropertySystemFromPropertySystemId(params.systemId);
+  const property = useGetPropertyFromPropertyId(params.propertyId);
   const jobTypeOptions = useGetJobTypeOptions();
   const history = useHistory();
   const deleteJob = useDeleteJob();
-  const job = useJobForSystemBySystemId(id);
+  const job = useJobForSystemBySystemId(params.systemId);
   const addNewReport = useAddNewReport();
 
   const jobType = useMemo(() => jobTypeOptions.data?.find((x) => x.id === job.data?.jobTypeId), [job.data, jobTypeOptions.data]);
 
-  const initalValues = {
-    amountRemaining: '',
-    propertyId: propertySystem?.data?.propertyId,
-    inchesAdded: '',
+  const initalValues: Partial<Property.Report> = {
+    amountRemaining: 0,
+    propertyId: propertySystem?.data?.propertyId ?? '',
+    inchesAdded: 0,
     notes: '',
     serviceDate: '',
-    solutionAdded: '',
-    systemId: propertySystem?.data?.id,
+    solutionAdded: 0,
+    systemId: propertySystem?.data?.id ?? '',
     technicianId: userObj.id,
-    jobTypeId: job?.data?.jobTypeId,
+    jobTypeId: job?.data?.jobTypeId ?? '',
   };
 
   const formik = useFormik({
@@ -63,14 +63,11 @@ function NewReportPage() {
     validationSchema: newReportValidationSchema,
     onSubmit: (formValues, { setSubmitting, setValues }) => {
       const submission = { ...formValues };
-      submission.amountRemaining = parseInt(submission.amountRemaining, 10);
-      submission.inchesAdded = parseInt(submission.inchesAdded, 10);
-      submission.serviceDate = userObj.admin ? moment(submission.serviceDate) : moment().utc();
-      submission.solutionAdded = parseInt(submission.solutionAdded, 10);
+      submission.serviceDate = userObj.admin ? submission.serviceDate : moment().utc().format();
       setValues(submission);
       addNewReport.mutate(submission, {
         onSuccess: () => {
-          if (job.data.id !== '') {
+          if (job.data) {
             deleteJob.mutate(job.data.id, {
               onSuccess: () => {
                 history.push('/');
@@ -83,14 +80,23 @@ function NewReportPage() {
       setSubmitting(false);
     },
   });
-  const maxInches = propertySystem?.data?.systemInfo?.inches;
+  const maxInches = useMemo(() => propertySystem?.data?.systemInfo?.inches ?? 0, [propertySystem]);
+
+  const maxInchesToAdd: string = useMemo(() => {
+    if (formik.values.amountRemaining) {
+      return (maxInches - formik.values.amountRemaining ?? 0).toString()
+    } else {
+      return '0';
+    }
+  }, [formik.values.amountRemaining, maxInches]);
 
   return (
     <Page>
-      <Header title="New Report" />
-      {property.isSuccess
+      <>
+        <Header title="New Report" />
+        {property.isSuccess
         && <div className="widget col-10 d-flex justify-content-center mb-4">
-          <EditPropertySystemModal propertySystem={ propertySystem.data }/>
+          <EditPropertySystemModal propertySystem={propertySystem.data}/>
           <Form className="col-8" onSubmit={formik.handleSubmit}>
             <h3>{property?.data?.displayName}</h3>
             <h3>{property?.data?.addressLine1}</h3>
@@ -102,21 +108,21 @@ function NewReportPage() {
                 <p>{propertySystem?.data?.notes}</p>
               </div>
               : ''}
-          <p>Job Type: {jobType?.type}</p>
-          {userObj.admin
+            <p>Job Type: {jobType?.type}</p>
+            {userObj.admin
             && job.data?.id
             && < FormGroup >
               <Label for="serviceDate">Service Date</Label>
               <Input
                 type="date"
                 id="serviceDate"
-                name="serviceDate"
                 max={today}
-                {...formik.getFieldProps('serviceDate')} />
+                {...formik.getFieldProps('serviceDate')}
+              />
               {formik.touched.serviceDate
                 && <FormFeedback className="d-block">{formik.errors?.serviceDate}</FormFeedback>}
             </FormGroup>
-          }
+            }
             <Row form>
               <Col md={6}>
                 <FormGroup>
@@ -126,7 +132,8 @@ function NewReportPage() {
                     id="amountRemaining"
                     min="0"
                     max={maxInches}
-                    {...formik.getFieldProps('amountRemaining')} />
+                    {...formik.getFieldProps('amountRemaining')}
+                  />
                   {formik.touched.amountRemaining
                     && <FormFeedback className="d-block">{formik.errors?.amountRemaining}</FormFeedback>}
                 </FormGroup>
@@ -138,8 +145,9 @@ function NewReportPage() {
                     type="number"
                     id="inchesAdded"
                     min="0"
-                    max={(maxInches - formik.values.amountRemaining ?? 0).toString()}
-                    {...formik.getFieldProps('inchesAdded')} />
+                    max={maxInchesToAdd}
+                    {...formik.getFieldProps('inchesAdded')}
+                  />
                   {formik.touched.inchesAdded
                     && <FormFeedback className="d-block">{formik.errors?.inchesAdded}</FormFeedback>}
                 </FormGroup>
@@ -151,7 +159,8 @@ function NewReportPage() {
                 type="number"
                 id="solutionAdded"
                 min="0"
-                {...formik.getFieldProps('solutionAdded')} />
+                {...formik.getFieldProps('solutionAdded')}
+              />
               {formik.touched.solutionAdded
                 && <FormFeedback className="d-block">{formik.errors?.solutionAdded}</FormFeedback>}
             </FormGroup>
@@ -160,15 +169,17 @@ function NewReportPage() {
               <Input
                 type="textarea"
                 id="notes"
-                {...formik.getFieldProps('notes')} />
+                {...formik.getFieldProps('notes')}
+              />
               {formik.touched.notes
                 && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
-          </FormGroup>
+            </FormGroup>
 
             <button type="submit" className="btn btn-success">Add New Report</button>
           </Form>
         </div>
-      }
+        }
+      </>
     </Page>
   );
 }

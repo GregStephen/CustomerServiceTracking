@@ -17,10 +17,11 @@ import UserContext from '../../Contexts/UserContext';
 
 import './NewSystemPage.scss';
 
-const defaultSystem = {
+const defaultSystem: Partial<Business.BusinessSystem> = {
   type: '',
   gallons: 0,
   inches: 0,
+  businessId: '',
 };
 
 const newSystemValidationSchema = Yup.object().shape({
@@ -41,8 +42,6 @@ function NewSystemPage() {
     onSubmit: (formValues, { setSubmitting }) => {
       const submission = { ...formValues };
       submission.businessId = userObj.businessId;
-      submission.gallons = parseInt(submission.gallons, 10);
-      submission.inches = parseInt(submission.inches, 10);
       addNewSystem.mutate(submission);
       setSubmitting(false);
     },
@@ -56,50 +55,52 @@ function NewSystemPage() {
 
   return (
     <Page>
-      <Header title="New System" />
-      <div className="widget col-6 d-flex justify-content-center">
-        <Form className="col-8" onSubmit={formik.handleSubmit}>
-          <FormGroup>
-            <Label for="type">Type</Label>
-            <Input
-              type="text"
-              name="type"
-              id="type"
-              {...formik.getFieldProps('type')} />
-            {formik.touched.type
+      <>
+        <Header title="New System" />
+        <div className="widget col-6 d-flex justify-content-center">
+          <Form className="col-8" onSubmit={formik.handleSubmit}>
+            <FormGroup>
+              <Label for="type">Type</Label>
+              <Input
+                type="text"
+                id="type"
+                {...formik.getFieldProps('type')}
+              />
+              {formik.touched.type
               && <FormFeedback className="d-block">{formik.errors?.type}</FormFeedback>}
-          </FormGroup>
-          <Row form>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="gallons">Gallons</Label>
-                <Input
-                  type="number"
-                  name="gallons"
-                  id="gallons"
-                  min="0"
-                  {...formik.getFieldProps('gallons')} />
-                {formik.touched.gallons
+            </FormGroup>
+            <Row form>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="gallons">Gallons</Label>
+                  <Input
+                    type="number"
+                    id="gallons"
+                    min="0"
+                    {...formik.getFieldProps('gallons')}
+                  />
+                  {formik.touched.gallons
                   && <FormFeedback className="d-block">{formik.errors?.gallons}</FormFeedback>}
-              </FormGroup>
-            </Col>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="inches">Inches</Label>
-                <Input
-                  type="number"
-                  name="inches"
-                  id="inches"
-                  min="0"
-                  {...formik.getFieldProps('inches')} />
-                {formik.touched.inches
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="inches">Inches</Label>
+                  <Input
+                    type="number"
+                    id="inches"
+                    min="0"
+                    {...formik.getFieldProps('inches')}
+                  />
+                  {formik.touched.inches
                   && <FormFeedback className="d-block">{formik.errors?.inches}</FormFeedback>}
-              </FormGroup>
-            </Col>
-          </Row>
-          <button type="submit" className="btn btn-success">Add New System</button>
-        </Form>
-      </div>
+                </FormGroup>
+              </Col>
+            </Row>
+            <button type="submit" className="btn btn-success">Add New System</button>
+          </Form>
+        </div>
+      </>
     </Page>
   );
 }

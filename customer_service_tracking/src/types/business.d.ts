@@ -16,6 +16,7 @@ declare namespace Business {
     type: string;
     gallons: number;
     inches: number;
+    businessId: string;
   }
 
   export interface Employee {

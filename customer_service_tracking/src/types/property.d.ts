@@ -12,6 +12,7 @@ declare namespace Property {
     longitude: string;
     systems: PropertySystem[];
     contacts: Contact[];
+    businessId: string;
   }
 
   export interface PropertySystem {

@@ -4,7 +4,7 @@ interface Props {
   icon?: string;
   title: string;
   subTitle?: string;
-  description?: string;
+  description?: React.ReactNode;
   children?: React.ReactNode;
 }
 

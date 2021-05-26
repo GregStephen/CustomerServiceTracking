@@ -1,93 +1,78 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Modal, ModalHeader } from 'reactstrap';
-import Button from '../../Global/Button';
-import PasswordResetModal from '../../Modals/PasswordResetModal';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import {
+  Form,
+  FormFeedback,
+  FormGroup,
+  Label,
+  Input,
+  Button
+} from 'reactstrap';
+import { PasswordResetModal } from '../../Modals';
 
 import './LogInForm.scss';
 
-class LogInForm extends React.Component {
-  static propTypes = {
-    loggingIn: PropTypes.func.isRequired,
-    error: PropTypes.string,
-  }
+interface Props {
+  loggingIn: any;
+  error: string;
+}
 
-  state = {
+function LogInForm({loggingIn, error}: Props) {
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().required('Email is required'),
+    password: Yup.string().required('Password is required'),
+  });
+
+  const initialValues = {
     email: '',
     password: '',
-    errorMessage: '',
-    passwordResetModal: false,
   }
 
-  componentDidUpdate({ error }) {
-    if (this.props.error !== error) {
-      this.setState({ errorMessage: this.props.error });
-    }
-  }
+  const formik = useFormik({
+    initialValues,
+    enableReinitialize: true,
+    validationSchema,
+    onSubmit: (formValues, { setSubmitting }) => {
+      loggingIn(formValues.email, formValues.password);
+      setSubmitting(false);
+    },
+  });
 
-  logInFromLandingPage = (e) => {
-    e.preventDefault();
-    const { loggingIn } = this.props;
-    const { email, password } = this.state;
-    loggingIn(email, password);
-  }
-
-  handleChange = (e) => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    });
-  };
-
-  toggleResetPasswordModal = () => {
-    this.setState((prevState) => ({
-      passwordResetModal: !prevState.passwordResetModal,
-    }));
-  }
-
-  render() {
-    const { email, password, errorMessage } = this.state;
-    return (
-      <div className="LogInForm col-12 col-md-6 col-lg-4">
-        <form className="sign-in-form" onSubmit={this.logInFromLandingPage}>
-          <h3 className="sign-in-header">Log In</h3>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              value={email}
-              onChange={this.handleChange}
-              placeholder="Tom@ExampleEmail.com"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              value={password}
-              onChange={this.handleChange}
-              required
-            />
-            <small className="form-text text-muted">
-              <button type="button" className="forgotPasswordBtn" onClick={this.toggleResetPasswordModal}>Forgot Password</button>
-            </small>
-          </div>
-          <Button type="submit" color="info" title="Log In"/>
-          <p className="error">{errorMessage}</p>
-        </form>
-        <Modal isOpen={this.state.passwordResetModal} toggle={this.toggleModal}>
-          <ModalHeader toggle={this.toggleResetPasswordModal}>Reset Password</ModalHeader>
-          <PasswordResetModal
-            toggleResetPasswordModal={this.toggleResetPasswordModal}
+  return (
+    <div className="LogInForm col-12 col-md-6 col-lg-4">
+      <Form className="sign-in-form" onSubmit={formik.handleSubmit}>
+        <h3 className="sign-in-header">Log In</h3>
+        <FormGroup>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            type="email"
+            className="form-control"
+            id="email"
+            {...formik.getFieldProps('email')}
           />
-        </Modal>
-      </div>
-    );
-  }
+          {formik.touched.email
+              && <FormFeedback className="d-block">{formik.errors?.email}</FormFeedback>}
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="password">Password</Label>
+          <Input
+            type="password"
+            className="form-control"
+            id="password"
+            {...formik.getFieldProps('password')}
+          />
+          {formik.touched.password
+              && <FormFeedback className="d-block">{formik.errors?.password}</FormFeedback>}
+          <PasswordResetModal/>
+        </FormGroup>
+        <Button type="submit" color="info">Log In</Button>
+        <p className="error">{error}</p>
+      </Form>
+    </div>
+  )
+
 }
 
 export default LogInForm;
