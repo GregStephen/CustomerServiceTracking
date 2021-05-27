@@ -8,7 +8,7 @@ import { useJobsNeedingAssignment } from '../../../Helpers/Data/JobRequests';
 function NeedingServiceWidget() {
   const user = useContext(UserContext);
   const history = useHistory();
-  const upcomingService = useJobsNeedingAssignment(user.businessId, '7');
+  const upcomingService = useJobsNeedingAssignment(user.businessId, 7);
 
   const tableData = useMemo(() => (upcomingService?.data ? upcomingService.data : []), [upcomingService]);
 
