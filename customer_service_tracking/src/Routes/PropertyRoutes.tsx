@@ -6,6 +6,7 @@ import {
 import AddSystemToPropertyPage from '../Components/AddSystemToPropertyPage/AddSystemToPropertyPage';
 import SystemPage from '../Components/SystemPage/SystemPage';
 import PropertyPage from '../Components/PropertyPage/PropertyPage';
+import ReportPage from '../Components/ReportPage/ReportPage';
 import AdminProtectedRoute from './AdminProtectedRoute';
 
 interface Props {
@@ -23,6 +24,9 @@ function PropertyRoutes({ path }: Props) {
       </AdminProtectedRoute>
       <Route exact path={`${path}/system/:systemId`}>
         <SystemPage />
+      </Route>
+      <Route exact path={`${path}/system/:systemId/report/:reportId`}>
+        <ReportPage />
       </Route>
     </Switch>
   );

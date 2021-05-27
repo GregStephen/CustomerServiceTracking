@@ -61,7 +61,7 @@ function ServiceReports({ reports }) {
         customRowProps={(row) => ({
           className: 'cursor-pointer',
           onClick: () => {
-            history.push(`/report/${row.original.id}`);
+            history.push(`/property/${row?.original.propertyId}/system/${row?.original.systemId}/report/${row?.original.id}`);
           },
         })}
       />

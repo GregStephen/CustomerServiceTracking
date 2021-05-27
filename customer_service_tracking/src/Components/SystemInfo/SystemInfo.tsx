@@ -1,8 +1,11 @@
 import React from 'react';
-import ServiceOptionEnums from '../../Helpers/Enums/ServiceOptionEnums.ts';
+import ServiceOptionEnums from '../../Helpers/Enums/ServiceOptionEnums';
 import { Header } from '../Global';
 
-function SystemInfo({ system }) {
+interface Props {
+  system: Property.PropertySystem;
+}
+function SystemInfo({ system }: Props) {
   return (
     <div className="widget col-md-5 col-sm-12 mt-0">
       <Header title='System Info' />
@@ -15,13 +18,14 @@ function SystemInfo({ system }) {
         <p>Spray Duration: {system.sprayDuration} seconds</p>
         <p>Service Interval: {ServiceOptionEnums[system.serviceOptionId]}</p>
       </div>
-      <h4>System Specifications</h4>
-      <div className="widget-list">
-        <p>Type: {system.systemInfo.type}</p>
-        <p>Gallons: {system.systemInfo.gallons}</p>
-        <p>Inches: {system.systemInfo.inches}</p>
-      </div>
-
+      {system.systemInfo && <>
+        <h4>System Specifications</h4>
+        <div className="widget-list">
+          <p>Type: {system.systemInfo.type}</p>
+          <p>Gallons: {system.systemInfo.gallons}</p>
+          <p>Inches: {system.systemInfo.inches}</p>
+        </div>
+      </> }
     </div>
   );
 }

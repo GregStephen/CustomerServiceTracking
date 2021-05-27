@@ -16,10 +16,14 @@ function ProfilePage() {
       <>
         <Header title={`${user.data?.firstName} ${user.data?.lastName}'s Profile`} description={user.data?.admin && <Badge color="success">Admin</Badge>}>
           <div className="d-flex justify-content-end">
-            <EditUserDropdown userInfo={user.data}/>
+            {user.data &&
+              <EditUserDropdown userInfo={user.data} />
+            }
           </div>
         </Header>
-        <UserReports reports={reports.data} />
+        {reports.data &&
+          <UserReports reports={reports.data} />
+        }
       </>
     </Page>
   );

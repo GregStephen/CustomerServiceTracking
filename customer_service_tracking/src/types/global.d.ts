@@ -41,6 +41,6 @@ declare interface CustomMarker {
   color: string;
   address?: Property.Property;
   key?: number;
-  system?: Property.PropertySystem;
+  system?: string;
   tech?: string;
 }

@@ -57,6 +57,7 @@ declare namespace Business {
   }
 
   export interface ServiceNeed {
+    id: string;
     property: Property.Property;
     system: Property.PropertySystem;
     daysUntilServiceDate: number;

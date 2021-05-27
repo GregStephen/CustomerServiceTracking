@@ -2,8 +2,10 @@ import React from 'react';
 import moment from 'moment';
 import { Header } from '../../Global';
 
-
-function ReportInfo({ report }) {
+interface Props {
+  report: Property.Report;
+}
+function ReportInfo({ report }: Props) {
   return (
     <div className="widget col-5 mt-0">
       <Header title="Report Info" />

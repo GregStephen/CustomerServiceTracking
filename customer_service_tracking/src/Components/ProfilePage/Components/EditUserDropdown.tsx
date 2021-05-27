@@ -10,7 +10,10 @@ import { useUpdateUserAdmin } from '../../../Helpers/Data/UserRequests';
 import UpdatePasswordModal from '../../Modals/UpdatePasswordModal';
 import UpdateEmailModal from '../../Modals/UpdateEmailModal';
 
-const EditUserDropdown = ({ userInfo }) => {
+interface Props {
+  userInfo: Business.User;
+}
+const EditUserDropdown = ({ userInfo }: Props) => {
   const currentUser = useContext(UserContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const updateUserAdmin = useUpdateUserAdmin();

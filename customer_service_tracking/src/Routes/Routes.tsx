@@ -16,7 +16,7 @@ import JobsPage from '../Components/JobsPage/JobsPage';
 import NewPropertyPage from '../Components/NewPropertyPage/NewPropertyPage';
 import NewReportPage from '../Components/NewReportPage/NewReportPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
-import ReportPage from '../Components/ReportPage/ReportPage';
+
 import ReportsPage from '../Components/ReportsPage/ReportsPage';
 
 import SystemsPage from '../Components/SystemsPage/SystemsPage';
@@ -24,7 +24,7 @@ import TeamPage from '../Components/TeamPage/TeamPage';
 
 import PropertyRoutes from './PropertyRoutes';
 import Dashboard from '../Components/Dashboard/Dashboard';
-import AdminProtectedRoute from './AdminProtectedRoute.tsx';
+import AdminProtectedRoute from './AdminProtectedRoute';
 
 function Routes() {
   const userContext = useContext(UserContext);
@@ -54,9 +54,6 @@ function Routes() {
         <NewPropertyPage />
       </AdminProtectedRoute>
       {propertyRoute && <PropertyRoutes {...propertyRoute} />}
-      <Route path='/report/:reportId'>
-        <ReportPage />
-      </Route>
       <AdminProtectedRoute path='/reports'>
         <ReportsPage />
       </AdminProtectedRoute>

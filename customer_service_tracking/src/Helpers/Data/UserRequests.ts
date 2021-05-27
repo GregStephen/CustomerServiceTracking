@@ -31,7 +31,7 @@ export function useUserByFirebaseUid(uid: string, authenticated: boolean) {
 
 export function useUserById(id: string) {
   const url = `${baseUrl}/user/${id}`;
-  return useQuery([url], async () => {
+  return useQuery<Business.User, Error>([url], async () => {
     const { data } = await axios.get(url);
     return data;
   }, { enabled: !!id });
@@ -48,7 +48,7 @@ export function useUserById(id: string) {
 export function useUpdateUserAdmin() {
   const url = `${baseUrl}/updateAdmin`;
   const queryClient = useQueryClient();
-  return useMutation((userToUpdate) => axios.post(url, userToUpdate), {
+  return useMutation<any, Error, Partial<Business.User>>((userToUpdate) => axios.post(url, userToUpdate), {
     onSuccess: (data, userToUpdate) => {
       queryClient.invalidateQueries({
         predicate: invalidateSystemQueries

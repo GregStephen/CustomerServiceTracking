@@ -24,7 +24,7 @@ export function useJobs(businessId: string) {
   });
 }
 
-export function useJobsNeedingAssignment(businessId: string, daysOut: string) {
+export function useJobsNeedingAssignment(businessId: string, daysOut: number) {
   const url = `${baseUrl}/upcoming-jobs/${businessId}/${daysOut}`;
   return useQuery<Array<Business.ServiceNeed>, Error>([url], async () => {
     const { data } = await axios.get(url);

@@ -65,10 +65,8 @@ function JobsMap({
     const bounds = L.latLngBounds(centerMarker, centerMarker);
     bounds.extend(centerMarker);
     if (markersData?.length > 0) {
-      console.log(markersData);
       markersData.forEach((site: any) => bounds.extend(site.latLng));
     }
-    console.log(bounds, 'bounds');
     return bounds;
   }, [markersData, centerMarker]);
 
@@ -85,7 +83,6 @@ function JobsMap({
 
   function ChangeView({ center, zoom }: { center: L.LatLngExpression; zoom: number}) {
     const map = useMap();
-    console.log(center, zoom);
     map.invalidateSize();
     map.setView(center, zoom);
     return null;
@@ -95,13 +92,9 @@ function JobsMap({
     const map = useMap();
     map.invalidateSize();
     map.locate();
-    console.log(map.getBounds(), 'map bounds');
-    console.log(allBounds, 'allBounds');
     if (allBounds // 👈 null and undefined check
       && Object.keys(allBounds).length !== 0 && allBounds.constructor === Object) {
-      console.log('here');
       map.fitBounds(allBounds);
-      console.log(map.getBounds(), 'adj map bounds');
     }
     return null;
   }

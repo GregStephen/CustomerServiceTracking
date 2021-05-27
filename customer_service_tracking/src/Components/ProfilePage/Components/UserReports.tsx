@@ -1,12 +1,16 @@
 import React, { useMemo } from 'react';
 import moment from 'moment';
+import { Column } from 'react-table';
 import { useHistory } from 'react-router-dom';
 import { Header, GlobalTable } from '../../Global';
 
-function UserReports({ reports }) {
+interface Props {
+  reports: Property.Report[];
+}
+function UserReports({ reports }: Props) {
   const history = useHistory();
   const tableData = useMemo(() => (reports || []), [reports]);
-  const tableColums = useMemo(() => [
+  const tableColums: Column<Property.Report>[] = useMemo(() => [
     {
       Header: 'Date',
       accessor: 'serviceDate',
@@ -14,7 +18,7 @@ function UserReports({ reports }) {
     },
     {
       Header: 'Property',
-      accessor: 'property.displayName',
+      accessor: (r) => r.property?.displayName,
     },
     {
       Header: 'System',
@@ -37,7 +41,7 @@ function UserReports({ reports }) {
         customRowProps={(row) => ({
           className: 'cursor-pointer',
           onClick: () => {
-            history.push(`/report/${row.original.id}`);
+            history.push(`/property/${row?.original.propertyId}/system/${row?.original.systemId}/report/${row?.original.id}`);
           },
         })}
       />

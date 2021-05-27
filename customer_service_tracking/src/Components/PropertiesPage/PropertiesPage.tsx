@@ -2,18 +2,17 @@ import React, {
   useMemo,
   useEffect,
   useState,
-  useContext,
-  useCallback,
+  useContext
 } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { Column } from 'react-table';
 import {
   Row,
   Col,
   Badge,
   Input,
   Collapse,
-  Button,
-  CustomInput,
+  Button
 } from 'reactstrap';
 import UserContext from '../../Contexts/UserContext';
 import JobsMap from '../JobsMap/JobsMap';
@@ -25,27 +24,26 @@ function PropertiesPage() {
   const history = useHistory();
   const properties = useGetPropertiesForBusiness(userObj.businessId);
   const [searchFilter, setSearchFilter] = useState('');
-  const [markersData, setMarkersData] = useState([]);
-  const [inactiveProperties, getInactiveProperties] = useState();
+  const [markersData, setMarkersData] = useState<CustomMarker[]>();
+  const [inactiveProperties, getInactiveProperties] = useState<number>();
   const [isOpen, setIsOpen] = useState(false);
-  const [chosenFilter, setChosenFilter] = useState();
   const toggle = () => setIsOpen(!isOpen);
 
-  const returnPrimaryContactName = (contacts) => {
+  const returnPrimaryContactName = (contacts: Property.Contact[]) => {
     const primary = contacts.find((contact) => contact.primary);
-    return `${primary.firstName} ${primary.lastName}`;
+    return `${primary?.firstName} ${primary?.lastName}`;
   };
 
   useEffect(() => {
-    const markers = [];
+    const markers: CustomMarker[] = [];
     if (properties.data) {
       properties.data.forEach((element) => {
         const newMarker = {
           title: `${element?.displayName}`,
           propertyLink: `/property/${element?.id}`,
           latLng: {
-            lat: element?.latitude,
-            lng: element?.longitude,
+            lat: element?.latitude ? parseFloat(element.latitude): 0,
+            lng: element?.longitude ? parseFloat(element.longitude) : 0,
           },
           color: 'green',
           tech: '',
@@ -66,7 +64,7 @@ function PropertiesPage() {
 
   const tableData = useMemo(() => (properties.data ? properties.data : []), [properties.data]);
 
-  const tableColumns = useMemo(() => [
+  const tableColumns: Column<Property.Property>[]= useMemo(() => [
     {
       Header: 'Name',
       accessor: 'displayName',
@@ -76,7 +74,7 @@ function PropertiesPage() {
     },
     {
       Header: 'Primary Contact',
-      accessor: (r) => r.id,
+      accessor: 'id',
       Cell: ({ row: { original } }) => (returnPrimaryContactName(original.contacts)),
     },
     {
@@ -110,9 +108,6 @@ function PropertiesPage() {
     [searchFilter],
   );
 
-  const filterResults = useCallback((e) => {
-    setChosenFilter(e.id);
-  }, []);
   return (
     <Page>
       <div className="widget col-10 mt-4">
@@ -123,7 +118,7 @@ function PropertiesPage() {
               <Input
                 type="text"
                 value={searchFilter}
-                onChange={(e) => setSearchFilter(e.target.value)}
+                onChange={(e: any) => setSearchFilter(e.target.value)}
                 placeholder="Search Properties"
                 style={{ maxWidth: '100%', width: '300px' }}
               />
@@ -136,11 +131,11 @@ function PropertiesPage() {
         </Row>
         <Row>
           <Col className="d-flex justify-content-between">
-            <div className="ml-4">
-              <CustomInput onChange={(e) => filterResults(e)} type="switch" id="active" name="active" label="Active" inline/>
-              <CustomInput onChange={(e) => filterResults(e)} type="switch" id="inactive" name="inactive" label="Inactive" inline/>
-              <CustomInput onChange={(e) => filterResults(e)} type="switch" id="all" name="all" label="Show All" inline/>
-            </div>
+            {/* <div className="ml-4">
+              <CustomInput onChange={(e: any) => filterResults(e)} type="switch" id="active" name="active" label="Active" inline/>
+              <CustomInput onChange={(e: any) => filterResults(e)} type="switch" id="inactive" name="inactive" label="Inactive" inline/>
+              <CustomInput onChange={(e: any) => filterResults(e)} type="switch" id="all" name="all" label="Show All" inline/>
+            </div> */}
             <div className="d-flex justify-content-end">
               <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>
             </div>
@@ -151,6 +146,7 @@ function PropertiesPage() {
             <div className="d-flex justify-content-center">
               <div className="col-10 mt-3">
                 <JobsMap
+                  hideMainMarkerPopup={false}
                   getLocation={false}
                   businessAddress={userObj.business}
                   markersData={markersData}
@@ -171,7 +167,7 @@ function PropertiesPage() {
           customRowProps={(row) => ({
             className: 'cursor-pointer',
             onClick: () => {
-              history.push(`/property/${row.original.id}`);
+              history.push(`/property/${row?.original.id}`);
             },
           })}
         />

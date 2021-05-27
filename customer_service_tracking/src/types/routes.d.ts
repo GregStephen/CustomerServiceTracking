@@ -7,6 +7,10 @@ declare namespace Routes {
     systemId: string;
   }
 
+  export interface Report extends System {
+    reportId: string;
+  }
+
   export interface User {
     userId: string;
   }

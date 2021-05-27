@@ -16,11 +16,11 @@ import {
   Spinner,
 } from 'reactstrap';
 import moment from 'moment';
-
+import { Column } from 'react-table';
 import JobsMap from '../JobsMap/JobsMap';
 import { GlobalTable, Header } from '../Global';
 import Jobs from '../Jobs/Jobs';
-import CreateNewJobModal from '../Modals/CreateNewJobModal.tsx';
+import CreateNewJobModal from '../Modals/CreateNewJobModal';
 import NewJobModal from '../Modals/NewJobModal';
 import Formatting from '../../Helpers/Functions/Formatting';
 
@@ -29,7 +29,7 @@ import UserContext from '../../Contexts/UserContext';
 
 function ServiceNeededReport() {
   const userObj = useContext(UserContext);
-  const [markersData, setMarkersData] = useState([]);
+  const [markersData, setMarkersData] = useState<CustomMarker[]>();
   const [daysOut, getDaysOut] = useState(7);
   const systemsNeedingService = useJobsNeedingAssignment(userObj.business?.id, daysOut);
   const jobs = useJobs(userObj?.businessId);
@@ -42,7 +42,7 @@ function ServiceNeededReport() {
   const tableData = useMemo(() => (systemsNeedingService.data ? systemsNeedingService.data : []), [systemsNeedingService.data]);
 
   useEffect(() => {
-    const markers = [];
+    const markers: CustomMarker[] = [];
     if (systemsNeedingService.data) {
       systemsNeedingService.data.forEach((element) => {
         const newMarker = {
@@ -79,21 +79,21 @@ function ServiceNeededReport() {
     setMarkersData(markers);
   }, [systemsNeedingService.data, jobs.data]);
 
-  const tableColumns = useMemo(() => [
+  const tableColumns: Column<Business.ServiceNeed>[] = useMemo(() => [
     {
       Header: `Customers needing service from ${moment().format('L')} to ${moment().add(daysOut, 'days').format('L')}`,
       className: 'top-header',
       columns: [
         {
           Header: 'Property',
-          accessor: (r) => r.property.displayName,
+          accessor: 'property',
           Cell: ({ row: { original } }) => (
             <Link to={{ pathname: `/property/${original.property?.id}` }}>{`${original.property?.displayName}`}</Link>
           ),
         },
         {
           Header: 'Address',
-          accessor: (r) => r.property,
+          accessor: 'property',
           Cell: ({ row: { original } }) => (
             <a rel="noopener noreferrer" target="_blank" href={Formatting.directionLink(original.property)}>{original.property?.addressLine1}</a>
           ),
@@ -109,7 +109,7 @@ function ServiceNeededReport() {
         },
         {
           Header: ' ',
-          accessor: (r) => r.id,
+          accessor: 'id',
           Cell: ({ row: { original } }) => (
             <CreateNewJobModal
               systemNeedingService={original}
@@ -128,7 +128,7 @@ function ServiceNeededReport() {
           <Form inline>
             <FormGroup>
               <Label for="daysOut" className="mr-2">How many days out?</Label>
-              <Input type="select" name="select" id="daysOut" onChange={(e) => getDaysOut(e.target.value)}>
+              <Input type="select" name="select" id="daysOut" onChange={(e: any) => getDaysOut(e.target.value)}>
                 <option value={7}>1 week</option>
                 <option value={14}>2 weeks</option>
                 <option value={moment().daysInMonth()}>1 month</option>
@@ -137,14 +137,15 @@ function ServiceNeededReport() {
           </Form>
         </Row>
         <Row className="mr-2">
-          <NewJobModal userObj={userObj} />
-          {systemsNeedingService.data?.length > 0
+          <NewJobModal />
+          {systemsNeedingService.data
             && <Button color="primary" onClick={toggle} className="mr-3">{isOpen ? 'Close Map' : 'Show Map'}</Button>}
         </Row>
       </div>
       <Collapse isOpen={isOpen}>
         <div className="mt-3">
           <JobsMap
+            hideMainMarkerPopup={false}
             getLocation={false}
             businessAddress={userObj.business}
             markersData={markersData}
