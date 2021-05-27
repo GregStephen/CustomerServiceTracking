@@ -1,15 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import moment from 'moment';
+import { Column } from 'react-table';
 import { Input } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
 import { Header, GlobalTable } from '../Global';
 
-function ServiceReports({ reports }) {
+interface Props {
+  reports: Property.Report[];
+}
+function ServiceReports({ reports }: Props) {
   const history = useHistory();
   const [searchFilter, setSearchFilter] = useState('');
 
   const tableData = useMemo(() => (reports || []), [reports]);
-  const tableColums = useMemo(() => [
+  const tableColums: Column<Property.Report>[] = useMemo(() => [
     {
       Header: 'Date',
       accessor: 'serviceDate',
@@ -25,7 +29,7 @@ function ServiceReports({ reports }) {
     },
     {
       Header: 'Search',
-      accessor: (r) => r.technician + r.displayName + r.type,
+      accessor: (r) => r.technician + r.type,
     },
   ], []);
 
@@ -45,7 +49,7 @@ function ServiceReports({ reports }) {
         <Input
           type="text"
           value={searchFilter}
-          onChange={(e) => setSearchFilter(e.target.value)}
+          onChange={(e: any) => setSearchFilter(e.target.value)}
           placeholder="Search Reports"
           style={{ maxWidth: '100%', width: '300px' }}
         />

@@ -4,7 +4,7 @@ import {
   Modal,
   ModalHeader,
 } from 'reactstrap';
-
+import { Column } from 'react-table';
 import { Page, Header, GlobalTable } from '../Global';
 import EditSystemModal from '../Modals/EditSystemModal';
 
@@ -16,28 +16,28 @@ import UserContext from '../../Contexts/UserContext';
 function SystemsPage() {
   const userObj = useContext(UserContext);
   const systems = useGetSystemsForBusiness(userObj.businessId);
-  const [editSystemModalIsOpen, getEditSystemModalIsOpen] = useState();
+  const [editSystemModalIsOpen, getEditSystemModalIsOpen] = useState(false);
   const editTheSystem = useEditSystem();
   const deleteTheSystem = useDeleteSystemById();
 
   const tableData = useMemo(() => (systems?.data ? systems.data : []), [systems]);
 
-  const tableColumns = useMemo(() => [
+  const tableColumns: Column<Business.BusinessSystem>[] = useMemo(() => [
     {
       Header: 'System Type',
-      accessor: (s) => s.type,
+      accessor: 'type',
     },
     {
       Header: 'Gallons',
-      accessor: (s) => s.gallons,
+      accessor: 'gallons',
     },
     {
       Header: 'Inches',
-      accessor: (s) => s.inches,
+      accessor: 'inches',
     },
     {
       Header: 'Edit',
-      accessor: (s) => s.id,
+      accessor: 'id',
       Cell: ({ row: { original } }) => (
         <>
           <button className="btn btn-info" onClick={() => getEditSystemModalIsOpen(!editSystemModalIsOpen)}>Edit</button>

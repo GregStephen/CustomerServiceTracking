@@ -17,7 +17,9 @@ function ReportPage() {
         {report.isSuccess
         && <div className="d-flex justify-content-around align-items-start">
           <ReportInfo report={report.data} />
-          <SystemInfo system={propertySystem} />
+          {propertySystem &&
+            <SystemInfo system={propertySystem} />
+          }
         </div>
         }
       </>

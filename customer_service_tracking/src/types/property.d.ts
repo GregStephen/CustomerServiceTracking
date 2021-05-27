@@ -57,8 +57,8 @@ declare namespace Property {
     technicianId: string;
     jobTypeId: string;
     systemName?: string;
-    technician?: string;
-    type?: string;
+    technician: string;
+    type: string;
     property?: Property.Property;
   }
 }

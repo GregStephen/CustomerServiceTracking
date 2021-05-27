@@ -5,6 +5,7 @@ import {
   Row,
   Badge,
 } from 'reactstrap';
+import { Column } from 'react-table';
 import { useHistory } from 'react-router-dom';
 import { Page, Header, GlobalTable } from '../Global';
 import { useGetRegisteredAndUnregisteredEmployees } from '../../Helpers/Data/BusinessRequests';
@@ -21,7 +22,7 @@ function TeamPage() {
 
   const tableData = useMemo(() => (teamMembers?.data ? teamMembers.data : []), [teamMembers]);
 
-  const tableColumns = useMemo(() => [
+  const tableColumns: Column<Business.Employee>[] = useMemo(() => [
     {
       Header: 'Name',
       accessor: 'fullName',
@@ -48,14 +49,14 @@ function TeamPage() {
     <Page>
       <div className="TeamPage">
         <div className="widget col-10 mt-4">
-        <Header title='Team' icon='fa-users' />
+          <Header title='Team' icon='fa-users' />
           <Row className="mb-3">
             <Col className="d-flex justify-content-between">
               <div className="ml-4">
                 <Input
                   type="text"
                   value={searchFilter}
-                  onChange={(e) => setSearchFilter(e.target.value)}
+                  onChange={(e: any) => setSearchFilter(e.target.value)}
                   placeholder="Search Team"
                   style={{ maxWidth: '100%', width: '300px' }}
                 />
@@ -74,7 +75,7 @@ function TeamPage() {
             customRowProps={(row) => ({
               className: 'cursor-pointer',
               onClick: () => {
-                history.push(`/user/${row.original.id}`);
+                history.push(`/user/${row?.original.id}`);
               },
             })}
           />
