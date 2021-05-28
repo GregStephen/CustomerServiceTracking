@@ -28,10 +28,9 @@ function DeleteContactModal({ contact, deleteEnabled }: Props) {
   }, [deleteContact, history, contact]);
 
   return (<>
-    <span className="d-inline-block" id="deleteContact">
-      <Button color="danger" className="col-12" disabled={contact?.primary || !deleteEnabled} onClick={() => setDeleteContactModalIsToggled(true)}>Delete</Button>
-    </span>
-    <Tooltip target="deleteContact" placement="right" isOpen={tooltipOpen} toggle={toggleToolTip}>Cannot delete Primary Contact, you must edit or reassign</Tooltip>
+    <Button color="danger" className="col-12" disabled={contact?.primary || !deleteEnabled} onClick={() => setDeleteContactModalIsToggled(true)}>
+      <div className="position-absolute w-100 h-100 pos-left pos-top" id="deleteContact"/>Delete</Button>
+    {(contact?.primary || !deleteEnabled) && <Tooltip target="deleteContact" placement="right" isOpen={tooltipOpen} toggle={toggleToolTip}>Cannot delete Primary Contact, you must edit or reassign</Tooltip>}
     <Modal isOpen={deleteContactModalIsToggled} toggle={() => setDeleteContactModalIsToggled(false)}>
       <ModalHeader toggle={() => setDeleteContactModalIsToggled(false)}>Confirm Deletion</ModalHeader>
       <ModalBody>

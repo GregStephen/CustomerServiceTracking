@@ -48,11 +48,11 @@ function EditPropertySystemModal({ propertySystem }) {
     <button className="btn btn-info" onClick={() => setIsToggled(true)}>Update System</button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>Update System</ModalHeader>
-      <Form className="col-8" onSubmit={formik.handleSubmit}>
+      <Form className="col-12" onSubmit={formik.handleSubmit}>
         <Row form>
           <Col md={4}>
             <FormGroup>
-              <Label for="nozzles">Number of nozzles</Label>
+              <Label for="nozzles">Nozzles</Label>
               <Input
                 type="number"
                 id="nozzles"
@@ -78,7 +78,7 @@ function EditPropertySystemModal({ propertySystem }) {
           </Col>
           <Col md={4}>
             <FormGroup>
-              <Label for="sprayDuration">Duration of spray in seconds</Label>
+              <Label for="sprayDuration">Duration</Label>
               <Input
                 type="number"
                 id="sprayDuration"
@@ -100,7 +100,7 @@ function EditPropertySystemModal({ propertySystem }) {
           {formik.touched.notes
               && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
         </FormGroup>
-        <button type="submit" className="btn btn-success">Edit Properties System</button>
+        <button type="submit" className="btn btn-success mb-4">Edit Properties System</button>
       </Form>
     </Modal>
   </>);

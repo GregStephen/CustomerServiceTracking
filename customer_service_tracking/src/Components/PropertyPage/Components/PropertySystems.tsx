@@ -20,7 +20,7 @@ function PropertySystems({ property }: Props) {
       Header: 'Name',
       accessor: 'displayName',
       Cell: ({ row: { original } }) => (
-        <p>{original.displayName} {!original.enabled && <Badge color="danger">Inactive</Badge>}</p>
+        <>{original.displayName} {!original.enabled && <Badge color="danger">Inactive</Badge>}</>
       ),
     },
     {
@@ -38,8 +38,8 @@ function PropertySystems({ property }: Props) {
     <div className="widget col-10 mb-4 mr-0 ml-0 mt-0 pt-0">
       <Header title="Systems" />
       {user.admin
-        && <div className="d-flex justify-content-end mb-4">
-          <Link className="btn btn-info mr-4" to={addSystemLink}>Add System</Link>
+        && <div className="d-flex justify-content-end mb-2">
+          <Link className="btn btn-info mr-4" to={addSystemLink}><i className="fas fa-plus" /></Link>
         </div>
       }
       <GlobalTable

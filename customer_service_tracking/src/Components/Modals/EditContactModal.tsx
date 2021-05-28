@@ -40,7 +40,7 @@ function EditContactModal({ contact, deleteEnabled }: Props) {
   const updateContact = useUpdateContact();
   const addNewContact = useAddNewContact();
 
-  const updatingContact = contact !== null;
+  const updatingContact = useMemo(() => !!contact, [contact]);
 
   const defaultContact: Property.Contact = useMemo(() => ({
     id: contact?.id ?? '',
@@ -90,7 +90,7 @@ function EditContactModal({ contact, deleteEnabled }: Props) {
   }, [formik]);
 
   return (<>
-    <button className={updatingContact ? 'btn btn-secondary' : 'btn btn-info mr-4 mb-2'} onClick={() => setIsToggled(true)}>{updatingContact ? 'Edit' : 'Create New'}</button>
+    <button className={updatingContact ? 'btn btn-outline-secondary' : 'btn btn-info mr-4 mb-2'} onClick={() => setIsToggled(true)}>{updatingContact ? <i className="fas fa-user-edit mr-0"/>: <i className="fas fa-user-plus"/>}</button>
     <Modal isOpen={isToggled} toggle={() => clearAndClose()}>
       <ModalHeader toggle={() => clearAndClose()}>{updatingContact ? 'Edit' : 'Create New'} Contact</ModalHeader>
       {updatingContact && contact && (<DeleteContactModal contact={contact} deleteEnabled={deleteEnabled} />)}

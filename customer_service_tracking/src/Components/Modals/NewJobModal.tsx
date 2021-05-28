@@ -72,7 +72,7 @@ function NewJobModal() {
     },
   });
   return (<>
-    <button className="btn btn-info mr-3" onClick={() => setIsToggled(true)}>New Job</button>
+    <button className="btn btn-info mr-3" onClick={() => setIsToggled(true)}><i className="fas fa-briefcase"/><i className="fas fa-plus ml-1"/></button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>New Job</ModalHeader>
       <Form className="col-8" onSubmit={formik.handleSubmit}>

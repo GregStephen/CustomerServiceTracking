@@ -19,7 +19,9 @@ function SystemPage() {
           <Header title={system.data.displayName} />
           <div className="d-flex">
             <SystemInfo system={system?.data} />
-            <SystemReports reports={systemReports} />
+            {systemReports &&
+              <SystemReports reports={systemReports} />
+            }
           </div>
         </>}
       </>

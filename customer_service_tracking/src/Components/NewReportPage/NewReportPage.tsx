@@ -95,90 +95,100 @@ function NewReportPage() {
       <>
         <Header title="New Report" />
         {property.isSuccess
-        && <div className="widget col-10 d-flex justify-content-center mb-4">
-          <EditPropertySystemModal propertySystem={propertySystem.data}/>
-          <Form className="col-8" onSubmit={formik.handleSubmit}>
-            <h3>{property?.data?.displayName}</h3>
-            <h3>{property?.data?.addressLine1}</h3>
-            {property?.data?.addressLine2 ? <h3>{property?.data?.addressLine2} </h3> : ''}
-            <h3>{property?.data?.city}, {property?.data?.state} {property?.data?.zipCode}</h3>
-            {propertySystem?.data?.notes
-              ? <div>
-                <h3>Notes on System</h3>
-                <p>{propertySystem?.data?.notes}</p>
-              </div>
-              : ''}
-            <p>Job Type: {jobType?.type}</p>
-            {userObj.admin
+          && <>
+            <div>
+              <EditPropertySystemModal propertySystem={propertySystem.data} />
+            </div>
+            <div className="widget col-6 d-flex justify-content-center mb-4">
+              <Form className="col-8" onSubmit={formik.handleSubmit}>
+                <h3>{property?.data?.displayName}</h3>
+                <h3>{property?.data?.addressLine1}</h3>
+                {property?.data?.addressLine2 ? <h3>{property?.data?.addressLine2} </h3> : ''}
+                <h3>{property?.data?.city}, {property?.data?.state} {property?.data?.zipCode}</h3>
+                {propertySystem?.data?.notes
+                  ? <div>
+                    <h3>Notes on System</h3>
+                    <p>{propertySystem?.data?.notes}</p>
+                  </div>
+                  : ''}
+                <p>Job Type: {jobType?.type}</p>
+                {userObj.admin
             && job.data?.id
-            && < FormGroup >
-              <Label for="serviceDate">Service Date</Label>
-              <Input
-                type="date"
-                id="serviceDate"
-                max={today}
-                {...formik.getFieldProps('serviceDate')}
-              />
-              {formik.touched.serviceDate
+                && <Row>
+                  <Col md={6}>
+                    <FormGroup >
+                      <Label for="serviceDate">Service Date</Label>
+                      <Input
+                        type="date"
+                        id="serviceDate"
+                        max={today}
+                        {...formik.getFieldProps('serviceDate')}
+                      />
+                      {formik.touched.serviceDate
                 && <FormFeedback className="d-block">{formik.errors?.serviceDate}</FormFeedback>}
-            </FormGroup>
-            }
-            <Row form>
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="amountRemaining">Inches of Water Remaining</Label>
-                  <Input
-                    type="number"
-                    id="amountRemaining"
-                    min="0"
-                    max={maxInches}
-                    {...formik.getFieldProps('amountRemaining')}
-                  />
-                  {formik.touched.amountRemaining
+                    </FormGroup>
+                  </Col>
+                </Row>
+                }
+                <Row form>
+                  <Col md={4}>
+                    <FormGroup>
+                      <Label for="amountRemaining">Inches Remaining</Label>
+                      <Input
+                        type="number"
+                        id="amountRemaining"
+                        min="0"
+                        max={maxInches}
+                        {...formik.getFieldProps('amountRemaining')}
+                      />
+                      {formik.touched.amountRemaining
                     && <FormFeedback className="d-block">{formik.errors?.amountRemaining}</FormFeedback>}
-                </FormGroup>
-              </Col>
-              <Col md={6}>
-                <FormGroup>
-                  <Label for="inchesAdded">Inches of Water Added</Label>
-                  <Input
-                    type="number"
-                    id="inchesAdded"
-                    min="0"
-                    max={maxInchesToAdd}
-                    {...formik.getFieldProps('inchesAdded')}
-                  />
-                  {formik.touched.inchesAdded
+                    </FormGroup>
+                  </Col>
+                  <Col md={4}>
+                    <FormGroup>
+                      <Label for="inchesAdded">Inches Added</Label>
+                      <Input
+                        type="number"
+                        id="inchesAdded"
+                        min="0"
+                        max={maxInchesToAdd}
+                        {...formik.getFieldProps('inchesAdded')}
+                      />
+                      {formik.touched.inchesAdded
                     && <FormFeedback className="d-block">{formik.errors?.inchesAdded}</FormFeedback>}
-                </FormGroup>
-              </Col>
-            </Row>
-            <FormGroup>
-              <Label for="solutionAdded">Solution Added</Label>
-              <Input
-                type="number"
-                id="solutionAdded"
-                min="0"
-                {...formik.getFieldProps('solutionAdded')}
-              />
-              {formik.touched.solutionAdded
+                    </FormGroup>
+                  </Col>
+                  <Col md={4}>
+                    <FormGroup>
+                      <Label for="solutionAdded">Solution Added</Label>
+                      <Input
+                        type="number"
+                        id="solutionAdded"
+                        min="0"
+                        {...formik.getFieldProps('solutionAdded')}
+                      />
+                      {formik.touched.solutionAdded
                 && <FormFeedback className="d-block">{formik.errors?.solutionAdded}</FormFeedback>}
-            </FormGroup>
-            <FormGroup>
-              <Label for="notes">Notes</Label>
-              <Input
-                type="textarea"
-                id="notes"
-                {...formik.getFieldProps('notes')}
-              />
-              {formik.touched.notes
-                && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
-            </FormGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
 
-            <button type="submit" className="btn btn-success">Add New Report</button>
-          </Form>
-        </div>
-        }
+                <FormGroup>
+                  <Label for="notes">Notes</Label>
+                  <Input
+                    type="textarea"
+                    id="notes"
+                    {...formik.getFieldProps('notes')}
+                  />
+                  {formik.touched.notes
+                && <FormFeedback className="d-block">{formik.errors?.notes}</FormFeedback>}
+                </FormGroup>
+
+                <button type="submit" className="btn btn-success">Add New Report</button>
+              </Form>
+            </div>
+          </>}
       </>
     </Page>
   );

@@ -24,7 +24,15 @@ body {
   direction: ltr;
   text-rendering: optimizeLegibility;
 }
-
+hr {
+  border: 0;
+  height: 1px;
+  background: #333;
+  background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+.form-group {
+  text-align: left;
+}
 .top-header {
   background-color: $background-color-header;
   color: $textColor;
@@ -53,7 +61,7 @@ body {
   text-align: start;
 }
 .Header{
- margin-bottom: calc(1.5rem + 0.625rem);
+ margin-bottom: 1rem;
  position: relative;
  padding-bottom: 1rem;
  background-color: $background-color-header;
@@ -115,7 +123,7 @@ body {
   }
 }
 
-table {
+.table {
   border-spacing: 0;
   border: 2px solid $textColor;
   background-color: $background-color-transparent;
@@ -134,6 +142,7 @@ table {
   }
   thead th,
   td {
+    vertical-align: middle;
     margin: 0;
     padding: 0.5rem;
     border-bottom: 2px solid black !important;
@@ -144,7 +153,9 @@ table {
     }
   }
 }
-
+.table-sm td, th{
+  padding: .075em;
+}
 .pagination {
   padding: 0.5rem;
 }

@@ -69,7 +69,7 @@ function PropertiesPage() {
       Header: 'Name',
       accessor: 'displayName',
       Cell: ({ row: { original } }) => (
-        <p>{original.displayName} {!original.enabled ? <Badge color='danger'>Inactive</Badge> : ''}</p>
+        <>{original.displayName} {!original.enabled ? <Badge color='danger'>Inactive</Badge> : ''}</>
       ),
     },
     {
@@ -124,8 +124,8 @@ function PropertiesPage() {
               />
             </div>
             <div className="d-flex justify-content-end">
-              <Button color="primary" onClick={toggle} className="mr-3" style={{ height: '38px' }}>{isOpen ? 'Close Map' : 'Show Map'}</Button>
-              <Link className="btn btn-info mr-4 mb-2" to="/new-property">Add a new Property</Link>
+              <Button color="primary" onClick={toggle} className="mr-3" style={{ height: '38px' }}>{isOpen ? <><i className="fas fa-map-marked-alt"/><i className="fas fa-chevron-up ml-1"/></> : <><i className="fas fa-map-marked-alt"/><i className="fas fa-chevron-down ml-1"/></>}</Button>
+              <Link className="btn btn-info mr-4 mb-2" to="/new-property"><i className="fas fa-house-user"/><i className="fas fa-plus ml-1"/></Link>
             </div>
           </Col>
         </Row>
@@ -137,7 +137,7 @@ function PropertiesPage() {
               <CustomInput onChange={(e: any) => filterResults(e)} type="switch" id="all" name="all" label="Show All" inline/>
             </div> */}
             <div className="d-flex justify-content-end">
-              <p className="mr-4 mb-4">Total number of inactive: {inactiveProperties}</p>
+              <p className="ml-2 mb-4">Total number of inactive: {inactiveProperties}</p>
             </div>
           </Col>
         </Row>

@@ -126,11 +126,12 @@ function NewPropertyPage() {
   return (
     <Page>
       <>
-        <Header title="New Property" icon="fa-user-plus" />
-        <div className="widget col-8 d-flex justify-content-center mb-4">
+        <Header title="New Property" icon="fa-house-user" />
+        <div className="widget col-sm-10 col-lg-8 col-xl-6 d-flex justify-content-center mb-4">
           <Form className="col-10 mt-3" onSubmit={formik.handleSubmit}>
+            <h2>Property Info</h2>
             <Row form>
-              <Col md={12}>
+              <Col md={6} sm={12}>
                 <FormGroup>
                   <Label for="displayName">Property Display Name</Label>
                   <Input
@@ -139,30 +140,36 @@ function NewPropertyPage() {
                     {...formik.getFieldProps('property.displayName')}
                   />
                   {formik.touched.property?.displayName
-                  && <FormFeedback className="d-block">{formik.errors?.property?.displayName}</FormFeedback>}
+                      && <FormFeedback className="d-block">{formik.errors?.property?.displayName}</FormFeedback>}
                 </FormGroup>
               </Col>
             </Row>
-            <FormGroup>
-              <Label for="property.addressLine1">Address Line</Label>
-              <Input
-                type="text"
-                id="property.addressLine1"
-                {...formik.getFieldProps('property.addressLine1')}
-              />
-              {formik.touched.property?.addressLine1
-              && <FormFeedback className="d-block error">{formik.errors?.property?.addressLine1}</FormFeedback>}
-            </FormGroup>
-            <FormGroup>
-              <Label for="property.addressLine2">Address Line 2</Label>
-              <Input
-                type="text"
-                id="property.addressLine2"
-                {...formik.getFieldProps('property.addressLine2')}
-              />
-              {formik.touched.property?.addressLine2
-              && <FormFeedback className="d-block">{formik.errors?.property?.addressLine2}</FormFeedback>}
-            </FormGroup>
+            <Row form>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="property.addressLine1">Address Line</Label>
+                  <Input
+                    type="text"
+                    id="property.addressLine1"
+                    {...formik.getFieldProps('property.addressLine1')}
+                  />
+                  {formik.touched.property?.addressLine1
+                      && <FormFeedback className="d-block error">{formik.errors?.property?.addressLine1}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
+                  <Label for="property.addressLine2">Address Line 2</Label>
+                  <Input
+                    type="text"
+                    id="property.addressLine2"
+                    {...formik.getFieldProps('property.addressLine2')}
+                  />
+                  {formik.touched.property?.addressLine2
+                      && <FormFeedback className="d-block">{formik.errors?.property?.addressLine2}</FormFeedback>}
+                </FormGroup>
+              </Col>
+            </Row>
             <Row form>
               <Col md={6}>
                 <FormGroup>
@@ -173,7 +180,7 @@ function NewPropertyPage() {
                     {...formik.getFieldProps('property.city')}
                   />
                   {formik.touched.property?.city
-                  && <FormFeedback className="d-block">{formik.errors?.property?.city}</FormFeedback>}
+                      && <FormFeedback className="d-block">{formik.errors?.property?.city}</FormFeedback>}
                 </FormGroup>
               </Col>
               <Col md={2}>
@@ -185,22 +192,23 @@ function NewPropertyPage() {
                     {...formik.getFieldProps('property.state')}
                   />
                   {formik.touched.property?.state
-                  && <FormFeedback className="d-block">{formik.errors?.property?.state}</FormFeedback>}
+                      && <FormFeedback className="d-block">{formik.errors?.property?.state}</FormFeedback>}
                 </FormGroup>
               </Col>
               <Col md={4}>
                 <FormGroup>
-                  <Label for="property.zipCode">Zip</Label>
+                  <Label for="property.zipCode">Zip Code</Label>
                   <Input
                     type="text"
                     id="property.zipCode"
                     {...formik.getFieldProps('property.zipCode')}
                   />
                   {formik.touched.property?.zipCode
-                  && <FormFeedback className="d-block">{formik.errors?.property?.zipCode}</FormFeedback>}
+                      && <FormFeedback className="d-block">{formik.errors?.property?.zipCode}</FormFeedback>}
                 </FormGroup>
               </Col>
             </Row>
+            <hr />
             <h2>Primary Contact</h2>
             <Row form>
               <Col md={6}>
@@ -212,7 +220,7 @@ function NewPropertyPage() {
                     {...formik.getFieldProps('contact.firstName')}
                   />
                   {formik.touched.contact?.firstName
-                  && <FormFeedback className="d-block">{formik.errors?.contact?.firstName}</FormFeedback>}
+                      && <FormFeedback className="d-block">{formik.errors?.contact?.firstName}</FormFeedback>}
                 </FormGroup>
               </Col>
               <Col md={6}>
@@ -224,68 +232,80 @@ function NewPropertyPage() {
                     {...formik.getFieldProps('contact.lastName')}
                   />
                   {formik.touched.contact?.lastName
-                  && <FormFeedback className="d-block">{formik.errors?.contact?.lastName}</FormFeedback>}
+                      && <FormFeedback className="d-block">{formik.errors?.contact?.lastName}</FormFeedback>}
                 </FormGroup>
               </Col>
             </Row>
-            <FormGroup>
-              <Label for="contact.homePhone">Home Phone</Label>
-              <MaskedInput
-                mask="(999) 999-9999"
-                value={formik.values.contact.homePhone}
-                onBlur={(e) => formik.handleBlur(e)}
-                onChange={(e) => formik.setFieldValue('contact.homePhone', e.target.value.replace(/\D/g, ''))}>
-                {() => (<Input
-                  type="text"
-                  name="homePhone"
-                  id="homePhone"
-                />)}
-              </MaskedInput>
-              {formik.touched.contact?.homePhone
-              && <FormFeedback className="d-block">{formik.errors?.contact?.homePhone}</FormFeedback>}
-            </FormGroup>
-            <FormGroup>
-              <Label for="contact.cellPhone">Cell Phone</Label>
-              <MaskedInput
-                mask="(999) 999-9999"
-                value={formik.values.contact.cellPhone}
-                onBlur={(e) => formik.handleBlur(e)}
-                onChange={(e) => formik.setFieldValue('contact.cellPhone', e.target.value.replace(/\D/g, ''))}>
-                {() => (<Input
-                  type="text"
-                  name="cellPhone"
-                  id="cellPhone"
-                />)}
-              </MaskedInput>
-              {formik.touched.contact?.cellPhone
-              && <FormFeedback className="d-block">{formik.errors?.contact?.cellPhone}</FormFeedback>}
-            </FormGroup>
-            <FormGroup>
-              <Label for="contact.workPhone">Work Phone</Label>
-              <MaskedInput
-                mask="(999) 999-9999"
-                value={formik.values.contact.workPhone}
-                onBlur={(e) => formik.handleBlur(e)}
-                onChange={(e) => formik.setFieldValue('contact.workPhone', e.target.value.replace(/\D/g, ''))}>
-                {() => (<Input
-                  type="text"
-                  name="contact.workPhone"
-                  id="contact.workPhone"
-                />)}
-              </MaskedInput>
-              {formik.touched.contact?.workPhone
-              && <FormFeedback className="d-block">{formik.errors?.contact?.workPhone}</FormFeedback>}
-            </FormGroup>
-            <FormGroup>
-              <Label for="contact.email">Email</Label>
-              <Input
-                type="email"
-                id="contact.email"
-                {...formik.getFieldProps('contact.email')}
-              />
-              {formik.touched.contact?.email
-              && <FormFeedback className="d-block">{formik.errors?.contact?.email}</FormFeedback>}
-            </FormGroup>
+            <Row form>
+              <Col md={4}>
+                <FormGroup>
+                  <Label for="contact.homePhone">Home Phone</Label>
+                  <MaskedInput
+                    mask="(999) 999-9999"
+                    value={formik.values.contact.homePhone}
+                    onBlur={(e) => formik.handleBlur(e)}
+                    onChange={(e) => formik.setFieldValue('contact.homePhone', e.target.value.replace(/\D/g, ''))}>
+                    {() => (<Input
+                      type="text"
+                      name="homePhone"
+                      id="homePhone"
+                    />)}
+                  </MaskedInput>
+                  {formik.touched.contact?.homePhone
+                      && <FormFeedback className="d-block">{formik.errors?.contact?.homePhone}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={4}>
+                <FormGroup>
+                  <Label for="contact.cellPhone">Cell Phone</Label>
+                  <MaskedInput
+                    mask="(999) 999-9999"
+                    value={formik.values.contact.cellPhone}
+                    onBlur={(e) => formik.handleBlur(e)}
+                    onChange={(e) => formik.setFieldValue('contact.cellPhone', e.target.value.replace(/\D/g, ''))}>
+                    {() => (<Input
+                      type="text"
+                      name="cellPhone"
+                      id="cellPhone"
+                    />)}
+                  </MaskedInput>
+                  {formik.touched.contact?.cellPhone
+                      && <FormFeedback className="d-block">{formik.errors?.contact?.cellPhone}</FormFeedback>}
+                </FormGroup>
+              </Col>
+              <Col md={4}>
+                <FormGroup>
+                  <Label for="contact.workPhone">Work Phone</Label>
+                  <MaskedInput
+                    mask="(999) 999-9999"
+                    value={formik.values.contact.workPhone}
+                    onBlur={(e) => formik.handleBlur(e)}
+                    onChange={(e) => formik.setFieldValue('contact.workPhone', e.target.value.replace(/\D/g, ''))}>
+                    {() => (<Input
+                      type="text"
+                      name="contact.workPhone"
+                      id="contact.workPhone"
+                    />)}
+                  </MaskedInput>
+                  {formik.touched.contact?.workPhone
+                      && <FormFeedback className="d-block">{formik.errors?.contact?.workPhone}</FormFeedback>}
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row form>
+              <Col md={12}>
+                <FormGroup>
+                  <Label for="contact.email">Email</Label>
+                  <Input
+                    type="email"
+                    id="contact.email"
+                    {...formik.getFieldProps('contact.email')}
+                  />
+                  {formik.touched.contact?.email
+                      && <FormFeedback className="d-block">{formik.errors?.contact?.email}</FormFeedback>}
+                </FormGroup>
+              </Col>
+            </Row>
             <button type="submit" className="btn btn-success">Add New Property</button>
           </Form>
         </div>

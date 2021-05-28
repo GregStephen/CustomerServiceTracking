@@ -27,7 +27,7 @@ function TeamPage() {
       Header: 'Name',
       accessor: 'fullName',
       Cell: ({ row: { original } }) => (
-        <p>{original.fullName} {original.admin ? <Badge color="success">Admin</Badge> : ''}</p>
+        <>{original.fullName} {original.admin ? <Badge color="success">Admin</Badge> : ''}</>
       ),
     },
     {

@@ -69,7 +69,7 @@ function NewTeamMemberModal() {
 
 
   return (<>
-    <Button className="mr-4 mb-4" color="primary" onClick={() => setIsToggled(true)}><i className="fa fa-user-plus mr-2" /> New Team Member</Button>
+    <Button className="mr-4 mb-4" color="primary" onClick={() => setIsToggled(true)}><i className="fa fa-user-plus" /></Button>
     <Modal isOpen={isToggled} toggle={() => setIsToggled(false)}>
       <ModalHeader toggle={() => setIsToggled(false)}>New Team Member</ModalHeader>
       <Form className="col-12" onSubmit={formik.handleSubmit}>

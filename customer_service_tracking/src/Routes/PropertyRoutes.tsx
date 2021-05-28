@@ -7,6 +7,7 @@ import AddSystemToPropertyPage from '../Components/AddSystemToPropertyPage/AddSy
 import SystemPage from '../Components/SystemPage/SystemPage';
 import PropertyPage from '../Components/PropertyPage/PropertyPage';
 import ReportPage from '../Components/ReportPage/ReportPage';
+import NewReportPage from '../Components/NewReportPage/NewReportPage';
 import AdminProtectedRoute from './AdminProtectedRoute';
 
 interface Props {
@@ -27,6 +28,9 @@ function PropertyRoutes({ path }: Props) {
       </Route>
       <Route exact path={`${path}/system/:systemId/report/:reportId`}>
         <ReportPage />
+      </Route>
+      <Route exact path={`${path}/system/:systemId/new-report`}>
+        <NewReportPage />
       </Route>
     </Switch>
   );

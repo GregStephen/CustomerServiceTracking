@@ -14,7 +14,6 @@ import PropertiesPage from '../Components/PropertiesPage/PropertiesPage';
 import EditPropertySystemPage from '../Components/EditPropertySystemPage/EditPropertySystemPage';
 import JobsPage from '../Components/JobsPage/JobsPage';
 import NewPropertyPage from '../Components/NewPropertyPage/NewPropertyPage';
-import NewReportPage from '../Components/NewReportPage/NewReportPage';
 import NewSystemPage from '../Components/NewSystemPage/NewSystemPage';
 
 import ReportsPage from '../Components/ReportsPage/ReportsPage';
@@ -57,9 +56,6 @@ function Routes() {
       <AdminProtectedRoute path='/reports'>
         <ReportsPage />
       </AdminProtectedRoute>
-      <Route path='/new-report/:id'>
-        <NewReportPage />
-      </Route>
       <AdminProtectedRoute path='/edit-property-system/:systemId'>
         <EditPropertySystemPage />
       </AdminProtectedRoute>

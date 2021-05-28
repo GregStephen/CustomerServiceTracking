@@ -86,7 +86,7 @@ function ServiceNeededReport() {
       columns: [
         {
           Header: 'Property',
-          accessor: 'property',
+          accessor: 'system',
           Cell: ({ row: { original } }) => (
             <Link to={{ pathname: `/property/${original.property?.id}` }}>{`${original.property?.displayName}`}</Link>
           ),
@@ -139,7 +139,7 @@ function ServiceNeededReport() {
         <Row className="mr-2">
           <NewJobModal />
           {systemsNeedingService.data
-            && <Button color="primary" onClick={toggle} className="mr-3">{isOpen ? 'Close Map' : 'Show Map'}</Button>}
+            && <Button color="primary" onClick={toggle} className="mr-3">{isOpen ? <><i className="fas fa-map-marked-alt"/><i className="fas fa-chevron-up ml-1"/></> : <><i className="fas fa-map-marked-alt"/><i className="fas fa-chevron-down ml-1"/></>}</Button>}
         </Row>
       </div>
       <Collapse isOpen={isOpen}>
