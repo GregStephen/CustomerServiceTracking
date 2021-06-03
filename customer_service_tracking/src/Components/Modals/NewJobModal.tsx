@@ -5,6 +5,7 @@ import {
   Modal,
   ModalHeader,
   Button,
+  ButtonGroup,
   ModalFooter,
   Form,
   FormGroup,
@@ -93,15 +94,11 @@ function NewJobModal() {
           </FormGroup>
           <FormGroup>
             <Label htmlFor="jobTypeId">What Type of Job?</Label>
-            <Input
-              type="select"
-              id="jobTypeId"
-              {...formik.getFieldProps('jobTypeId')}>
-              <option value="">Select a job type</option>
+            <ButtonGroup>
               {jobTypeOptions?.map((jobType) => (
-                <option key={jobType.id} value={jobType.id}>{jobType.type}</option>
+                <Button type="button" key={jobType.id} value={jobType.id} name="jobTypeId" onClick={() => formik.setFieldValue('jobTypeId', jobType.id)} active={formik.values.jobTypeId === jobType.id} color="primary">{jobType.type}</Button>
               ))}
-            </Input>
+            </ButtonGroup>
             {formik.touched.jobTypeId
               && <FormFeedback className="d-block">{formik.errors?.jobTypeId}</FormFeedback>}
           </FormGroup>

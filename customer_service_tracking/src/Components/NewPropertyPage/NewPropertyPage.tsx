@@ -77,6 +77,13 @@ function NewPropertyPage() {
   const addnewProperty = useAddNewProperty();
   const getPropertyGeo = usePropertyGeo();
 
+  const checkAddressNulls = (address: any) => {
+    if (address?.number && address?.street && address?.city && address?.state && address?.zip) {
+      return true;
+    }
+    return false;
+  };
+
   const duplicateCheck = useMemo(() => {
     if (businessProperties.data) {
       return businessProperties.data?.some((x) => x.latitude === geocodingAddress?.location.lat.toString()
@@ -91,12 +98,16 @@ function NewPropertyPage() {
     initialValues: defaultNewProperty,
     enableReinitialize: true,
     validationSchema: newPropertyValidationSchema,
-    onSubmit: (formValues, { setSubmitting, setValues }) => {
+    onSubmit: (formValues, { setValues }) => {
       const newProperty = { ...formValues };
       setValues(newProperty);
       getPropertyGeo.mutate(newProperty.property, {
         onSuccess: (data) => {
-          setGeocodingAddress(data.data.results[0]);
+          if (checkAddressNulls(data.data.resuls[0].address_components)) {
+            setGeocodingAddress(data.data.results[0]);
+          } else {
+            setGeocodingAddress(undefined);
+          }
           setConfirmAddressModalIsToggled(true);
         },
       });

@@ -10,3 +10,4 @@ export { default as EditPropertyNameModal } from './EditPropertyNameModal';
 export { default as EditContactModal } from './EditContactModal';
 export { default as NewJobModal } from './NewJobModal';
 export { default as PasswordResetModal } from './PasswordResetModal';
+export { default as EditPropertyModal } from './EditPropertyModal';

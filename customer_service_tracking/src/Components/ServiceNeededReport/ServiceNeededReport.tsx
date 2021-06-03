@@ -20,8 +20,7 @@ import { Column } from 'react-table';
 import JobsMap from '../JobsMap/JobsMap';
 import { GlobalTable, Header } from '../Global';
 import Jobs from '../Jobs/Jobs';
-import CreateNewJobModal from '../Modals/CreateNewJobModal';
-import NewJobModal from '../Modals/NewJobModal';
+import { CreateNewJobModal, NewJobModal } from '../Modals';
 import Formatting from '../../Helpers/Functions/Formatting';
 
 import { useJobsNeedingAssignment, useJobs } from '../../Helpers/Data/JobRequests';
@@ -33,7 +32,6 @@ function ServiceNeededReport() {
   const [daysOut, getDaysOut] = useState(7);
   const systemsNeedingService = useJobsNeedingAssignment(userObj.business?.id, daysOut);
   const jobs = useJobs(userObj?.businessId);
-
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -105,7 +103,7 @@ function ServiceNeededReport() {
         {
           Header: 'Days Until Service Date',
           accessor: 'daysUntilServiceDate',
-          Cell: ({ value }) => (value > 0 ? value : <><p className="error">{Math.abs(value)} Day{Math.abs(value) === 1 ? '' : 's'} Past Due</p></>),
+          Cell: ({ value }) => (value > 0 ? value : value === 0 ? <><p className="error">Due Today</p></>:<><p className="error">{Math.abs(value)} Day{Math.abs(value) === 1 ? '' : 's'} Past Due</p></>),
         },
         {
           Header: ' ',

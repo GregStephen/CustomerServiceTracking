@@ -1,5 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo, useContext } from 'react';
 import {
+  Col,
+  Row,
   Form,
   FormFeedback,
   FormGroup,
@@ -13,10 +15,11 @@ import {
 } from 'reactstrap';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
+import { States } from '../../Helpers/states';
 import usePropertyGeo from '../../Helpers/Data/GeocodingRequests';
-import { useUpdateProperty } from '../../Helpers/Data/PropertyRequests';
+import { useGetPropertiesForBusiness, useUpdateProperty } from '../../Helpers/Data/PropertyRequests';
 import ConfirmAddressModal from './ConfirmAddressModal';
+import UserContext from '../../Contexts/UserContext';
 
 const editPropertyValidationSchema = Yup.object().shape({
   addressLine1: Yup.string().required('Address is required'),
@@ -26,20 +29,36 @@ const editPropertyValidationSchema = Yup.object().shape({
   zipCode: Yup.string().length(5).required('Zip Code is required'),
 });
 
-function EditPropertyModal({ property, isToggled, setIsToggled }) {
+interface Props {
+  property: Property.Property;
+  isToggled: boolean;
+  setIsToggled: React.Dispatch<React.SetStateAction<boolean>>;
+}
+function EditPropertyModal({ property, isToggled, setIsToggled }: Props) {
+  const userObj = useContext(UserContext);
   const updateProperty = useUpdateProperty();
   const [confirmAddressModalIsToggled, setConfirmAddressModalIsToggled] = useState(false);
-  const [geocodingAddress, setGeocodingAddress] = useState();
+  const businessProperties = useGetPropertiesForBusiness(userObj.businessId);
+  const [geocodingAddress, setGeocodingAddress] = useState<GeocodingAddress>();
 
   const getPropertyGeo = usePropertyGeo();
 
-  const checkAddressNulls = (address) => {
+  const checkAddressNulls = (address: any) => {
     if (address?.number && address?.street && address?.city && address?.state && address?.zip) {
       return true;
     }
     return false;
   };
 
+  const duplicateCheck = useMemo(() => {
+    if (businessProperties.data) {
+      return businessProperties.data?.some((x) => x.latitude === geocodingAddress?.location.lat.toString()
+        && x.longitude === geocodingAddress?.location.lng.toString())
+    } else {
+      return false;
+    }
+  },
+  [businessProperties.data, geocodingAddress]);
   const formik = useFormik({
     initialValues: property,
     enableReinitialize: true,
@@ -51,7 +70,7 @@ function EditPropertyModal({ property, isToggled, setIsToggled }) {
           if (checkAddressNulls(data.data.results[0].address_components)) {
             setGeocodingAddress(data.data.results[0]);
           } else {
-            setGeocodingAddress(null);
+            setGeocodingAddress(undefined);
           }
           setConfirmAddressModalIsToggled(true);
         },
@@ -61,19 +80,22 @@ function EditPropertyModal({ property, isToggled, setIsToggled }) {
 
   const updatePropertyFunction = useCallback(() => {
     const propertyToConfirm = { ...property, ...formik.values };
-    propertyToConfirm.latitude = geocodingAddress.location.lat.toString();
-    propertyToConfirm.longitude = geocodingAddress.location.lng.toString();
-    const addressLine1 = `${geocodingAddress.address_components.number} ${geocodingAddress.address_components.street} ${geocodingAddress.address_components.suffix}`;
-    propertyToConfirm.addressLine1 = addressLine1;
-    propertyToConfirm.city = geocodingAddress.address_components.city;
-    propertyToConfirm.state = geocodingAddress.address_components.state;
-    propertyToConfirm.zipCode = geocodingAddress.address_components.zip;
-    updateProperty.mutate(propertyToConfirm, {
-      onSuccess: () => {
-        setConfirmAddressModalIsToggled(false);
-        setIsToggled(false);
-      },
-    });
+    if (geocodingAddress) {
+      propertyToConfirm.latitude = geocodingAddress.location.lat.toString();
+      propertyToConfirm.longitude = geocodingAddress.location.lng.toString();
+      const addressLine1 = `${geocodingAddress.address_components.number} ${geocodingAddress.address_components.street} ${geocodingAddress.address_components.suffix}`;
+      propertyToConfirm.addressLine1 = addressLine1;
+      propertyToConfirm.city = geocodingAddress.address_components.city;
+      propertyToConfirm.state = geocodingAddress.address_components.state;
+      propertyToConfirm.zipCode = geocodingAddress.address_components.zip;
+      updateProperty.mutate(propertyToConfirm, {
+        onSuccess: () => {
+          setConfirmAddressModalIsToggled(false);
+          setIsToggled(false);
+        },
+      });
+    }
+
   }, [property, updateProperty, geocodingAddress, formik, setIsToggled]);
 
   return (<>
@@ -114,34 +136,45 @@ function EditPropertyModal({ property, isToggled, setIsToggled }) {
             {formik.touched.city
               && <FormFeedback className="d-block">{formik.errors?.city}</FormFeedback>}
           </FormGroup>
-          <FormGroup>
-            <Label htmlFor="state">State</Label>
-            <Input
-              type="input"
-              className="form-control"
-              id="state"
-              {...formik.getFieldProps('state')}
-            />
-            {formik.touched.state
-              && <FormFeedback className="d-block">{formik.errors?.state}</FormFeedback>}
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="zipCode">Zip Code</Label>
-            <Input
-              type="input"
-              className="form-control"
-              id="zipCode"
-              {...formik.getFieldProps('zipCode')}
-            />
-            {formik.touched.zipCode
-              && <FormFeedback className="d-block">{formik.errors?.zipCode}</FormFeedback>}
-          </FormGroup>
+          <Row form>
+            <Col sm={6}>
+              <FormGroup>
+                <Label htmlFor="state">State</Label>
+                <Input
+                  type="select"
+                  id="state"
+                  {...formik.getFieldProps('state')}>
+                  <option value=""></option>
+                  {States.map((state) => (
+                    <option key={state} value={state}>{state}</option>
+                  ))}
+                </Input>
+                {formik.touched.state
+                  && <FormFeedback className="d-block">{formik.errors?.state}</FormFeedback>}
+              </FormGroup>
+            </Col>
+            <Col sm={6}>
+              <FormGroup>
+                <Label htmlFor="zipCode">Zip Code</Label>
+                <Input
+                  type="input"
+                  className="form-control"
+                  id="zipCode"
+                  {...formik.getFieldProps('zipCode')}
+                />
+                {formik.touched.zipCode
+                  && <FormFeedback className="d-block">{formik.errors?.zipCode}</FormFeedback>}
+              </FormGroup>
+            </Col>
+          </Row>
+
+
           <ConfirmAddressModal
             address={geocodingAddress}
-            newProperty={formik.values}
             setConfirmAddressModalIsToggled={setConfirmAddressModalIsToggled}
             confirmAddressModalIsToggled={confirmAddressModalIsToggled}
             onSuccessFunction={updatePropertyFunction}
+            isDuplicate={duplicateCheck}
           />
         </ModalBody>
         <ModalFooter>
