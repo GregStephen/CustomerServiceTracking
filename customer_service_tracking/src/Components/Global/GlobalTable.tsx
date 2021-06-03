@@ -17,7 +17,8 @@ import {
   TableState,
   SortingRule,
   Row as TableRow,
-  Cell
+  Cell,
+  useExpanded
 } from 'react-table';
 
 interface ReactTableProps {
@@ -36,6 +37,7 @@ interface ReactTableProps {
   small?: boolean;
   className?: string;
   enableOverflow?: boolean;
+  renderRowSubComponent?: (row?: Partial<TableRow<any>>) => JSX.Element;
   customHeaderProps?: (column?: Column<any>) => object;
   customRowProps?: (row?: TableRow<any>) => object;
   customCellProps?: (cell?: Cell<any>) => object;
@@ -79,6 +81,7 @@ function GlobalTable({
   customRowProps = () => ({}),
   customCellProps = () => ({}),
   customColumnProps = () => ({}),
+  renderRowSubComponent = undefined,
   emptyTableMessage = 'No data to display',
   pageRowCount = 10,
   pageCountOptions = [10, 25, 50, 100],
@@ -127,6 +130,7 @@ function GlobalTable({
     setPageSize,
     setHiddenColumns,
     setAllFilters,
+    visibleColumns,
     state: { pageIndex, pageSize, sortBy },
   } = useTable(
     {
@@ -138,6 +142,7 @@ function GlobalTable({
     },
     useFilters,
     useSortBy,
+    useExpanded,
     usePagination,
   );
 
@@ -222,7 +227,7 @@ function GlobalTable({
               ? page.map(
                 (row, r) => {
                   prepareRow(row);
-                  return (
+                  return (<React.Fragment>
                     <tr {...allRowPros(row)}>
                       {row.cells.map((cell: any, c) => (
                         <td {...cell.getCellProps([
@@ -236,9 +241,18 @@ function GlobalTable({
                           {cell.render('Cell')}</td>
                       ))}
                     </tr>
-                  );
-                },
-              )
+                    {
+                      row.isExpanded && renderRowSubComponent !== undefined && (
+                        <tr className="table-subrow">
+                          <td colSpan={visibleColumns.length}>
+                            <div className="p-2">
+                              {renderRowSubComponent(row)}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                  </React.Fragment>)
+                })
               : (
                 <tr>
                   <td colSpan={columns[0]?.columns ? columns[0].columns.length : columns.length} style={{ textAlign: 'center' }}>{emptyTableMessage}</td>

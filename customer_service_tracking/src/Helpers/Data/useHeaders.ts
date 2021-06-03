@@ -3,9 +3,8 @@ import { useRouteMatch } from 'react-router';
 
 export default function useHeaders() {
   const routeMatch = useRouteMatch<Routes.System>([
-    '/property/:propertyId',
-    '/property/:propertyId/system/:systemId'
-
+    '/property/:propertyId/system/:systemId',
+    '/property/:propertyId'
   ]);
   const headers = useMemo(() => {
     const headers = {} as any;

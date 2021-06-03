@@ -23,7 +23,7 @@ import UserContext from '../../Contexts/UserContext';
 import { useAddNewProperty, useGetPropertiesForBusiness } from '../../Helpers/Data/PropertyRequests';
 import usePropertyGeo from '../../Helpers/Data/GeocodingRequests';
 import ConfirmAddressModal from '../Modals/ConfirmAddressModal';
-
+import { States } from '../../Helpers/states';
 const defaultPrimaryContact = {
   firstName: '',
   lastName: '',
@@ -187,10 +187,14 @@ function NewPropertyPage() {
                 <FormGroup>
                   <Label for="property.state">State</Label>
                   <Input
-                    type="text"
+                    type="select"
                     id="property.state"
-                    {...formik.getFieldProps('property.state')}
-                  />
+                    {...formik.getFieldProps('property.state')}>
+                    <option value=""></option>
+                    {States.map((state) => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </Input>
                   {formik.touched.property?.state
                       && <FormFeedback className="d-block">{formik.errors?.property?.state}</FormFeedback>}
                 </FormGroup>

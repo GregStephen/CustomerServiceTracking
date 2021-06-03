@@ -86,7 +86,7 @@ function NewReportPage() {
     if (formik.values.amountRemaining) {
       return (maxInches - formik.values.amountRemaining ?? 0).toString()
     } else {
-      return '0';
+      return maxInches.toString();
     }
   }, [formik.values.amountRemaining, maxInches]);
 
@@ -105,6 +105,7 @@ function NewReportPage() {
                 <h3>{property?.data?.addressLine1}</h3>
                 {property?.data?.addressLine2 ? <h3>{property?.data?.addressLine2} </h3> : ''}
                 <h3>{property?.data?.city}, {property?.data?.state} {property?.data?.zipCode}</h3>
+                <h3>{propertySystem?.data?.displayName}</h3>
                 {propertySystem?.data?.notes
                   ? <div>
                     <h3>Notes on System</h3>

@@ -23,15 +23,15 @@ import useGetJobTypes from '../../Helpers/Data/JobTypeRequests';
 import UserContext from '../../Contexts/UserContext';
 
 const validationSchema = Yup.object().shape({
-  customerId: Yup.string().required('Customer is required'),
+  propertyId: Yup.string().required('Property is required'),
   technicianId: Yup.string().required('Technician is required'),
   note: Yup.string().notRequired(),
   jobTypeId: Yup.string().notRequired(),
 });
 
 const initialValues = {
-  customerId: '',
-  customerSystemId: '',
+  propertyId: '',
+  propertySystemId: '',
   dateAssigned: '',
   technicianId: '',
   jobTypeId: '',
@@ -39,8 +39,7 @@ const initialValues = {
   includeOtherSystems: true,
   otherSystemIds: [],
   includeNotes: true,
-  propertyId: '',
-  propertySystemId: ''
+  businessId: ''
 };
 
 function NewJobModal() {
@@ -60,6 +59,7 @@ function NewJobModal() {
       submission.dateAssigned = moment().format();
       const chosenProperty = propertyOptions?.find((property) => property.id === formValues.propertyId);
       submission.propertySystemId = chosenProperty?.systems[0].id ?? '';
+      submission.businessId = userObj.businessId;
       chosenProperty?.systems.forEach((system) => {
         if (system.id !== submission.propertySystemId) {
           submission?.otherSystemIds?.push(system.id);

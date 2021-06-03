@@ -120,7 +120,7 @@ function EditJobModal({
           }
         </ModalBody>
         <ModalFooter>
-          <Button type="submit" color="primary">Edit Job'</Button>{' '}
+          <Button type="submit" color="primary">Edit Job</Button>{' '}
           <Button color="secondary" value="info" onClick={() => setIsToggled(false)}>Cancel</Button>
           <Button color="danger" value="info" onClick={() => deleteThisJob(job?.id)}>Delete?</Button>
         </ModalFooter>

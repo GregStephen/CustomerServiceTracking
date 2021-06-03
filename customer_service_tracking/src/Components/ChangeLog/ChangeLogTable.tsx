@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
-import { Column } from 'react-table';
+import React, { useMemo, useCallback } from 'react';
+import { Column, CellProps } from 'react-table';
 import moment from 'moment';
 import { GlobalTable } from '../Global';
 import ChangeLogCell from './ChangeLogCell';
+import { ChangeLogSubComponent } from './ChangeLogSubComponent';
 
 interface Props {
   logData?: Array<ChangeLog>;
@@ -41,8 +42,22 @@ function ChangeLogTable({ logData, entityName }: Props) {
       Header: 'Date',
       accessor: 'timestamp',
       Cell: ({ value }) => moment(value).format('L'),
+    },
+    {
+      id: 'delta',
+      Cell: ({ row }: CellProps<ChangeLog>) => {
+        return (<span {...row.getToggleRowExpandedProps()}>
+          {row.isExpanded ? <i className="fas fa-minus-circle text-primary" /> : <i className="fas fa-plus-circle text-info" />}
+        </span>)
+      }
     }
   ], []);
+
+  const renderSubComponents = useCallback(
+    (row) => (
+      <ChangeLogSubComponent tableData={row.original} />
+    ), []
+  )
   return logData
     ? <GlobalTable
       small
@@ -52,6 +67,7 @@ function ChangeLogTable({ logData, entityName }: Props) {
       pageCountOptions={[5]}
       emptyTableMessage={emptyMessage}
       hidePagination={false}
+      renderRowSubComponent={renderSubComponents}
     /> : <div></div>;
 }
 

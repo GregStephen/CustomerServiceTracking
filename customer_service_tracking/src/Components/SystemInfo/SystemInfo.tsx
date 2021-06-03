@@ -7,18 +7,19 @@ interface Props {
 }
 function SystemInfo({ system }: Props) {
   return (
-    <div className="widget col-md-5 col-sm-12 mt-0">
+    <div className="widget col-md-10 mt-0">
       <Header title='System Info' />
       <div className="widget-list">
-        {system.notes
-          && <p>Notes: {system.notes}</p>
-        }
         <p>Nozzles: {system.nozzles}</p>
         <p>Spray Cycles: {system.sprayCycles}</p>
         <p>Spray Duration: {system.sprayDuration} seconds</p>
         <p>Service Interval: {ServiceOptionEnums[system.serviceOptionId]}</p>
+        {system.notes
+          && <p>Notes: {system.notes}</p>
+        }
       </div>
       {system.systemInfo && <>
+        <hr />
         <h4>System Specifications</h4>
         <div className="widget-list">
           <p>Type: {system.systemInfo.type}</p>

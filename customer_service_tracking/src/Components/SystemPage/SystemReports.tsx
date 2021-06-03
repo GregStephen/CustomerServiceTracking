@@ -43,7 +43,7 @@ function ServiceReports({ reports }: Props) {
   );
 
   return (
-    <div className="ServiceReports widget col-md-5 col-sm-10 pt-0">
+    <div className="ServiceReports widget col-10 pt-0">
       <Header title="Reports" icon="fa-file-signature" />
       <div className="ml-4 mb-4">
         <Input
@@ -59,7 +59,8 @@ function ServiceReports({ reports }: Props) {
         emptyTableMessage="No Reports to show"
         columns={tableColums}
         data={tableData}
-        defaultSortColumn='Date'
+        defaultSortColumn='serviceDate'
+        sortDesc={true}
         hiddenColumns={hiddenColumns}
         filters={filters}
         customRowProps={(row) => ({

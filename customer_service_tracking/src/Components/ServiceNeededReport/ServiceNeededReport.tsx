@@ -81,7 +81,7 @@ function ServiceNeededReport() {
 
   const tableColumns: Column<Business.ServiceNeed>[] = useMemo(() => [
     {
-      Header: `Customers needing service from ${moment().format('L')} to ${moment().add(daysOut, 'days').format('L')}`,
+      Header: `Properties needing service from ${moment().format('L')} to ${moment().add(daysOut, 'days').format('L')}`,
       className: 'top-header',
       columns: [
         {
@@ -105,7 +105,7 @@ function ServiceNeededReport() {
         {
           Header: 'Days Until Service Date',
           accessor: 'daysUntilServiceDate',
-          Cell: ({ value }) => (value > 0 ? value : 'Past Due'),
+          Cell: ({ value }) => (value > 0 ? value : <><p className="error">{Math.abs(value)} Day{Math.abs(value) === 1 ? '' : 's'} Past Due</p></>),
         },
         {
           Header: ' ',

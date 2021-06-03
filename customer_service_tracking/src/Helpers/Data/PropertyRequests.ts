@@ -44,10 +44,21 @@ export function usePropertyChangeLog() {
   });
 }
 
+export function usePropertySystemChangeLog() {
+  const url = `${baseUrl}/changeLog/PropertySystem/`;
+  const headers = useHeaders();
+  return useQuery<Array<ChangeLog>, Error>([url], async () => {
+    const { data } = await axios.get(url, {headers: headers});
+    return data;
+  });
+}
+
+
 export function useAddNewProperty() {
   const url = `${baseUrl}`;
   const queryClient = useQueryClient();
-  return useMutation < Property.Property, Error, { property: Partial<Property.Property>; contact: Partial<Property.Contact>}>((property) => axios.post(url, property), {
+  const headers = useHeaders();
+  return useMutation < Property.Property, Error, { property: Partial<Property.Property>; contact: Partial<Property.Contact>}>((property) => axios.post(url, property, {headers: headers}), {
     onSuccess: () => {
       queryClient.invalidateQueries({
         predicate: invalidatePropertyQueries

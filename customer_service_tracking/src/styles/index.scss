@@ -86,6 +86,9 @@ hr {
     padding-bottom: 0;
   }
 }
+.error {
+  color: $danger-color;
+}
 /*
 @include media-breakpoint-up(md) {
   .header-title {

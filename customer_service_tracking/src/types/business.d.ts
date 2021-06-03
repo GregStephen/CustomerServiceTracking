@@ -49,6 +49,7 @@ declare namespace Business {
     includeOtherSystems?: boolean;
     includeNotes?: boolean;
     otherSystemIds?: string[];
+    businessId?: string;
   }
 
   export interface JobType {
